@@ -1,0 +1,16 @@
+{
+  "name": "spacetimedb-combat",
+  "version": "1.0.0",
+  "description": "8-bit MMO combat module",
+  "scripts": {
+    "build": "spacetime build",
+    "publish": "spacetime publish 8bit-combat",
+    "generate": "spacetime generate --lang typescript --out-dir ../website/src/generated --module-path ."
+  },
+  "dependencies": {
+    "spacetimedb": "^2.0.2"
+  },
+  "devDependencies": {
+    "typescript": "~5.6.2"
+  }
+}

@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import { defineConfig } from "vite-plus";
 
 export default defineConfig({
+  base: "/8-bit-mmo/",
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

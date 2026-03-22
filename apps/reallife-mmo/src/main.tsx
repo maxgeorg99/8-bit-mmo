@@ -16,7 +16,7 @@ import { NotFound } from "./pages/not-found";
 
 createRoot(document.getElementById("app")!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/8-bit-mmo">
       <ActiveThemeProvider>
         <BiomeProvider>
           <GameLayout>

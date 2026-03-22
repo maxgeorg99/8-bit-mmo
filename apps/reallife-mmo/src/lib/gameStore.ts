@@ -20,6 +20,7 @@ import {
 import { deriveClass } from "./classEngine";
 import { generateDailyQuests } from "./questGenerator";
 import { checkMilestoneRewards } from "./rewards";
+import { BIOME_UNLOCK_REQS, ALL_BIOMES } from "./biomeThemes";
 
 interface GameState {
   player: Player;
@@ -42,6 +43,7 @@ interface GameState {
   createCustomQuest: (title: string, description: string, xpReward: number) => void;
   equipItem: (itemId: string) => void;
   unequipSlot: (slot: EquipSlot) => void;
+  travelToBiome: (biomeId: string) => void;
   setPlayerName: (name: string) => void;
   /** Called on app load — generates new dailies if the day has changed */
   checkDailyRefresh: () => void;
@@ -90,6 +92,39 @@ function calculateStreak(lastDateStr: string, currentStreak: number): number {
   return 1; // streak broken
 }
 
+/**
+ * Check which biomes should be unlocked based on activity counts and player stats.
+ */
+function checkBiomeUnlocks(
+  logs: ActivityLog[],
+  streakDays: number,
+  currentUnlocks: string[],
+): string[] {
+  const unlocked = new Set(currentUnlocks);
+  const counts: Record<string, number> = {};
+  for (const log of logs) {
+    counts[log.type] = (counts[log.type] ?? 0) + 1;
+  }
+
+  for (const biomeId of ALL_BIOMES) {
+    if (unlocked.has(biomeId)) continue;
+    const req = BIOME_UNLOCK_REQS[biomeId];
+
+    if (req.activityType && req.count) {
+      if ((counts[req.activityType] ?? 0) >= req.count) {
+        unlocked.add(biomeId);
+      }
+    } else if (req.special === "streak_days" && req.specialCount) {
+      if (streakDays >= req.specialCount) {
+        unlocked.add(biomeId);
+      }
+    }
+    // "daily_quest_streak" and "raid_wins" need server-side tracking — skip for now
+  }
+
+  return [...unlocked];
+}
+
 const initialPlayer: Player = {
   name: "",
   level: 1,
@@ -104,6 +139,19 @@ const initialPlayer: Player = {
   joinedAt: Date.now(),
   equipment: {},
   chest: [],
+  currentBiome: "plains",
+  // DEV: all biomes unlocked for testing — restrict later
+  unlockedBiomes: [
+    "plains",
+    "tundra",
+    "volcano",
+    "forest",
+    "dungeon",
+    "desert",
+    "spire",
+    "ruins",
+    "celestial",
+  ],
 };
 
 export const useGameStore = create<GameState>()(
@@ -215,6 +263,19 @@ export const useGameStore = create<GameState>()(
           notifications.push(`✨ Class evolved to ${newClass}!`);
         }
 
+        // Check biome unlocks
+        const newUnlocks = checkBiomeUnlocks(
+          newLogs,
+          newStreak,
+          state.player.unlockedBiomes ?? ["plains"],
+        );
+        const freshUnlocks = newUnlocks.filter(
+          (b) => !(state.player.unlockedBiomes ?? ["plains"]).includes(b),
+        );
+        for (const biome of freshUnlocks) {
+          notifications.push(`🗺️ New region unlocked: ${biome}! Check the World Map.`);
+        }
+
         set({
           activityLogs: newLogs,
           quests: newQuests,
@@ -233,6 +294,7 @@ export const useGameStore = create<GameState>()(
             totalActivities: newTotalActivities,
             streakDays: newStreak,
             chest: [...state.player.chest, ...newItems],
+            unlockedBiomes: newUnlocks,
           },
         });
       },
@@ -299,6 +361,17 @@ export const useGameStore = create<GameState>()(
         });
       },
 
+      travelToBiome: (biomeId) => {
+        set((state) => {
+          // Also grant the unlock if not already unlocked (for smooth UX)
+          const unlocked = state.player.unlockedBiomes ?? ["plains"];
+          const newUnlocked = unlocked.includes(biomeId) ? unlocked : [...unlocked, biomeId];
+          return {
+            player: { ...state.player, currentBiome: biomeId, unlockedBiomes: newUnlocked },
+          };
+        });
+      },
+
       createCustomQuest: (title, description, xpReward) => {
         const quest: Quest = {
           id: `custom-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -333,6 +406,19 @@ export const useGameStore = create<GameState>()(
           equipment: pp.equipment ?? {},
           chest: pp.chest ?? pp.inventory ?? [],
           stats: { ...current.player.stats, ...pp.stats },
+          currentBiome: pp.currentBiome ?? "plains",
+          // DEV: default to all unlocked for testing
+          unlockedBiomes: pp.unlockedBiomes ?? [
+            "plains",
+            "tundra",
+            "volcano",
+            "forest",
+            "dungeon",
+            "desert",
+            "spire",
+            "ruins",
+            "celestial",
+          ],
         };
 
         return {

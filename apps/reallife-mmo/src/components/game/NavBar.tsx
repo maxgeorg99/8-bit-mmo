@@ -6,7 +6,7 @@ const NAV_ITEMS = [
   { path: "/character", label: "Hero", icon: "⚔️" },
   { path: "/activity", label: "Log", icon: "📝" },
   { path: "/quests", label: "Quests", icon: "📜" },
-  { path: "/combat", label: "Arena", icon: "🏟️" },
+  { path: "/map", label: "Map", icon: "🗺️" },
 ];
 
 export function NavBar() {

@@ -440,4 +440,8 @@ export interface Player {
   equipment: Partial<Record<EquipSlot, EquipmentItem>>;
   /** All owned items (chest / bank) */
   chest: EquipmentItem[];
+  /** Current biome the player is in */
+  currentBiome: string;
+  /** Unlocked biome IDs */
+  unlockedBiomes: string[];
 }

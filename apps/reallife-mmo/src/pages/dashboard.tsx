@@ -1,0 +1,127 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
+import { Button } from "@/components/ui/8bit/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/card";
+import { Progress } from "@/components/ui/8bit/progress";
+import PlayerProfileCard from "@/components/ui/8bit/blocks/player-profile-card";
+import { RecentActivity } from "@/components/game/RecentActivity";
+import { useGameStore } from "@/lib/gameStore";
+import {
+  CLASS_SPRITES,
+  TIER_GLOW,
+  STAT_COLORS,
+  getCharacterTier,
+  type StatName,
+} from "@/lib/types";
+import { cn } from "@/lib/utils";
+
+export function Dashboard() {
+  const navigate = useNavigate();
+  const player = useGameStore((s) => s.player);
+  const logs = useGameStore((s) => s.activityLogs);
+  const quests = useGameStore((s) => s.quests);
+  const checkDailyRefresh = useGameStore((s) => s.checkDailyRefresh);
+
+  // Auto-refresh daily quests when dashboard loads
+  useEffect(() => {
+    checkDailyRefresh();
+  }, [checkDailyRefresh]);
+
+  const completedQuests = quests.filter((q) => q.completed).length;
+
+  const customStats = (["STR", "AGI", "INT", "CON", "WIS", "CHA", "MP"] as StatName[])
+    .filter((s) => player.stats[s] > 0)
+    .map((stat) => ({
+      label: stat,
+      value: Math.round(player.stats[stat] * 10) / 10,
+      max: 100,
+      color: STAT_COLORS[stat],
+      variant: "retro" as const,
+    }));
+
+  return (
+    <div className="space-y-6">
+      {/* Character sprite + profile */}
+      <div className="flex justify-center pb-2">
+        <img
+          src={CLASS_SPRITES[player.playerClass as keyof typeof CLASS_SPRITES]}
+          alt={player.playerClass}
+          className={cn("pixelated w-24 h-24", TIER_GLOW[getCharacterTier(player.level)])}
+        />
+      </div>
+      <PlayerProfileCard
+        playerName={player.name || "Unnamed Hero"}
+        playerClass={player.playerClass}
+        level={player.level}
+        stats={{
+          health: { current: player.hp, max: player.maxHp },
+          experience: { current: player.xp, max: player.xpToNext },
+        }}
+        showMana={false}
+        customStats={customStats}
+      />
+
+      {/* Streak banner */}
+      {player.streakDays > 0 && (
+        <div className="flex items-center justify-center gap-2 py-2 border border-border">
+          <span className="text-lg">🔥</span>
+          <span className="retro text-[10px] text-foreground">{player.streakDays} day streak</span>
+          {player.streakDays >= 7 && <span className="text-lg">🔥</span>}
+        </div>
+      )}
+
+      {/* Quick actions */}
+      <div className="grid grid-cols-2 gap-3">
+        <Button onClick={() => navigate("/activity")} className="text-[8px]">
+          Log Activity
+        </Button>
+        <Button onClick={() => navigate("/quests")} variant="outline" className="text-[8px]">
+          Quests {completedQuests > 0 && `(${completedQuests} ready)`}
+        </Button>
+      </div>
+
+      {/* Quest summary */}
+      {quests.filter((q) => !q.completed).length > 0 && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs">Active Quests</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {quests
+                .filter((q) => !q.completed)
+                .slice(0, 3)
+                .map((q) => {
+                  const pct = Math.min(Math.round((q.progressMin / q.targetMin) * 100), 100);
+                  return (
+                    <div key={q.id} className="flex items-center gap-3">
+                      <div className="flex-1">
+                        <div className="retro text-[7px]">{q.title}</div>
+                        <Progress
+                          value={pct}
+                          variant="retro"
+                          progressBg="bg-yellow-500"
+                          className="h-1.5 mt-1"
+                        />
+                      </div>
+                      <span className="retro text-[7px] text-muted-foreground">{pct}%</span>
+                    </div>
+                  );
+                })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Recent activity */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xs">Recent Activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <RecentActivity logs={logs} limit={5} />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

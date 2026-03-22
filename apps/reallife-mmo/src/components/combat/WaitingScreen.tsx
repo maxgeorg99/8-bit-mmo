@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/8bit/card";
+import { asset } from "@/lib/utils";
 
 interface WaitingScreenProps {
   onCancel: () => void;
@@ -13,7 +14,7 @@ export function WaitingScreen({ onCancel }: WaitingScreenProps) {
       </CardHeader>
       <CardContent className="text-center space-y-4">
         <img
-          src="/8bit-wizard.png"
+          src={asset("8bit-wizard.png")}
           alt="Mage waiting"
           className="pixelated w-32 h-32 mx-auto animate-bounce"
         />

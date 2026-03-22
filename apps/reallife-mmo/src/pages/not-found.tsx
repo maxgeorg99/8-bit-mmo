@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/8bit/button";
+import { asset } from "@/lib/utils";
 
 export function NotFound() {
   const navigate = useNavigate();
@@ -7,7 +8,11 @@ export function NotFound() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 gap-8 text-center">
       {/* Ogre character */}
-      <img src="/8bit-ogre.png" alt="8-bit Ogre" className="pixelated w-48 h-48 md:w-64 md:h-64" />
+      <img
+        src={asset("8bit-ogre.png")}
+        alt="8-bit Ogre"
+        className="pixelated w-48 h-48 md:w-64 md:h-64"
+      />
 
       {/* Error text */}
       <div className="space-y-4">

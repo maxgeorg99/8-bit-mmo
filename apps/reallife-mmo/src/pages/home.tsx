@@ -1,3 +1,4 @@
+import { asset } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/8bit/button";
@@ -40,17 +41,21 @@ export function Home() {
       {/* Class showcase */}
       <div className="flex gap-4 items-end">
         <div className="text-center">
-          <img src="/8bit-wizard.png" alt="Mage" className="pixelated w-16 h-16 mx-auto" />
+          <img src={asset("8bit-wizard.png")} alt="Mage" className="pixelated w-16 h-16 mx-auto" />
           <Badge variant="secondary" className="text-[6px] mt-1">
             Mage
           </Badge>
         </div>
         <div className="text-center">
-          <img src="/8bit-orc-warrior.png" alt="Warrior" className="pixelated w-20 h-20 mx-auto" />
+          <img
+            src={asset("8bit-orc-warrior.png")}
+            alt="Warrior"
+            className="pixelated w-20 h-20 mx-auto"
+          />
           <Badge className="text-[6px] mt-1">Warrior</Badge>
         </div>
         <div className="text-center">
-          <img src="/8bit-ogre.png" alt="Tank" className="pixelated w-16 h-16 mx-auto" />
+          <img src={asset("8bit-ogre.png")} alt="Tank" className="pixelated w-16 h-16 mx-auto" />
           <Badge variant="secondary" className="text-[6px] mt-1">
             Tank
           </Badge>

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/8bit/card";
+import { asset } from "@/lib/utils";
 import type { Identity } from "spacetimedb";
 
 interface VictoryScreenProps {
@@ -23,7 +24,7 @@ export function VictoryScreen({ winnerId, identity, onPlayAgain, onGoHome }: Vic
       </CardHeader>
       <CardContent className="text-center space-y-4">
         <img
-          src={isWinner ? "/8bit-wizard.png" : "/8bit-ogre.png"}
+          src={isWinner ? asset("8bit-wizard.png") : asset("8bit-ogre.png")}
           alt={isWinner ? "Victory" : "Defeat"}
           className="pixelated w-40 h-40 mx-auto"
         />

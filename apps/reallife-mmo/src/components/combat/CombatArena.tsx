@@ -1,3 +1,4 @@
+import { asset } from "@/lib/utils";
 import { CharacterDisplay } from "./CharacterDisplay";
 import { SpellMenu } from "./SpellMenu";
 import { CombatLog } from "./CombatLog";
@@ -37,7 +38,7 @@ export function CombatArena({
       <div className="flex items-start justify-between gap-4 md:gap-8">
         <CharacterDisplay
           name={isPlayer1 ? "Mage (You)" : "Mage"}
-          imageUrl="/8bit-wizard.png"
+          imageUrl={asset("8bit-wizard.png")}
           hp={isPlayer1 ? myHp : opponentHp}
           maxHp={100}
           mana={isPlayer1 ? myMana : opponentMana}
@@ -53,7 +54,7 @@ export function CombatArena({
 
         <CharacterDisplay
           name={!isPlayer1 ? "Orc (You)" : "Orc"}
-          imageUrl="/8bit-orc-warrior.png"
+          imageUrl={asset("8bit-orc-warrior.png")}
           hp={!isPlayer1 ? myHp : opponentHp}
           maxHp={100}
           mana={!isPlayer1 ? myMana : opponentMana}

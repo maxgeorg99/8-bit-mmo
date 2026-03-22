@@ -10,7 +10,7 @@ import {
   RARITY_COLORS,
   SLOT_ICONS,
 } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, asset } from "@/lib/utils";
 
 interface CharacterAvatarProps {
   playerClass: PlayerClass;
@@ -68,7 +68,7 @@ export function CharacterAvatar({ playerClass, level, name, equipment }: Charact
       {/* Avatar with tier frame */}
       <div className={cn("relative p-2 border-4 transition-all", TIER_BORDER[tier], TIER_BG[tier])}>
         <img
-          src={sprite}
+          src={asset(sprite)}
           alt={`${name} - ${playerClass}`}
           className={cn("pixelated w-32 h-32 md:w-40 md:h-40", TIER_GLOW[tier])}
         />

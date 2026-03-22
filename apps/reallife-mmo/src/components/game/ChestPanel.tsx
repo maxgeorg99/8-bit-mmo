@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/c
 import { Button } from "@/components/ui/8bit/button";
 import type { EquipSlot, EquipmentItem } from "@/lib/types";
 import { RARITY_BORDER, RARITY_COLORS, SLOT_ICONS } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, asset } from "@/lib/utils";
 
 interface ChestPanelProps {
   items: EquipmentItem[];
@@ -24,7 +24,7 @@ export function ChestPanel({ items, equipped, playerLevel, onEquip, onUnequip }:
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-xs flex items-center gap-2">
-            <img src="/8bit-treasure.png" alt="Chest" className="pixelated w-6 h-6" />
+            <img src={asset("8bit-treasure.png")} alt="Chest" className="pixelated w-6 h-6" />
             Chest
           </CardTitle>
         </CardHeader>
@@ -50,7 +50,7 @@ export function ChestPanel({ items, equipped, playerLevel, onEquip, onUnequip }:
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="text-xs flex items-center gap-2">
-          <img src="/8bit-treasure.png" alt="Chest" className="pixelated w-6 h-6" />
+          <img src={asset("8bit-treasure.png")} alt="Chest" className="pixelated w-6 h-6" />
           Chest ({items.length} items)
         </CardTitle>
       </CardHeader>

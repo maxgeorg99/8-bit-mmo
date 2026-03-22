@@ -411,15 +411,15 @@ export const TIER_GLOW: Record<CharacterTier, string> = {
 };
 
 export const CLASS_SPRITES: Record<PlayerClass, string> = {
-  Warrior: "/8bit-orc-warrior.png",
-  Mage: "/8bit-wizard.png",
-  Rogue: "/8bit-ogre.png", // placeholder until we have a rogue sprite
-  Paladin: "/8bit-orc-warrior.png",
-  Druid: "/8bit-wizard.png",
-  Ranger: "/8bit-ogre.png",
-  Bard: "/8bit-wizard.png",
-  Scholar: "/8bit-wizard.png",
-  Unclassed: "/8bit-orc-warrior.png",
+  Warrior: "8bit-orc-warrior.png",
+  Mage: "8bit-wizard.png",
+  Rogue: "8bit-ogre.png", // placeholder until we have a rogue sprite
+  Paladin: "8bit-orc-warrior.png",
+  Druid: "8bit-wizard.png",
+  Ranger: "8bit-ogre.png",
+  Bard: "8bit-wizard.png",
+  Scholar: "8bit-wizard.png",
+  Unclassed: "8bit-orc-warrior.png",
 };
 
 // ── Player ──────────────────────────────────────────────────────

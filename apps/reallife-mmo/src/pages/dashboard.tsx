@@ -13,6 +13,7 @@ import {
   getCharacterTier,
   type StatName,
 } from "@/lib/types";
+import { asset } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
 export function Dashboard() {
@@ -44,7 +45,7 @@ export function Dashboard() {
       {/* Character sprite + profile */}
       <div className="flex justify-center pb-2">
         <img
-          src={CLASS_SPRITES[player.playerClass as keyof typeof CLASS_SPRITES]}
+          src={asset(CLASS_SPRITES[player.playerClass as keyof typeof CLASS_SPRITES])}
           alt={player.playerClass}
           className={cn("pixelated w-24 h-24", TIER_GLOW[getCharacterTier(player.level)])}
         />

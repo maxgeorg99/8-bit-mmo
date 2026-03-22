@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/8bit/button";
+import { asset } from "@/lib/utils";
 import { useCombat } from "@/hooks/useCombat";
 import { CombatArena } from "@/components/combat/CombatArena";
 import { WaitingScreen } from "@/components/combat/WaitingScreen";
@@ -47,13 +48,13 @@ export function Combat() {
         <div className="text-center space-y-6 flex-1 flex flex-col items-center justify-center">
           <div className="flex gap-8 items-end">
             <img
-              src="/8bit-wizard.png"
+              src={asset("8bit-wizard.png")}
               alt="Mage"
               className="pixelated w-32 h-32 md:w-40 md:h-40"
             />
             <span className="retro text-2xl text-destructive mb-8">VS</span>
             <img
-              src="/8bit-orc-warrior.png"
+              src={asset("8bit-orc-warrior.png")}
               alt="Orc"
               className="pixelated w-32 h-32 md:w-40 md:h-40 -scale-x-100"
             />

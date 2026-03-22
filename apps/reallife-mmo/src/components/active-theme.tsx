@@ -1,7 +1,7 @@
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import { Theme } from "@/lib/themes";
 
-const DEFAULT_THEME = Theme.PixelForest; // RPG default — dark forest theme
+const DEFAULT_THEME = Theme.Default; // RPG default
 
 interface ThemeContextType {
   activeTheme: Theme;

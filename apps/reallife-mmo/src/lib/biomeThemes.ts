@@ -24,7 +24,7 @@ export const ALL_BIOMES: BiomeId[] = [
 ];
 
 export const BIOME_TO_THEME: Record<BiomeId, Theme> = {
-  plains: Theme.PixelForest,
+  plains: Theme.Default,
   tundra: Theme.IceCavern,
   volcano: Theme.LavaCore,
   forest: Theme.PixelForest,

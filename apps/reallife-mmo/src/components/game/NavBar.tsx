@@ -2,7 +2,6 @@ import { useLocation, useNavigate } from "react-router";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { path: "/dashboard", label: "Home", icon: "🏠" },
   { path: "/character", label: "Hero", icon: "⚔️" },
   { path: "/activity", label: "Log", icon: "📝" },
   { path: "/quests", label: "Quests", icon: "📜" },

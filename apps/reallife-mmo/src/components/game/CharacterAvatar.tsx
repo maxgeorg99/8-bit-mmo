@@ -10,6 +10,7 @@ import {
   RARITY_COLORS,
   SLOT_ICONS,
 } from "@/lib/types";
+import { TITLE_MAP } from "@/lib/titles";
 import { cn, asset } from "@/lib/utils";
 
 interface CharacterAvatarProps {
@@ -17,6 +18,7 @@ interface CharacterAvatarProps {
   level: number;
   name: string;
   equipment: Partial<Record<EquipSlot, EquipmentItem>>;
+  activeTitle?: string | null;
 }
 
 const TIER_BORDER: Record<CharacterTier, string> = {
@@ -37,9 +39,16 @@ const TIER_BG: Record<CharacterTier, string> = {
   legend: "bg-red-500/5",
 };
 
-export function CharacterAvatar({ playerClass, level, name, equipment }: CharacterAvatarProps) {
+export function CharacterAvatar({
+  playerClass,
+  level,
+  name,
+  equipment,
+  activeTitle,
+}: CharacterAvatarProps) {
   const tier = getCharacterTier(level);
   const sprite = CLASS_SPRITES[playerClass];
+  const title = activeTitle ? TITLE_MAP.get(activeTitle) : null;
 
   const equippedSlots: EquipSlot[] = ["weapon", "head", "armor", "accessory"];
 
@@ -79,10 +88,15 @@ export function CharacterAvatar({ playerClass, level, name, equipment }: Charact
         </div>
       </div>
 
-      {/* Name + class */}
+      {/* Name + class + title */}
       <div className="text-center">
         <div className="retro text-[11px]">{name || "Unnamed Hero"}</div>
         <div className={cn("retro text-[9px]", CLASS_COLORS[playerClass])}>{playerClass}</div>
+        {title && (
+          <div className="retro text-[7px] text-amber-400/80 mt-0.5">
+            {title.icon} {title.name}
+          </div>
+        )}
       </div>
 
       {/* Equipment slots */}

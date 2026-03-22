@@ -4,6 +4,7 @@ import HealthBar from "@/components/ui/8bit/health-bar";
 import XpBar from "@/components/ui/8bit/xp-bar";
 import { CharacterAvatar } from "@/components/game/CharacterAvatar";
 import { ChestPanel } from "@/components/game/ChestPanel";
+import { TitleSelector } from "@/components/game/TitleSelector";
 import { useGameStore } from "@/lib/gameStore";
 import { getClassAffinities } from "@/lib/classEngine";
 import { AnimatedStatBar } from "@/components/game/AnimatedStatBar";
@@ -17,6 +18,7 @@ export function Character() {
   const logs = useGameStore((s) => s.activityLogs);
   const equipItem = useGameStore((s) => s.equipItem);
   const unequipSlot = useGameStore((s) => s.unequipSlot);
+  const selectTitle = useGameStore((s) => s.selectTitle);
 
   const affinities = getClassAffinities(logs);
   const maxAffinity = affinities.length > 0 ? affinities[0].score : 1;
@@ -31,6 +33,7 @@ export function Character() {
         level={player.level}
         name={player.name}
         equipment={player.equipment}
+        activeTitle={player.activeTitle}
       />
 
       {/* HP + XP bars */}
@@ -118,6 +121,13 @@ export function Character() {
           </CardContent>
         </Card>
       )}
+
+      {/* Titles */}
+      <TitleSelector
+        unlockedTitles={player.unlockedTitles ?? []}
+        activeTitle={player.activeTitle ?? null}
+        onSelect={selectTitle}
+      />
 
       {/* Chest / Equipment */}
       <ChestPanel

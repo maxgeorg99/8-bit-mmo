@@ -13,6 +13,7 @@ import {
   getCharacterTier,
   type StatName,
 } from "@/lib/types";
+import { TITLE_MAP } from "@/lib/titles";
 import { asset } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -61,6 +62,13 @@ export function Dashboard() {
         showMana={false}
         customStats={customStats}
       />
+      {player.activeTitle && TITLE_MAP.get(player.activeTitle) && (
+        <div className="flex justify-center -mt-3">
+          <span className="retro text-[8px] text-amber-400/80">
+            {TITLE_MAP.get(player.activeTitle)!.icon} {TITLE_MAP.get(player.activeTitle)!.name}
+          </span>
+        </div>
+      )}
 
       {/* Streak banner */}
       {player.streakDays > 0 && (

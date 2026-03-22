@@ -21,6 +21,7 @@ import { deriveClass } from "./classEngine";
 import { generateDailyQuests } from "./questGenerator";
 import { checkMilestoneRewards } from "./rewards";
 import { BIOME_UNLOCK_REQS, ALL_BIOMES } from "./biomeThemes";
+import { checkTitleUnlocks, TITLE_MAP } from "./titles";
 
 interface GameState {
   player: Player;
@@ -34,6 +35,8 @@ interface GameState {
   lastActivityDate: string;
   /** Pending notifications to show (consumed by UI) */
   pendingNotifications: string[];
+  /** Lifetime count of quests claimed (for title tracking) */
+  questsCompleted: number;
 
   // Actions
   consumeNotifications: () => string[];
@@ -45,6 +48,7 @@ interface GameState {
   unequipSlot: (slot: EquipSlot) => void;
   travelToBiome: (biomeId: string) => void;
   setPlayerName: (name: string) => void;
+  selectTitle: (titleId: string | null) => void;
   /** Called on app load — generates new dailies if the day has changed */
   checkDailyRefresh: () => void;
 }
@@ -152,6 +156,8 @@ const initialPlayer: Player = {
     "ruins",
     "celestial",
   ],
+  activeTitle: null,
+  unlockedTitles: [],
 };
 
 export const useGameStore = create<GameState>()(
@@ -164,6 +170,7 @@ export const useGameStore = create<GameState>()(
       lastActivityType: "StrengthTraining" as ActivityType,
       lastActivityDate: "",
       pendingNotifications: [],
+      questsCompleted: 0,
 
       consumeNotifications: () => {
         const notifs = get().pendingNotifications;
@@ -276,6 +283,35 @@ export const useGameStore = create<GameState>()(
           notifications.push(`🗺️ New region unlocked: ${biome}! Check the World Map.`);
         }
 
+        // Build updated player for title check
+        const updatedPlayer: Player = {
+          ...state.player,
+          stats: newStats,
+          playerClass: newClass,
+          level,
+          xp,
+          xpToNext,
+          hp: maxHp(level, newStats.CON),
+          maxHp: maxHp(level, newStats.CON),
+          totalActivities: newTotalActivities,
+          streakDays: newStreak,
+          chest: [...state.player.chest, ...newItems],
+          unlockedBiomes: newUnlocks,
+        };
+
+        // Check title unlocks
+        const newTitles = checkTitleUnlocks({
+          player: updatedPlayer,
+          logs: newLogs,
+          questsCompleted: state.questsCompleted,
+          pvpWins: 0,
+          raidKills: 0,
+        });
+        for (const titleId of newTitles) {
+          const t = TITLE_MAP.get(titleId);
+          if (t) notifications.push(`🏷️ Title unlocked: ${t.icon} ${t.name}!`);
+        }
+
         set({
           activityLogs: newLogs,
           quests: newQuests,
@@ -283,18 +319,8 @@ export const useGameStore = create<GameState>()(
           lastActivityDate: todayStr,
           pendingNotifications: [...state.pendingNotifications, ...notifications],
           player: {
-            ...state.player,
-            stats: newStats,
-            playerClass: newClass,
-            level,
-            xp,
-            xpToNext,
-            hp: maxHp(level, newStats.CON),
-            maxHp: maxHp(level, newStats.CON),
-            totalActivities: newTotalActivities,
-            streakDays: newStreak,
-            chest: [...state.player.chest, ...newItems],
-            unlockedBiomes: newUnlocks,
+            ...updatedPlayer,
+            unlockedTitles: [...(state.player.unlockedTitles ?? []), ...newTitles],
           },
         });
       },
@@ -314,15 +340,37 @@ export const useGameStore = create<GameState>()(
             xpToNext = xpToNextLevel(level);
           }
 
+          const newQuestsCompleted = (state.questsCompleted ?? 0) + 1;
+          const updatedPlayer: Player = {
+            ...state.player,
+            xp,
+            level,
+            xpToNext,
+            hp: maxHp(level, state.player.stats.CON),
+            maxHp: maxHp(level, state.player.stats.CON),
+          };
+
+          // Check title unlocks after quest claim
+          const newTitles = checkTitleUnlocks({
+            player: updatedPlayer,
+            logs: state.activityLogs,
+            questsCompleted: newQuestsCompleted,
+            pvpWins: 0,
+            raidKills: 0,
+          });
+          const notifications: string[] = [];
+          for (const titleId of newTitles) {
+            const t = TITLE_MAP.get(titleId);
+            if (t) notifications.push(`🏷️ Title unlocked: ${t.icon} ${t.name}!`);
+          }
+
           return {
             quests: state.quests.filter((q) => q.id !== questId),
+            questsCompleted: newQuestsCompleted,
+            pendingNotifications: [...state.pendingNotifications, ...notifications],
             player: {
-              ...state.player,
-              xp,
-              level,
-              xpToNext,
-              hp: maxHp(level, state.player.stats.CON),
-              maxHp: maxHp(level, state.player.stats.CON),
+              ...updatedPlayer,
+              unlockedTitles: [...(state.player.unlockedTitles ?? []), ...newTitles],
             },
           };
         });
@@ -359,6 +407,12 @@ export const useGameStore = create<GameState>()(
             player: { ...state.player, equipment: newEquip },
           };
         });
+      },
+
+      selectTitle: (titleId) => {
+        set((state) => ({
+          player: { ...state.player, activeTitle: titleId },
+        }));
       },
 
       travelToBiome: (biomeId) => {
@@ -419,6 +473,8 @@ export const useGameStore = create<GameState>()(
             "ruins",
             "celestial",
           ],
+          activeTitle: pp.activeTitle ?? null,
+          unlockedTitles: pp.unlockedTitles ?? [],
         };
 
         return {
@@ -426,6 +482,7 @@ export const useGameStore = create<GameState>()(
           ...p,
           player,
           pendingNotifications: p.pendingNotifications ?? [],
+          questsCompleted: p.questsCompleted ?? 0,
           lastActivityType: p.lastActivityType ?? ("StrengthTraining" as ActivityType),
           lastActivityDate: p.lastActivityDate ?? "",
         };

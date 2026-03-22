@@ -422,6 +422,18 @@ export const CLASS_SPRITES: Record<PlayerClass, string> = {
   Unclassed: "8bit-orc-warrior.png",
 };
 
+// ── Titles ──────────────────────────────────────────────────────
+
+export type TitleCategory = "real_world" | "in_game";
+
+export interface TitleDefinition {
+  id: string;
+  name: string;
+  description: string;
+  category: TitleCategory;
+  icon: string;
+}
+
 // ── Player ──────────────────────────────────────────────────────
 
 export interface Player {
@@ -444,4 +456,8 @@ export interface Player {
   currentBiome: string;
   /** Unlocked biome IDs */
   unlockedBiomes: string[];
+  /** Currently displayed title (null = none) */
+  activeTitle: string | null;
+  /** IDs of all unlocked titles */
+  unlockedTitles: string[];
 }

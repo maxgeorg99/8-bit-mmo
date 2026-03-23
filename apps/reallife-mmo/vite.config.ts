@@ -11,7 +11,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg", "8bit-orc-warrior.png"],
+      includeAssets: ["favicon.svg", "favicon.png", "8bit-orc-warrior.png"],
       manifest: {
         name: "Reallife MMO",
         short_name: "RLMMO",
@@ -23,15 +23,28 @@ export default defineConfig({
         orientation: "portrait",
         icons: [
           {
+            src: "icon-192.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "any",
+          },
+          {
+            src: "icon-512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any",
+          },
+          {
+            src: "icon-512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable",
+          },
+          {
             src: "favicon.svg",
             sizes: "any",
             type: "image/svg+xml",
             purpose: "any",
-          },
-          {
-            src: "8bit-orc-warrior.png",
-            sizes: "192x192",
-            type: "image/png",
           },
         ],
         categories: ["games", "health", "fitness"],

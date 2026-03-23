@@ -79,6 +79,12 @@ export function Dashboard() {
         </div>
       )}
 
+      {/* Gold display */}
+      <div className="flex items-center justify-center gap-1">
+        <span className="text-sm">💰</span>
+        <span className="retro text-[10px] text-amber-400">{player.gold}g</span>
+      </div>
+
       {/* Quick actions */}
       <div className="grid grid-cols-2 gap-3">
         <Button onClick={() => navigate("/activity")} className="text-[8px]">

@@ -487,4 +487,6 @@ export interface Player {
   activeTitle: string | null;
   /** IDs of all unlocked titles */
   unlockedTitles: string[];
+  /** Gold currency for buying/selling at shops */
+  gold: number;
 }

@@ -72,10 +72,13 @@ A Final Fantasy-style shared overworld where you see other players standing in b
 - Tap NPC → shop dialog (buy/sell items)
 - Resting at city restores HP to full
 
+**Status:** Done
+
 **Key files:**
 
-- New: `src/components/game/CityScene.tsx`
-- New: `src/components/game/ShopDialog.tsx`
+- `src/components/game/LocationScene.tsx` — CityScene inline component with sprites, heal, shop
+- `src/components/game/ShopDialog.tsx` — Buy/sell dialog with biome-specific gear
+- `src/lib/shopItems.ts` — Shop inventories, merchants, and sell prices per biome
 
 ---
 

@@ -10,6 +10,7 @@ import type {
   Stats,
 } from "./types";
 import { EMPTY_STATS } from "./types";
+import { SELL_PRICES } from "./shopItems";
 import {
   calculateStatDeltas,
   calculateXpGain,
@@ -54,6 +55,12 @@ interface GameState {
   grantPveRewards: (xp: number, loot: EquipmentItem[]) => void;
   /** Called on app load — generates new dailies if the day has changed */
   checkDailyRefresh: () => void;
+  /** Rest at a city inn — restores HP to full, costs gold */
+  restAtCity: () => void;
+  /** Buy an item from a shop */
+  buyItem: (item: EquipmentItem, cost: number) => boolean;
+  /** Sell an item from chest for gold */
+  sellItem: (itemId: string) => void;
 }
 
 function addStats(a: Stats, b: Partial<Stats>): Stats {
@@ -162,6 +169,7 @@ const initialPlayer: Player = {
   currentLocation: null,
   activeTitle: null,
   unlockedTitles: [],
+  gold: 50,
 };
 
 export const useGameStore = create<GameState>()(
@@ -447,6 +455,10 @@ export const useGameStore = create<GameState>()(
             notifications.push(`🎁 Loot: ${item.name}!`);
           }
 
+          // Gold reward scales with player level
+          const goldReward = 5 + Math.floor(level * 1.5);
+          notifications.push(`💰 +${goldReward}g`);
+
           return {
             pendingNotifications: [...state.pendingNotifications, ...notifications],
             player: {
@@ -457,7 +469,70 @@ export const useGameStore = create<GameState>()(
               hp: maxHp(level, state.player.stats.CON),
               maxHp: maxHp(level, state.player.stats.CON),
               chest: [...state.player.chest, ...loot],
+              gold: state.player.gold + goldReward,
             },
+          };
+        });
+      },
+
+      restAtCity: () => {
+        set((state) => {
+          const healCost = Math.max(5, Math.floor(state.player.level * 2));
+          if (state.player.hp >= state.player.maxHp) return state;
+          if (state.player.gold < healCost) return state;
+          return {
+            player: {
+              ...state.player,
+              hp: state.player.maxHp,
+              gold: state.player.gold - healCost,
+            },
+            pendingNotifications: [
+              ...state.pendingNotifications,
+              `🏥 Rested at the inn. HP fully restored! (-${healCost}g)`,
+            ],
+          };
+        });
+      },
+
+      buyItem: (item, cost) => {
+        const state = get();
+        if (state.player.gold < cost) return false;
+        if (state.player.chest.some((i) => i.id === item.id)) return false;
+        set({
+          player: {
+            ...state.player,
+            gold: state.player.gold - cost,
+            chest: [...state.player.chest, item],
+          },
+          pendingNotifications: [
+            ...state.pendingNotifications,
+            `🛒 Bought ${item.name}! (-${cost}g)`,
+          ],
+        });
+        return true;
+      },
+
+      sellItem: (itemId) => {
+        set((state) => {
+          const item = state.player.chest.find((i) => i.id === itemId);
+          if (!item) return state;
+          // Can't sell equipped items
+          const equipped = Object.values(state.player.equipment);
+          if (equipped.some((e) => e?.id === itemId)) return state;
+          const sellPrice = SELL_PRICES[item.rarity];
+          // Remove from chest
+          const newEquip = { ...state.player.equipment };
+          return {
+            player: {
+              ...state.player,
+              gold: state.player.gold + sellPrice,
+              chest: state.player.chest.filter((i) => i.id !== itemId),
+              equipment: newEquip,
+            },
+            pendingNotifications: [
+              ...state.pendingNotifications,
+              `💰 Sold ${item.name} for ${sellPrice}g`,
+            ],
           };
         });
       },
@@ -528,6 +603,7 @@ export const useGameStore = create<GameState>()(
           currentLocation: pp.currentLocation ?? null,
           activeTitle: pp.activeTitle ?? null,
           unlockedTitles: pp.unlockedTitles ?? [],
+          gold: pp.gold ?? 50,
         };
 
         return {

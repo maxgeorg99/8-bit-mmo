@@ -8,9 +8,10 @@ interface AnimatedStatBarProps {
   stat: StatName;
   value: number;
   maxValue?: number;
+  bonus?: number;
 }
 
-export function AnimatedStatBar({ stat, value, maxValue = 100 }: AnimatedStatBarProps) {
+export function AnimatedStatBar({ stat, value, maxValue = 100, bonus }: AnimatedStatBarProps) {
   const { value: animValue, isAnimating } = useAnimatedValue(value);
   const percent = Math.min(Math.round((animValue / maxValue) * 100), 100);
 
@@ -19,6 +20,7 @@ export function AnimatedStatBar({ stat, value, maxValue = 100 }: AnimatedStatBar
       <div className="flex justify-between retro text-[8px] text-muted-foreground">
         <span>{stat}</span>
         <span className={cn(isAnimating && "text-yellow-400 animate-pulse")}>
+          {bonus && bonus > 0 && <span className="text-green-400 mr-1">(+{bonus})</span>}
           {animValue.toFixed(1)}
         </span>
       </div>

@@ -49,6 +49,9 @@ interface GameState {
   travelToBiome: (biomeId: string) => void;
   setPlayerName: (name: string) => void;
   selectTitle: (titleId: string | null) => void;
+  enterLocation: (locationId: string | null) => void;
+  /** Grant XP and loot from PvE combat victory */
+  grantPveRewards: (xp: number, loot: EquipmentItem[]) => void;
   /** Called on app load — generates new dailies if the day has changed */
   checkDailyRefresh: () => void;
 }
@@ -156,6 +159,7 @@ const initialPlayer: Player = {
     "ruins",
     "celestial",
   ],
+  currentLocation: null,
   activeTitle: null,
   unlockedTitles: [],
 };
@@ -415,13 +419,61 @@ export const useGameStore = create<GameState>()(
         }));
       },
 
+      enterLocation: (locationId) => {
+        set((state) => ({
+          player: { ...state.player, currentLocation: locationId },
+        }));
+      },
+
+      grantPveRewards: (xpGain, loot) => {
+        set((state) => {
+          let { level, xp } = state.player;
+          xp += xpGain;
+          let xpToNext = xpToNextLevel(level);
+          const notifications: string[] = [];
+          const startLevel = level;
+
+          while (xp >= xpToNext) {
+            xp -= xpToNext;
+            level++;
+            xpToNext = xpToNextLevel(level);
+          }
+
+          if (level > startLevel) {
+            notifications.push(`⬆️ Level Up! You are now Level ${level}`);
+          }
+
+          for (const item of loot) {
+            notifications.push(`🎁 Loot: ${item.name}!`);
+          }
+
+          return {
+            pendingNotifications: [...state.pendingNotifications, ...notifications],
+            player: {
+              ...state.player,
+              level,
+              xp,
+              xpToNext,
+              hp: maxHp(level, state.player.stats.CON),
+              maxHp: maxHp(level, state.player.stats.CON),
+              chest: [...state.player.chest, ...loot],
+            },
+          };
+        });
+      },
+
       travelToBiome: (biomeId) => {
         set((state) => {
           // Also grant the unlock if not already unlocked (for smooth UX)
           const unlocked = state.player.unlockedBiomes ?? ["plains"];
           const newUnlocked = unlocked.includes(biomeId) ? unlocked : [...unlocked, biomeId];
           return {
-            player: { ...state.player, currentBiome: biomeId, unlockedBiomes: newUnlocked },
+            player: {
+              ...state.player,
+              currentBiome: biomeId,
+              unlockedBiomes: newUnlocked,
+              currentLocation: null,
+            },
           };
         });
       },
@@ -473,6 +525,7 @@ export const useGameStore = create<GameState>()(
             "ruins",
             "celestial",
           ],
+          currentLocation: pp.currentLocation ?? null,
           activeTitle: pp.activeTitle ?? null,
           unlockedTitles: pp.unlockedTitles ?? [],
         };

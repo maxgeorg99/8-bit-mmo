@@ -1,4 +1,5 @@
 import { Theme } from "./themes";
+import type { Location } from "./types";
 
 export type BiomeId =
   | "plains"
@@ -44,6 +45,8 @@ export interface BiomeMeta {
   icon: string;
   /** Fill color hint for the map polygon */
   mapColor: string;
+  /** Locations within this biome */
+  locations: Location[];
 }
 
 export const BIOME_META: Record<BiomeId, BiomeMeta> = {
@@ -54,6 +57,29 @@ export const BIOME_META: Record<BiomeId, BiomeMeta> = {
     raidBoss: "Thornback the Elder",
     icon: "🌿",
     mapColor: "#4ade80",
+    locations: [
+      {
+        id: "plains-city",
+        name: "Greenhollow",
+        type: "city",
+        description: "A peaceful village where adventurers resupply.",
+        icon: "🏘️",
+      },
+      {
+        id: "plains-wild",
+        name: "Whispering Fields",
+        type: "wilderness",
+        description: "Gentle meadows with lurking slimes and boars.",
+        icon: "🌾",
+      },
+      {
+        id: "plains-boss",
+        name: "Thornback's Grove",
+        type: "boss_lair",
+        description: "Ancient roots guard the Elder's den.",
+        icon: "🌳",
+      },
+    ],
   },
   tundra: {
     name: "Ice Cavern",
@@ -62,6 +88,29 @@ export const BIOME_META: Record<BiomeId, BiomeMeta> = {
     raidBoss: "The Frostlord",
     icon: "❄️",
     mapColor: "#67e8f9",
+    locations: [
+      {
+        id: "tundra-city",
+        name: "Frostwatch Keep",
+        type: "city",
+        description: "A fortified outpost against the endless blizzard.",
+        icon: "🏔️",
+      },
+      {
+        id: "tundra-wild",
+        name: "Glacial Wastes",
+        type: "wilderness",
+        description: "Ice wolves and frost sprites prowl the drifts.",
+        icon: "🌨️",
+      },
+      {
+        id: "tundra-boss",
+        name: "The Frozen Throne",
+        type: "boss_lair",
+        description: "The Frostlord waits in eternal winter.",
+        icon: "🧊",
+      },
+    ],
   },
   volcano: {
     name: "Lava Core",
@@ -70,6 +119,29 @@ export const BIOME_META: Record<BiomeId, BiomeMeta> = {
     raidBoss: "Ignisfury",
     icon: "🌋",
     mapColor: "#f87171",
+    locations: [
+      {
+        id: "volcano-city",
+        name: "Ember Forge",
+        type: "city",
+        description: "Blacksmiths temper weapons in volcanic heat.",
+        icon: "⚒️",
+      },
+      {
+        id: "volcano-wild",
+        name: "Cinder Slopes",
+        type: "wilderness",
+        description: "Fire elementals and magma crawlers roam.",
+        icon: "🔥",
+      },
+      {
+        id: "volcano-boss",
+        name: "Ignisfury's Caldera",
+        type: "boss_lair",
+        description: "The heart of the volcano pulses with rage.",
+        icon: "💥",
+      },
+    ],
   },
   forest: {
     name: "Pixel Forest",
@@ -78,6 +150,29 @@ export const BIOME_META: Record<BiomeId, BiomeMeta> = {
     raidBoss: "Rootwarden",
     icon: "🌲",
     mapColor: "#22c55e",
+    locations: [
+      {
+        id: "forest-city",
+        name: "Mossgrove",
+        type: "city",
+        description: "A hidden treetop village of druids.",
+        icon: "🍃",
+      },
+      {
+        id: "forest-wild",
+        name: "Tangled Thicket",
+        type: "wilderness",
+        description: "Living vines and forest sprites guard the paths.",
+        icon: "🌿",
+      },
+      {
+        id: "forest-boss",
+        name: "Rootwarden's Heart",
+        type: "boss_lair",
+        description: "The ancient tree stirs at the forest core.",
+        icon: "🌳",
+      },
+    ],
   },
   dungeon: {
     name: "Dungeon Torch",
@@ -86,6 +181,29 @@ export const BIOME_META: Record<BiomeId, BiomeMeta> = {
     raidBoss: "Shadow Baron",
     icon: "🕯️",
     mapColor: "#a855f7",
+    locations: [
+      {
+        id: "dungeon-city",
+        name: "Torchlight Camp",
+        type: "city",
+        description: "Brave souls rest before descending deeper.",
+        icon: "🏕️",
+      },
+      {
+        id: "dungeon-wild",
+        name: "Shadow Corridors",
+        type: "wilderness",
+        description: "Bats, wraiths, and traps lurk in every passage.",
+        icon: "🦇",
+      },
+      {
+        id: "dungeon-boss",
+        name: "The Baron's Vault",
+        type: "boss_lair",
+        description: "Shadows coalesce into the Baron himself.",
+        icon: "👤",
+      },
+    ],
   },
   desert: {
     name: "Dwarven Vault",
@@ -94,6 +212,29 @@ export const BIOME_META: Record<BiomeId, BiomeMeta> = {
     raidBoss: "King Stonefist",
     icon: "🏜️",
     mapColor: "#fbbf24",
+    locations: [
+      {
+        id: "desert-city",
+        name: "Sandstone Bazaar",
+        type: "city",
+        description: "Merchants trade rare goods under canvas tents.",
+        icon: "🏪",
+      },
+      {
+        id: "desert-wild",
+        name: "Scorching Dunes",
+        type: "wilderness",
+        description: "Sand worms and desert bandits ambush travelers.",
+        icon: "🏜️",
+      },
+      {
+        id: "desert-boss",
+        name: "Stonefist's Arena",
+        type: "boss_lair",
+        description: "The Dwarf King challenges all who enter.",
+        icon: "👊",
+      },
+    ],
   },
   spire: {
     name: "Ancient Runes",
@@ -102,6 +243,29 @@ export const BIOME_META: Record<BiomeId, BiomeMeta> = {
     raidBoss: "The Archivist",
     icon: "📜",
     mapColor: "#818cf8",
+    locations: [
+      {
+        id: "spire-city",
+        name: "Library of Echoes",
+        type: "city",
+        description: "Endless shelves of arcane knowledge.",
+        icon: "📚",
+      },
+      {
+        id: "spire-wild",
+        name: "Runic Labyrinth",
+        type: "wilderness",
+        description: "Animated books and spell constructs guard secrets.",
+        icon: "🔮",
+      },
+      {
+        id: "spire-boss",
+        name: "The Archivist's Study",
+        type: "boss_lair",
+        description: "Reality bends around the keeper of all knowledge.",
+        icon: "📖",
+      },
+    ],
   },
   ruins: {
     name: "Dragon Hoard",
@@ -110,6 +274,29 @@ export const BIOME_META: Record<BiomeId, BiomeMeta> = {
     raidBoss: "Skarveth the Undying",
     icon: "🐉",
     mapColor: "#f59e0b",
+    locations: [
+      {
+        id: "ruins-city",
+        name: "Bonehaven",
+        type: "city",
+        description: "Built from the bones of fallen dragons.",
+        icon: "🦴",
+      },
+      {
+        id: "ruins-wild",
+        name: "Cursed Catacombs",
+        type: "wilderness",
+        description: "Undead warriors patrol crumbling halls.",
+        icon: "💀",
+      },
+      {
+        id: "ruins-boss",
+        name: "Skarveth's Tomb",
+        type: "boss_lair",
+        description: "The Undying stirs in his golden prison.",
+        icon: "⚰️",
+      },
+    ],
   },
   celestial: {
     name: "Space Station",
@@ -118,6 +305,29 @@ export const BIOME_META: Record<BiomeId, BiomeMeta> = {
     raidBoss: "The Architect",
     icon: "✨",
     mapColor: "#c084fc",
+    locations: [
+      {
+        id: "celestial-city",
+        name: "Starfall Sanctum",
+        type: "city",
+        description: "A floating haven among the stars.",
+        icon: "⭐",
+      },
+      {
+        id: "celestial-wild",
+        name: "Cosmic Rift",
+        type: "wilderness",
+        description: "Void creatures and astral phantoms drift.",
+        icon: "🌌",
+      },
+      {
+        id: "celestial-boss",
+        name: "The Architect's Domain",
+        type: "boss_lair",
+        description: "The creator of worlds awaits.",
+        icon: "🌀",
+      },
+    ],
   },
 };
 

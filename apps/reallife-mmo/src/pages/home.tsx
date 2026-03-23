@@ -24,7 +24,7 @@ export function Home() {
 
   // Returning players skip the landing and go straight to dashboard
   useEffect(() => {
-    if (hasStarted) navigate("/dashboard", { replace: true });
+    if (hasStarted) void navigate("/dashboard", { replace: true });
   }, [hasStarted, navigate]);
 
   return (
@@ -81,7 +81,7 @@ export function Home() {
             className="w-full"
             onClick={() => {
               setPlayerName(name || "Unnamed Hero");
-              navigate("/dashboard");
+              void navigate("/dashboard");
             }}
           >
             Begin Adventure

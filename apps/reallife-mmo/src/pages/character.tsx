@@ -75,16 +75,7 @@ export function Character() {
               );
               const total = baseStat + equipBonus;
 
-              return (
-                <div key={stat} className="relative">
-                  <AnimatedStatBar stat={stat} value={total} />
-                  {equipBonus > 0 && (
-                    <span className="absolute right-0 top-0 retro text-[6px] text-green-400">
-                      (+{equipBonus})
-                    </span>
-                  )}
-                </div>
-              );
+              return <AnimatedStatBar key={stat} stat={stat} value={total} bonus={equipBonus} />;
             })}
           </div>
           <div className="flex justify-between retro text-[7px] text-muted-foreground pt-3">

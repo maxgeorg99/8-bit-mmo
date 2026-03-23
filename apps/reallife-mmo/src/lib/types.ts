@@ -422,6 +422,31 @@ export const CLASS_SPRITES: Record<PlayerClass, string> = {
   Unclassed: "8bit-orc-warrior.png",
 };
 
+// ── Locations ───────────────────────────────────────────────────
+
+export type LocationType = "city" | "wilderness" | "boss_lair";
+
+export interface Location {
+  id: string;
+  name: string;
+  type: LocationType;
+  description: string;
+  /** Emoji icon for the location */
+  icon: string;
+}
+
+export const LOCATION_TYPE_ICONS: Record<LocationType, string> = {
+  city: "🏰",
+  wilderness: "⚔️",
+  boss_lair: "💀",
+};
+
+export const LOCATION_TYPE_LABELS: Record<LocationType, string> = {
+  city: "City",
+  wilderness: "Wilderness",
+  boss_lair: "Boss Lair",
+};
+
 // ── Titles ──────────────────────────────────────────────────────
 
 export type TitleCategory = "real_world" | "in_game";
@@ -456,6 +481,8 @@ export interface Player {
   currentBiome: string;
   /** Unlocked biome IDs */
   unlockedBiomes: string[];
+  /** Current location within the biome (null = biome overview) */
+  currentLocation: string | null;
   /** Currently displayed title (null = none) */
   activeTitle: string | null;
   /** IDs of all unlocked titles */

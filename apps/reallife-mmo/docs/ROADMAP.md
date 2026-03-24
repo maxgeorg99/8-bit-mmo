@@ -15,8 +15,16 @@
 - Equipment system (4 slots, 5 rarities, milestone-based drops)
 - Daily + custom quests with auto-refresh
 - Real-time 1v1 PvP combat via SpacetimeDB (spells, HP/mana, turn-based)
-- Full Zustand store with localStorage persistence
-- PWA support
+- Gold economy with city shops (biome-specific gear, buy/sell) and inn healing
+- 3 location types per biome: City (shop, heal, NPC sprites), Wilderness (PvE mobs), Boss Lair (raids)
+- Solo PvE combat with biome-scaled mobs, loot drops, and AI spell selection
+- Title system (real-world + in-game titles, selectable active title)
+- Guild system: create/join/leave, member management, guild chat
+- 9 raid bosses with unique abilities and AoE mechanics, turn-based group combat
+- Leaderboard (level + per-stat rankings with NPC players)
+- Player inspection: tap NPCs in cities to see full character sheet
+- Full Zustand stores with localStorage persistence (game, guild)
+- PWA support with proper square icons and Android installability
 
 **Vision:**
 A Final Fantasy-style shared overworld where you see other players standing in biome cities, inspect their gear and titles, form guilds, and raid bosses together — all powered by real-world habits.
@@ -26,7 +34,7 @@ A Final Fantasy-style shared overworld where you see other players standing in b
 ## Phase 1: Locations & Solo PvE Combat
 
 > **Goal:** Make biomes explorable and give players something to fight
-> **Status:** Not started
+> **Status:** Done
 
 ### 1.1 — Location System
 
@@ -85,7 +93,7 @@ A Final Fantasy-style shared overworld where you see other players standing in b
 ## Phase 2: Titles & Achievements
 
 > **Goal:** Give players bragging rights for real-world and in-game accomplishments
-> **Status:** Not started
+> **Status:** Done
 
 ### 2.1 — Title System
 
@@ -130,7 +138,7 @@ A Final Fantasy-style shared overworld where you see other players standing in b
 ## Phase 3: Guilds & Raid Bosses
 
 > **Goal:** The endgame social loop — form groups and take down biome bosses
-> **Status:** Not started
+> **Status:** Done
 
 ### 3.1 — Guild System
 
@@ -140,34 +148,34 @@ A Final Fantasy-style shared overworld where you see other players standing in b
 - Guild size: 3 minimum for raids, 20 maximum
 - Guild chat (simple message board initially)
 
-### 3.2 — Raid Boss Fights
-
-- Each biome has one raid boss (already defined in `biomeThemes.ts`)
-- Guild leader initiates raid → members opt in (7-day contribution window)
-- Raid power = sum of member stat gains during raid window
-- Boss HP scales with guild size (small guilds can still win)
-- Turn-based group combat: each member takes turns casting spells
-- Boss has unique mechanics per biome
-- Rewards: rare/epic/legendary gear + exclusive raid titles
-
-**Boss roster:**
-| Biome | Boss | Mechanic Theme |
-|-------|------|----------------|
-| Plains | Thornback the Elder | Nature/thorns |
-| Tundra | The Frostlord | Ice/freeze |
-| Volcano | Ignisfury | Fire/AoE |
-| Forest | Rootwarden | Heal/regen |
-| Dungeon | Shadow Baron | Darkness/debuff |
-| Desert | King Stonefist | Earth/stun |
-| Spire | The Archivist | Arcane/silence |
-| Ruins | Skarveth the Undying | Undead/drain |
-| Celestial | The Architect | Cosmic/phase |
+**Status:** Done
 
 **Key files:**
 
-- New: `src/lib/raidEngine.ts`, `src/lib/bossDefinitions.ts`
-- New: `src/pages/guild.tsx`, `src/pages/raid.tsx`
-- New: `src/components/game/GuildPanel.tsx`, `RaidLobby.tsx`, `RaidBattle.tsx`
+- `src/lib/guildStore.ts` — Zustand store with create/join/leave/chat/promote/kick actions
+- `src/lib/types.ts` — Guild, GuildMember, GuildMessage interfaces
+- `src/pages/guild.tsx` — Guild page with browse, create dialog, member list, chat, raid placeholder
+
+### 3.2 — Raid Boss Fights
+
+- Each biome has one raid boss with unique abilities and mechanics
+- Guild needs 3+ members to start a raid
+- Boss HP scales with guild size (small guilds can still win)
+- Turn-based group combat: each member takes turns casting spells
+- Boss attacks after each round (single-target and AoE)
+- Boss-specific mechanics: Rootwarden heals, Skarveth drains
+- Rewards: XP, gold, and epic/legendary gear drops
+- Boss lair locations in biomes now link to the raid page
+
+**Status:** Done
+
+**Key files:**
+
+- `src/lib/bossDefinitions.ts` — 9 raid bosses with abilities, HP scaling, loot
+- `src/lib/guildStore.ts` — startRaid, raidCastSpell, abandonRaid actions
+- `src/lib/types.ts` — Raid, RaidCombatant, RaidLogEntry types
+- `src/pages/raid.tsx` — Raid lobby, turn-based combat, victory/defeat screens
+- `src/pages/guild.tsx` — RaidSection with boss list and active raid resume
 
 ---
 
@@ -219,21 +227,39 @@ idle_tick (scheduled hourly: streak check, quest refresh, raid expiry)
 ## Phase 5: Polish & Social
 
 > **Goal:** Make it feel like a real MMO community
-> **Status:** Not started
-> **Depends on:** Phase 4 (SpacetimeDB)
+> **Status:** Partially done (client-side with NPC data; real multiplayer after Phase 4)
 
 ### 5.1 — Leaderboards
 
-- Global (by level), per-stat, guild, weekly
+- Global (by level), per-stat tabs (STR, AGI, INT, CON, WIS, CHA)
+- Player ranked among NPC players; guild banner with raid wins
+- Linked from dashboard
+
+**Status:** Done (client-side with NPC data)
+
+**Key files:**
+
+- `src/pages/leaderboard.tsx` — Leaderboard page with level and stat tabs
+- `src/lib/npcPlayers.ts` — NPC player profiles for leaderboards and city scenes
 
 ### 5.2 — Friend System
 
 - Add by username, activity feed, stat comparison, PvP challenges
+- Requires SpacetimeDB for real player lookups
+
+**Status:** Deferred to Phase 4
 
 ### 5.3 — Player Inspection
 
-- Tap sprite in city → full character sheet (name, level, class, title, gear, stats)
-- Add friend or challenge to PvP
+- Tap player sprite in city → full character sheet (name, level, class, title, gear, stats)
+- Shows stats bars, equipped items, guild affiliation
+
+**Status:** Done (client-side with NPC data)
+
+**Key files:**
+
+- `src/components/game/PlayerInspect.tsx` — Inspect dialog with stats, gear, title
+- `src/components/game/LocationScene.tsx` — Tappable NPC sprites in city scene
 
 ---
 

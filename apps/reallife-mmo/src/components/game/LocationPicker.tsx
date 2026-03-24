@@ -6,6 +6,7 @@ import { BIOME_META, type BiomeId } from "@/lib/biomeThemes";
 import { LOCATION_TYPE_LABELS } from "@/lib/types";
 import type { Location } from "@/lib/types";
 import { useGameStore } from "@/lib/gameStore";
+import { useGuildStore } from "@/lib/guildStore";
 
 interface LocationPickerProps {
   biomeId: BiomeId;
@@ -15,7 +16,10 @@ interface LocationPickerProps {
 export function LocationPicker({ biomeId, onClose }: LocationPickerProps) {
   const navigate = useNavigate();
   const enterLocation = useGameStore((s) => s.enterLocation);
+  const guild = useGuildStore((s) => s.guild);
   const meta = BIOME_META[biomeId];
+
+  const canRaid = guild != null && guild.members.length >= 3;
 
   const handleEnter = (location: Location) => {
     enterLocation(location.id);
@@ -40,8 +44,9 @@ export function LocationPicker({ biomeId, onClose }: LocationPickerProps) {
       <div className="grid gap-2">
         {meta.locations.map((loc) => {
           const isBossLair = loc.type === "boss_lair";
+          const bossLocked = isBossLair && !canRaid;
           return (
-            <Card key={loc.id} className={isBossLair ? "opacity-60" : ""}>
+            <Card key={loc.id} className={bossLocked ? "opacity-60" : ""}>
               <CardContent className="flex items-center gap-3 py-3 px-4">
                 <span className="text-xl">{loc.icon}</span>
                 <div className="flex-1 min-w-0">
@@ -53,15 +58,25 @@ export function LocationPicker({ biomeId, onClose }: LocationPickerProps) {
                   </div>
                   <p className="retro text-[7px] text-muted-foreground mt-0.5">{loc.description}</p>
                 </div>
-                <Button
-                  size="sm"
-                  variant={isBossLair ? "outline" : "default"}
-                  className="text-[7px] shrink-0"
-                  disabled={isBossLair}
-                  onClick={() => handleEnter(loc)}
-                >
-                  {isBossLair ? "Locked" : "Enter"}
-                </Button>
+                {isBossLair ? (
+                  <Button
+                    size="sm"
+                    variant={canRaid ? "default" : "outline"}
+                    className="text-[7px] shrink-0"
+                    disabled={!canRaid}
+                    onClick={() => handleEnter(loc)}
+                  >
+                    {canRaid ? "Raid" : "Locked"}
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    className="text-[7px] shrink-0"
+                    onClick={() => handleEnter(loc)}
+                  >
+                    Enter
+                  </Button>
+                )}
               </CardContent>
             </Card>
           );
@@ -69,9 +84,13 @@ export function LocationPicker({ biomeId, onClose }: LocationPickerProps) {
       </div>
 
       {/* Boss lair note */}
-      <p className="retro text-[6px] text-muted-foreground text-center">
-        Boss Lairs unlock with the Guild Raid system
-      </p>
+      {!canRaid && (
+        <p className="retro text-[6px] text-muted-foreground text-center">
+          {guild
+            ? `Need ${3 - guild.members.length} more guild member(s) to unlock Boss Lairs`
+            : "Join a guild with 3+ members to unlock Boss Lairs"}
+        </p>
+      )}
     </div>
   );
 }

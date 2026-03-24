@@ -490,3 +490,89 @@ export interface Player {
   /** Gold currency for buying/selling at shops */
   gold: number;
 }
+
+// ── Guild Types ────────────────────────────────────────────────
+
+export interface GuildMember {
+  name: string;
+  playerClass: PlayerClass;
+  level: number;
+  /** Epoch ms when the member joined */
+  joinedAt: number;
+  /** Role within the guild */
+  role: "leader" | "officer" | "member";
+  /** Is the player currently online (client-side only for now) */
+  online: boolean;
+}
+
+export interface GuildMessage {
+  id: string;
+  authorName: string;
+  text: string;
+  timestamp: number;
+}
+
+export interface Guild {
+  id: string;
+  name: string;
+  tag: string;
+  description: string;
+  /** Epoch ms when the guild was created */
+  createdAt: number;
+  members: GuildMember[];
+  messages: GuildMessage[];
+  /** Maximum number of members allowed */
+  maxMembers: number;
+  /** Currently active raid, if any */
+  activeRaid: Raid | null;
+  /** Total raid wins for this guild */
+  raidWins: number;
+}
+
+// ── Raid Types ─────────────────────────────────────────────────
+
+export type RaidPhase = "lobby" | "fighting" | "victory" | "defeat";
+
+export interface RaidCombatant {
+  name: string;
+  playerClass: PlayerClass;
+  hp: number;
+  maxHp: number;
+  mana: number;
+  maxMana: number;
+  /** Is this combatant knocked out? */
+  ko: boolean;
+}
+
+export interface RaidLogEntry {
+  id: number;
+  caster: string;
+  target: string;
+  spellName: string;
+  element: string;
+  damage: number;
+  isHeal: boolean;
+}
+
+export interface Raid {
+  /** Biome where the raid is happening */
+  biomeId: string;
+  /** Boss ID */
+  bossId: string;
+  /** Current phase */
+  phase: RaidPhase;
+  /** Boss current HP */
+  bossHp: number;
+  /** Boss max HP (scaled to guild size) */
+  bossMaxHp: number;
+  /** Boss current mana */
+  bossMana: number;
+  /** Guild members participating as combatants */
+  combatants: RaidCombatant[];
+  /** Index of the current combatant's turn */
+  currentTurnIndex: number;
+  /** Combat log */
+  log: RaidLogEntry[];
+  /** Epoch when the raid was started */
+  startedAt: number;
+}

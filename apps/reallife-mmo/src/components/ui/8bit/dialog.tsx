@@ -50,7 +50,11 @@ export const dialogContentVariants = cva("", {
 function DialogContent({ className, children, font, ...props }: BitDialogProps) {
   return (
     <ShadcnDialogContent
-      className={cn("bg-card rounded-none border-none", font !== "normal" && "retro", className)}
+      className={cn(
+        "dark bg-card rounded-none border-none text-foreground",
+        font !== "normal" && "retro",
+        className,
+      )}
       {...props}
     >
       {children}

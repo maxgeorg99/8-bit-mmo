@@ -93,6 +93,12 @@ export function Dashboard() {
         <Button onClick={() => navigate("/quests")} variant="outline" className="text-[8px]">
           Quests {completedQuests > 0 && `(${completedQuests} ready)`}
         </Button>
+        <Button onClick={() => navigate("/leaderboard")} variant="outline" className="text-[8px]">
+          Leaderboard
+        </Button>
+        <Button onClick={() => navigate("/guild")} variant="outline" className="text-[8px]">
+          Guild
+        </Button>
       </div>
 
       {/* Quest summary */}

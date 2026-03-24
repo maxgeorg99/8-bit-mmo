@@ -14,6 +14,9 @@ import { WorldMap } from "./pages/world-map";
 import { Combat } from "./pages/combat";
 import { LocationPage } from "./pages/location";
 import { PveCombat } from "./pages/pve-combat";
+import { GuildPage } from "./pages/guild";
+import { RaidPage } from "./pages/raid";
+import { Leaderboard } from "./pages/leaderboard";
 import { NotFound } from "./pages/not-found";
 
 createRoot(document.getElementById("app")!).render(
@@ -31,6 +34,9 @@ createRoot(document.getElementById("app")!).render(
               <Route path="/map" element={<WorldMap />} />
               <Route path="/location/:locationId" element={<LocationPage />} />
               <Route path="/pve/:biomeId" element={<PveCombat />} />
+              <Route path="/guild" element={<GuildPage />} />
+              <Route path="/raid/:biomeId" element={<RaidPage />} />
+              <Route path="/leaderboard" element={<Leaderboard />} />
               <Route path="/combat" element={<Combat />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

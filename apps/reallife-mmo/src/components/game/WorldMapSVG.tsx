@@ -9,164 +9,123 @@ interface WorldMapSVGProps {
 }
 
 /**
- * Clickable hotspot regions as percentage-based coordinates over the map image (1024x637).
- * Traced to follow the actual terrain boundaries on map.png.
- *
- * Key landmarks (approximate % positions):
- * - Parchment border: ~4% inset on all sides
- * - River between tundra/forest: x≈22, runs y 30→48
- * - Mountain ridge tundra→spire→volcano: y≈28-35
- * - Plains village cluster: x≈42, y≈52
- * - Lake: x≈52, y≈60
- * - Purple cave entrance: x≈32, y≈68
- * - Desert/plains border: x≈58
- * - Compass rose: x≈12, y≈82 (avoid)
+ * Clickable hotspot regions as percentage-based coordinates over the map image.
+ * Traced from the actual map.png using the debug coordinate picker (?debug-map).
  */
 const REGION_HOTSPOTS: Record<BiomeId, Array<[number, number]>> = {
-  // Snow mountains top-left — bounded by river on left, mountain ridge bottom
+  // Snow mountains top-left
   tundra: [
-    [8, 7],
-    [37, 7],
-    [37, 14],
-    [32, 23],
-    [27, 30],
-    [22, 33],
-    [17, 30],
-    [12, 33],
-    [8, 27],
+    [17, 34],
+    [36, 40],
+    [41, 35],
+    [40, 17],
+    [26, 6],
+    [9, 21],
   ],
-  // Castle/tower area top-center between tundra and volcano
+  // Castle/tower area top-center
   spire: [
-    [37, 7],
-    [57, 7],
-    [57, 15],
-    [53, 25],
-    [48, 30],
-    [42, 32],
-    [37, 28],
-    [32, 23],
-    [37, 14],
+    [41, 33],
+    [40, 8],
+    [60, 7],
+    [59, 29],
+    [54, 35],
   ],
-  // Lava/fire mountains top-right — brown/red area
+  // Lava/fire mountains top-right
   volcano: [
-    [57, 7],
-    [78, 7],
-    [78, 14],
-    [76, 24],
-    [70, 32],
-    [62, 33],
-    [57, 28],
-    [53, 25],
-    [57, 15],
+    [60, 29],
+    [59, 25],
+    [60, 20],
+    [66, 15],
+    [77, 17],
+    [86, 30],
+    [85, 36],
+    [65, 42],
+    [58, 33],
   ],
-  // Cosmic crystal area far top-right corner — small floating island
+  // Cosmic crystal area far top-right corner
   celestial: [
-    [78, 7],
-    [96, 7],
-    [96, 24],
-    [88, 30],
-    [80, 28],
-    [76, 24],
-    [78, 14],
+    [81, 6],
+    [83, 24],
+    [88, 29],
+    [96, 23],
+    [96, 6],
   ],
-  // Dense forest left side — green trees, bounded by river left and coast
+  // Dense forest left side
   forest: [
-    [8, 27],
-    [12, 33],
-    [17, 30],
-    [22, 33],
-    [24, 40],
-    [22, 48],
-    [20, 52],
-    [14, 53],
-    [6, 50],
-    [4, 42],
+    [21, 71],
+    [41, 58],
+    [38, 40],
+    [16, 34],
+    [8, 45],
+    [11, 66],
   ],
-  // Green meadow center — village, lake, the big green area
+  // Green meadow center — derived from surrounding biome borders
   plains: [
-    [22, 33],
-    [27, 30],
-    [37, 28],
-    [42, 32],
-    [48, 30],
-    [53, 25],
-    [57, 28],
-    [58, 35],
-    [58, 46],
-    [55, 54],
-    [48, 58],
-    [40, 58],
-    [32, 56],
-    [24, 52],
-    [22, 48],
-    [24, 40],
+    [38, 40],
+    [41, 35],
+    [54, 35],
+    [58, 33],
+    [65, 42],
+    [62, 47],
+    [63, 63],
+    [53, 68],
+    [47, 67],
+    [36, 60],
+    [41, 58],
   ],
-  // Sandy area right side — tan/brown terrain
+  // Sandy area right side (Dwarven Vault)
   desert: [
-    [58, 35],
-    [62, 33],
-    [70, 32],
-    [76, 24],
-    [80, 28],
-    [88, 30],
-    [96, 24],
-    [96, 56],
-    [92, 60],
-    [84, 60],
-    [72, 56],
-    [62, 52],
-    [58, 46],
+    [62, 47],
+    [66, 42],
+    [71, 41],
+    [77, 40],
+    [85, 36],
+    [90, 39],
+    [91, 43],
+    [88, 49],
+    [91, 52],
+    [92, 67],
+    [85, 70],
+    [75, 66],
+    [64, 63],
+    [62, 61],
   ],
-  // Dark cave bottom-left — purple mist, dark mountains, avoid compass
+  // Dark cave bottom-left (Dungeon Torch)
   dungeon: [
-    [4, 42],
-    [6, 50],
-    [14, 53],
-    [20, 52],
-    [24, 52],
-    [32, 56],
-    [40, 58],
-    [40, 66],
-    [36, 74],
-    [30, 80],
-    [22, 82],
-    [16, 80],
-    [10, 76],
-    [6, 68],
-    [4, 58],
+    [53, 81],
+    [47, 90],
+    [26, 89],
+    [19, 82],
+    [19, 71],
+    [36, 60],
+    [47, 67],
+    [53, 69],
   ],
-  // Crumbling temples bottom-right — dragon bones, skulls
+  // Crumbling temples bottom-right (Dragon Hoard)
   ruins: [
-    [40, 58],
-    [48, 58],
-    [55, 54],
-    [58, 46],
-    [62, 52],
-    [72, 56],
-    [84, 60],
-    [92, 60],
-    [96, 66],
-    [96, 84],
-    [90, 90],
-    [78, 92],
-    [64, 90],
-    [50, 84],
-    [42, 76],
-    [40, 66],
+    [85, 70],
+    [86, 80],
+    [85, 89],
+    [75, 90],
+    [63, 90],
+    [53, 79],
+    [53, 68],
+    [63, 63],
+    [75, 65],
   ],
 };
 
 /** Center points for labels (percentage-based) — placed at visual centers of each biome */
 const REGION_CENTERS: Record<BiomeId, { x: number; y: number }> = {
-  tundra: { x: 22, y: 16 },
-  spire: { x: 47, y: 16 },
-  volcano: { x: 67, y: 18 },
-  celestial: { x: 88, y: 14 },
-  forest: { x: 13, y: 40 },
-  plains: { x: 40, y: 42 },
-  desert: { x: 78, y: 44 },
-  dungeon: { x: 22, y: 68 },
-  ruins: { x: 68, y: 72 },
+  tundra: { x: 25, y: 22 },
+  spire: { x: 50, y: 20 },
+  volcano: { x: 70, y: 28 },
+  celestial: { x: 89, y: 14 },
+  forest: { x: 22, y: 50 },
+  plains: { x: 50, y: 50 },
+  desert: { x: 80, y: 52 },
+  dungeon: { x: 37, y: 78 },
+  ruins: { x: 70, y: 78 },
 };
 
 function toSvgPoints(pts: Array<[number, number]>, w: number, h: number): string {

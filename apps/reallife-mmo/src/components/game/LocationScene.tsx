@@ -6,11 +6,13 @@ import HealthBar from "@/components/ui/8bit/health-bar";
 import { BIOME_META, type BiomeId } from "@/lib/biomeThemes";
 import { BIOME_MOBS } from "@/lib/mobs";
 import { BIOME_MERCHANTS } from "@/lib/shopItems";
+import { NPC_PLAYERS, type NpcPlayer } from "@/lib/npcPlayers";
 import { CLASS_SPRITES } from "@/lib/types";
 import type { Location } from "@/lib/types";
 import { useGameStore } from "@/lib/gameStore";
 import { asset } from "@/lib/utils";
 import { ShopDialog } from "./ShopDialog";
+import { PlayerInspect } from "./PlayerInspect";
 
 interface LocationSceneProps {
   location: Location;
@@ -52,14 +54,18 @@ export function LocationScene({ location, biomeId }: LocationSceneProps) {
     );
   }
 
-  // boss_lair — placeholder
+  // boss_lair — link to raid
   return (
     <div className="space-y-4 text-center py-8">
       <span className="text-4xl">{location.icon}</span>
       <h2 className="retro text-sm text-foreground">{location.name}</h2>
+      <p className="retro text-[8px] text-muted-foreground italic">"{location.description}"</p>
       <p className="retro text-[8px] text-muted-foreground">
-        The door is sealed. Only a guild raid can breach it.
+        Gather your guild and challenge the raid boss!
       </p>
+      <Button className="text-[8px]" onClick={() => void navigate(`/raid/${biomeId}`)}>
+        Enter Raid
+      </Button>
       <Button variant="outline" onClick={handleLeave} className="text-[8px]">
         Return to Map
       </Button>
@@ -83,11 +89,15 @@ function CityScene({
   onLeave: () => void;
 }) {
   const [shopOpen, setShopOpen] = useState(false);
+  const [inspecting, setInspecting] = useState<NpcPlayer | null>(null);
   const player = useGameStore((s) => s.player);
   const restAtCity = useGameStore((s) => s.restAtCity);
   const merchant = BIOME_MERCHANTS[biomeId];
   const healCost = Math.max(5, Math.floor(player.level * 2));
   const canHeal = hpPercent < 100 && player.gold >= healCost;
+
+  // Pick 2 random NPC players for the town square
+  const cityNpcs = NPC_PLAYERS.filter((n) => n.online).slice(0, 2);
 
   return (
     <div className="space-y-4">
@@ -144,19 +154,27 @@ function CityScene({
               <div className="retro text-[5px] text-amber-400 mt-0.5">{merchant.name}</div>
             </button>
 
-            {/* Ambient NPCs */}
-            <div className="absolute bottom-5 right-[15%] text-center opacity-60">
-              <span className="text-xl block">🛡️</span>
-              <div className="retro text-[5px] text-muted-foreground mt-0.5">Guard</div>
-            </div>
-            <div className="absolute bottom-5 right-[35%] text-center opacity-60 animate-[bounce_4s_ease-in-out_infinite_0.5s]">
-              <span className="text-xl block">🧑‍🌾</span>
-              <div className="retro text-[5px] text-muted-foreground mt-0.5">Villager</div>
-            </div>
+            {/* Other players (NPC for now — tappable to inspect) */}
+            {cityNpcs.map((npc, i) => (
+              <button
+                key={npc.name}
+                type="button"
+                className="absolute bottom-5 text-center cursor-pointer hover:scale-110 transition-transform"
+                style={{ right: `${15 + i * 20}%` }}
+                onClick={() => setInspecting(npc)}
+              >
+                <img
+                  src={asset(CLASS_SPRITES[npc.playerClass])}
+                  alt={npc.name}
+                  className="pixelated w-8 h-8 mx-auto"
+                />
+                <div className="retro text-[5px] text-foreground/70 mt-0.5">{npc.name}</div>
+              </button>
+            ))}
           </div>
 
           <p className="retro text-[6px] text-muted-foreground text-center mt-2">
-            Tap the merchant to open the shop. More players coming after SpacetimeDB migration.
+            Tap players to inspect them. Tap the merchant to shop.
           </p>
         </CardContent>
       </Card>
@@ -216,6 +234,11 @@ function CityScene({
       </Button>
 
       <ShopDialog open={shopOpen} onOpenChange={setShopOpen} biomeId={biomeId} />
+      <PlayerInspect
+        open={inspecting != null}
+        onOpenChange={(open) => !open && setInspecting(null)}
+        player={inspecting}
+      />
     </div>
   );
 }

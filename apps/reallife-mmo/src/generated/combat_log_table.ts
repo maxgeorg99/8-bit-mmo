@@ -16,5 +16,6 @@ export default __t.row({
   casterId: __t.identity().name("caster_id"),
   spellName: __t.string().name("spell_name"),
   damage: __t.u32(),
+  isHeal: __t.bool().name("is_heal"),
   timestamp: __t.timestamp(),
 });

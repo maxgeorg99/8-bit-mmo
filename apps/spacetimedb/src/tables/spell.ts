@@ -9,5 +9,6 @@ export const spell = table(
     element: SpellElement,
     damage: t.u32(),
     manaCost: t.u32(),
+    isHeal: t.bool(),
   },
 );

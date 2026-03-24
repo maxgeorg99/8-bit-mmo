@@ -10,10 +10,59 @@ import {
   type Infer as __Infer,
 } from "spacetimedb";
 
+export const ActivityLog = __t.object("ActivityLog", {
+  id: __t.u64(),
+  playerId: __t.identity(),
+  get activityType() {
+    return ActivityType;
+  },
+  rawValue: __t.f32(),
+  durationMin: __t.f32(),
+  intensity: __t.u8(),
+  timestamp: __t.timestamp(),
+  note: __t.option(__t.string()),
+  deltaStr: __t.f32(),
+  deltaAgi: __t.f32(),
+  deltaInt: __t.f32(),
+  deltaCon: __t.f32(),
+  deltaWis: __t.f32(),
+  deltaCha: __t.f32(),
+  deltaMp: __t.f32(),
+});
+export type ActivityLog = __Infer<typeof ActivityLog>;
+
+// The tagged union or sum type for the algebraic type `ActivityType`.
+export const ActivityType = __t.enum("ActivityType", {
+  StrengthTraining: __t.unit(),
+  Cardio: __t.unit(),
+  Hiit: __t.unit(),
+  MindLearning: __t.unit(),
+  Nutrition: __t.unit(),
+  Hydration: __t.unit(),
+  Sleep: __t.unit(),
+  Mindfulness: __t.unit(),
+  Creativity: __t.unit(),
+  Social: __t.unit(),
+});
+export type ActivityType = __Infer<typeof ActivityType>;
+
+export const BiomePlayers = __t.object("BiomePlayers", {});
+export type BiomePlayers = __Infer<typeof BiomePlayers>;
+
+export const BrowseGuilds = __t.object("BrowseGuilds", {});
+export type BrowseGuilds = __Infer<typeof BrowseGuilds>;
+
 // The tagged union or sum type for the algebraic type `CharacterClass`.
 export const CharacterClass = __t.enum("CharacterClass", {
+  Warrior: __t.unit(),
   Mage: __t.unit(),
-  OrcWarrior: __t.unit(),
+  Rogue: __t.unit(),
+  Paladin: __t.unit(),
+  Druid: __t.unit(),
+  Ranger: __t.unit(),
+  Bard: __t.unit(),
+  Scholar: __t.unit(),
+  Unclassed: __t.unit(),
 });
 export type CharacterClass = __Infer<typeof CharacterClass>;
 
@@ -39,6 +88,7 @@ export const CombatLog = __t.object("CombatLog", {
   casterId: __t.identity(),
   spellName: __t.string(),
   damage: __t.u32(),
+  isHeal: __t.bool(),
   timestamp: __t.timestamp(),
 });
 export type CombatLog = __Infer<typeof CombatLog>;
@@ -51,23 +101,255 @@ export const CombatStatus = __t.enum("CombatStatus", {
 });
 export type CombatStatus = __Infer<typeof CombatStatus>;
 
+// The tagged union or sum type for the algebraic type `EquipSlot`.
+export const EquipSlot = __t.enum("EquipSlot", {
+  Weapon: __t.unit(),
+  Armor: __t.unit(),
+  Head: __t.unit(),
+  Accessory: __t.unit(),
+});
+export type EquipSlot = __Infer<typeof EquipSlot>;
+
+export const EquipmentItem = __t.object("EquipmentItem", {
+  id: __t.string(),
+  playerId: __t.identity(),
+  name: __t.string(),
+  get slot() {
+    return EquipSlot;
+  },
+  get rarity() {
+    return ItemRarity;
+  },
+  equipped: __t.bool(),
+  levelReq: __t.u32(),
+  source: __t.string(),
+  bonusStr: __t.i32(),
+  bonusAgi: __t.i32(),
+  bonusInt: __t.i32(),
+  bonusCon: __t.i32(),
+  bonusWis: __t.i32(),
+  bonusCha: __t.i32(),
+  bonusMp: __t.i32(),
+});
+export type EquipmentItem = __Infer<typeof EquipmentItem>;
+
+export const Guild = __t.object("Guild", {
+  id: __t.u64(),
+  name: __t.string(),
+  tag: __t.string(),
+  description: __t.string(),
+  createdAt: __t.timestamp(),
+  maxMembers: __t.u32(),
+  memberCount: __t.u32(),
+  raidWins: __t.u32(),
+});
+export type Guild = __Infer<typeof Guild>;
+
+export const GuildMember = __t.object("GuildMember", {
+  id: __t.u64(),
+  guildId: __t.u64(),
+  playerId: __t.identity(),
+  get role() {
+    return GuildRole;
+  },
+  joinedAt: __t.timestamp(),
+});
+export type GuildMember = __Infer<typeof GuildMember>;
+
+export const GuildMessage = __t.object("GuildMessage", {
+  id: __t.u64(),
+  guildId: __t.u64(),
+  authorId: __t.identity(),
+  authorName: __t.string(),
+  text: __t.string(),
+  timestamp: __t.timestamp(),
+});
+export type GuildMessage = __Infer<typeof GuildMessage>;
+
+// The tagged union or sum type for the algebraic type `GuildRole`.
+export const GuildRole = __t.enum("GuildRole", {
+  Leader: __t.unit(),
+  Officer: __t.unit(),
+  Member: __t.unit(),
+});
+export type GuildRole = __Infer<typeof GuildRole>;
+
+export const IdleTickSchedule = __t.object("IdleTickSchedule", {
+  scheduledId: __t.u64(),
+  scheduledAt: __t.scheduleAt(),
+});
+export type IdleTickSchedule = __Infer<typeof IdleTickSchedule>;
+
+// The tagged union or sum type for the algebraic type `ItemRarity`.
+export const ItemRarity = __t.enum("ItemRarity", {
+  Common: __t.unit(),
+  Uncommon: __t.unit(),
+  Rare: __t.unit(),
+  Epic: __t.unit(),
+  Legendary: __t.unit(),
+});
+export type ItemRarity = __Infer<typeof ItemRarity>;
+
+export const Leaderboard = __t.object("Leaderboard", {});
+export type Leaderboard = __Infer<typeof Leaderboard>;
+
 export const MyCombat = __t.object("MyCombat", {});
 export type MyCombat = __Infer<typeof MyCombat>;
 
+export const MyCombatLog = __t.object("MyCombatLog", {});
+export type MyCombatLog = __Infer<typeof MyCombatLog>;
+
+export const MyEquipment = __t.object("MyEquipment", {});
+export type MyEquipment = __Infer<typeof MyEquipment>;
+
+export const MyGuild = __t.object("MyGuild", {});
+export type MyGuild = __Infer<typeof MyGuild>;
+
+export const MyGuildMembers = __t.object("MyGuildMembers", {});
+export type MyGuildMembers = __Infer<typeof MyGuildMembers>;
+
+export const MyGuildMessages = __t.object("MyGuildMessages", {});
+export type MyGuildMessages = __Infer<typeof MyGuildMessages>;
+
 export const MyPlayer = __t.object("MyPlayer", {});
 export type MyPlayer = __Infer<typeof MyPlayer>;
+
+export const MyQuests = __t.object("MyQuests", {});
+export type MyQuests = __Infer<typeof MyQuests>;
+
+export const MyRaid = __t.object("MyRaid", {});
+export type MyRaid = __Infer<typeof MyRaid>;
+
+export const MyRaidCombatants = __t.object("MyRaidCombatants", {});
+export type MyRaidCombatants = __Infer<typeof MyRaidCombatants>;
+
+export const MyRaidLog = __t.object("MyRaidLog", {});
+export type MyRaidLog = __Infer<typeof MyRaidLog>;
+
+export const MyTitles = __t.object("MyTitles", {});
+export type MyTitles = __Infer<typeof MyTitles>;
 
 export const Player = __t.object("Player", {
   identity: __t.identity(),
   name: __t.string(),
   online: __t.bool(),
   get characterClass() {
-    return __t.option(CharacterClass);
+    return CharacterClass;
   },
-  wins: __t.u32(),
-  losses: __t.u32(),
+  level: __t.u32(),
+  xp: __t.u32(),
+  xpToNext: __t.u32(),
+  hp: __t.u32(),
+  maxHp: __t.u32(),
+  gold: __t.u32(),
+  streakDays: __t.u32(),
+  totalActivities: __t.u32(),
+  questsCompleted: __t.u32(),
+  lastActivityDate: __t.string(),
+  str: __t.f32(),
+  agi: __t.f32(),
+  intStat: __t.f32(),
+  con: __t.f32(),
+  wis: __t.f32(),
+  cha: __t.f32(),
+  mp: __t.f32(),
+  currentBiome: __t.string(),
+  currentLocation: __t.option(__t.string()),
+  activeTitle: __t.option(__t.string()),
+  pvpWins: __t.u32(),
+  pvpLosses: __t.u32(),
+  unlockedBiomes: __t.string(),
+  joinedAt: __t.timestamp(),
 });
 export type Player = __Infer<typeof Player>;
+
+export const PlayerTitle = __t.object("PlayerTitle", {
+  id: __t.u64(),
+  playerId: __t.identity(),
+  titleId: __t.string(),
+  unlockedAt: __t.timestamp(),
+});
+export type PlayerTitle = __Infer<typeof PlayerTitle>;
+
+export const Quest = __t.object("Quest", {
+  id: __t.u64(),
+  playerId: __t.identity(),
+  title: __t.string(),
+  description: __t.string(),
+  get questType() {
+    return QuestType;
+  },
+  get activityType() {
+    return __t.option(ActivityType);
+  },
+  targetMin: __t.u32(),
+  progressMin: __t.u32(),
+  xpReward: __t.u32(),
+  completed: __t.bool(),
+  claimed: __t.bool(),
+  expiresAt: __t.u64(),
+  manualComplete: __t.bool(),
+});
+export type Quest = __Infer<typeof Quest>;
+
+// The tagged union or sum type for the algebraic type `QuestType`.
+export const QuestType = __t.enum("QuestType", {
+  Daily: __t.unit(),
+  Weekly: __t.unit(),
+  Custom: __t.unit(),
+});
+export type QuestType = __Infer<typeof QuestType>;
+
+export const Raid = __t.object("Raid", {
+  id: __t.u64(),
+  guildId: __t.u64(),
+  biomeId: __t.string(),
+  bossId: __t.string(),
+  get phase() {
+    return RaidPhase;
+  },
+  bossHp: __t.u32(),
+  bossMaxHp: __t.u32(),
+  bossMana: __t.u32(),
+  currentTurnIndex: __t.u32(),
+  startedAt: __t.timestamp(),
+});
+export type Raid = __Infer<typeof Raid>;
+
+export const RaidCombatant = __t.object("RaidCombatant", {
+  id: __t.u64(),
+  raidId: __t.u64(),
+  playerId: __t.identity(),
+  playerName: __t.string(),
+  playerClass: __t.string(),
+  hp: __t.u32(),
+  maxHp: __t.u32(),
+  mana: __t.u32(),
+  maxMana: __t.u32(),
+  ko: __t.bool(),
+});
+export type RaidCombatant = __Infer<typeof RaidCombatant>;
+
+export const RaidLog = __t.object("RaidLog", {
+  id: __t.u64(),
+  raidId: __t.u64(),
+  caster: __t.string(),
+  target: __t.string(),
+  spellName: __t.string(),
+  element: __t.string(),
+  damage: __t.u32(),
+  isHeal: __t.bool(),
+});
+export type RaidLog = __Infer<typeof RaidLog>;
+
+// The tagged union or sum type for the algebraic type `RaidPhase`.
+export const RaidPhase = __t.enum("RaidPhase", {
+  Lobby: __t.unit(),
+  Fighting: __t.unit(),
+  Victory: __t.unit(),
+  Defeat: __t.unit(),
+});
+export type RaidPhase = __Infer<typeof RaidPhase>;
 
 export const Spell = __t.object("Spell", {
   id: __t.u64(),
@@ -77,6 +359,7 @@ export const Spell = __t.object("Spell", {
   },
   damage: __t.u32(),
   manaCost: __t.u32(),
+  isHeal: __t.bool(),
 });
 export type Spell = __Infer<typeof Spell>;
 
@@ -85,5 +368,8 @@ export const SpellElement = __t.enum("SpellElement", {
   Fire: __t.unit(),
   Ice: __t.unit(),
   Lightning: __t.unit(),
+  Physical: __t.unit(),
+  Arcane: __t.unit(),
+  Heal: __t.unit(),
 });
 export type SpellElement = __Infer<typeof SpellElement>;

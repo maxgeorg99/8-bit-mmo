@@ -4,32 +4,27 @@ import spacetimedb from "../schema";
 export const join_combat = spacetimedb.reducer({}, (ctx) => {
   const sender = ctx.sender;
 
-  // Check player is not already in an active combat
+  // Check player is not already in an active combat (use player1 index + scan for player2)
+  for (const c of ctx.db.combat.player1.filter(sender)) {
+    if (c.status.tag !== "Finished") {
+      throw new SenderError("Already in an active combat");
+    }
+  }
   for (const c of ctx.db.combat.iter()) {
     if (c.status.tag === "Finished") continue;
-    if (c.player1.isEqual(sender) || (c.player2 && c.player2.isEqual(sender))) {
+    if (c.player2 && c.player2.isEqual(sender)) {
       throw new SenderError("Already in an active combat");
     }
   }
 
   // Look for a combat waiting for a second player
   for (const c of ctx.db.combat.iter()) {
-    if (c.status.tag === "WaitingForPlayers") {
+    if (c.status.tag === "WaitingForPlayers" && !c.player1.isEqual(sender)) {
       ctx.db.combat.id.update({
         ...c,
         player2: sender,
         status: { tag: "InProgress" },
       });
-
-      // Assign OrcWarrior class to the joining player
-      const p = ctx.db.player.identity.find(sender);
-      if (p) {
-        ctx.db.player.identity.update({
-          ...p,
-          characterClass: { tag: "OrcWarrior" },
-        });
-      }
-
       return;
     }
   }
@@ -47,13 +42,4 @@ export const join_combat = spacetimedb.reducer({}, (ctx) => {
     status: { tag: "WaitingForPlayers" },
     winnerId: undefined,
   });
-
-  // Assign Mage class to the creating player
-  const p = ctx.db.player.identity.find(sender);
-  if (p) {
-    ctx.db.player.identity.update({
-      ...p,
-      characterClass: { tag: "Mage" },
-    });
-  }
 });

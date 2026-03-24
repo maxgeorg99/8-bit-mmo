@@ -1,25 +1,84 @@
+import { ScheduleAt } from "spacetimedb";
 import spacetimedb from "./schema";
 export default spacetimedb;
 
-// --- Reducers ---
+// ── Reducers ─────────────────────────────────────────────────────
+
+// Player
+export { set_player_name } from "./reducers/setPlayerName";
+export { log_activity } from "./reducers/logActivity";
+export { select_title } from "./reducers/selectTitle";
+
+// Quests
+export { claim_quest } from "./reducers/claimQuest";
+export { create_custom_quest, complete_custom_quest } from "./reducers/createQuest";
+
+// Equipment & Shop
+export { equip_item, unequip_item } from "./reducers/equipItem";
+export { buy_item, sell_item, rest_at_city } from "./reducers/shop";
+
+// Travel
+export { travel_to_biome, enter_location } from "./reducers/travel";
+
+// PvP Combat
 export { join_combat } from "./reducers/joinCombat";
 export { cast_spell } from "./reducers/castSpell";
 export { leave_combat } from "./reducers/leaveCombat";
 
-// --- Views ---
-export { my_combat } from "./views/myCombat";
-export { my_player } from "./views/myPlayer";
+// Guild
+export {
+  create_guild,
+  join_guild,
+  leave_guild,
+  send_guild_message,
+  promote_member,
+  kick_member,
+} from "./reducers/guild";
 
-// --- Init (seed spells) ---
+// PvE Rewards
+export { grant_pve_rewards } from "./reducers/grantPveRewards";
+
+// Scheduled
+export { idle_tick } from "./reducers/idleTick";
+
+// ── Views ────────────────────────────────────────────────────────
+
+export { my_player } from "./views/myPlayer";
+export { my_equipment } from "./views/myEquipment";
+export { my_quests } from "./views/myQuests";
+export { my_titles } from "./views/myTitles";
+export { my_guild } from "./views/myGuild";
+export { my_guild_members } from "./views/myGuildMembers";
+export { my_guild_messages } from "./views/myGuildMessages";
+export { my_combat } from "./views/myCombat";
+export { my_combat_log } from "./views/myCombatLog";
+export { my_raid } from "./views/myRaid";
+export { my_raid_combatants } from "./views/myRaidCombatants";
+export { my_raid_log } from "./views/myRaidLog";
+export { biome_players } from "./views/biomePlayers";
+export { leaderboard } from "./views/leaderboard";
+export { browse_guilds } from "./views/browseGuilds";
+
+// ── Init (seed spells + schedule idle tick) ──────────────────────
 
 export const init = spacetimedb.init((ctx) => {
+  // Seed spell catalog
   const spells = [
-    { name: "Fireball", element: { tag: "Fire" }, damage: 25, manaCost: 20 },
-    { name: "Ice Shard", element: { tag: "Ice" }, damage: 15, manaCost: 10 },
-    { name: "Lightning Bolt", element: { tag: "Lightning" }, damage: 30, manaCost: 25 },
-    { name: "Arcane Missile", element: { tag: "Fire" }, damage: 10, manaCost: 5 },
-    { name: "Frost Nova", element: { tag: "Ice" }, damage: 20, manaCost: 15 },
-    { name: "Chain Lightning", element: { tag: "Lightning" }, damage: 35, manaCost: 30 },
+    { name: "Slash", element: { tag: "Physical" }, damage: 8, manaCost: 0, isHeal: false },
+    { name: "Fireball", element: { tag: "Fire" }, damage: 15, manaCost: 12, isHeal: false },
+    { name: "Ice Shard", element: { tag: "Ice" }, damage: 13, manaCost: 10, isHeal: false },
+    { name: "Thunder", element: { tag: "Lightning" }, damage: 18, manaCost: 16, isHeal: false },
+    { name: "Arcane Bolt", element: { tag: "Arcane" }, damage: 20, manaCost: 20, isHeal: false },
+    { name: "Heal", element: { tag: "Heal" }, damage: 15, manaCost: 14, isHeal: true },
+    {
+      name: "Chain Lightning",
+      element: { tag: "Lightning" },
+      damage: 35,
+      manaCost: 30,
+      isHeal: false,
+    },
+    { name: "Frost Nova", element: { tag: "Ice" }, damage: 20, manaCost: 15, isHeal: false },
+    { name: "Arcane Missile", element: { tag: "Arcane" }, damage: 10, manaCost: 5, isHeal: false },
   ];
 
   for (const sp of spells) {
@@ -29,11 +88,19 @@ export const init = spacetimedb.init((ctx) => {
       element: sp.element as any,
       damage: sp.damage,
       manaCost: sp.manaCost,
+      isHeal: sp.isHeal,
     });
   }
+
+  // Schedule idle tick — runs every 1 hour (3_600_000_000 microseconds)
+  const ONE_HOUR_MICROS = 3_600_000_000n;
+  ctx.db.idleTickSchedule.insert({
+    scheduledId: 0n,
+    scheduledAt: ScheduleAt.interval(ONE_HOUR_MICROS),
+  });
 });
 
-// --- Lifecycle ---
+// ── Lifecycle ────────────────────────────────────────────────────
 
 export const onConnect = spacetimedb.clientConnected((ctx) => {
   const existing = ctx.db.player.identity.find(ctx.sender);
@@ -44,9 +111,31 @@ export const onConnect = spacetimedb.clientConnected((ctx) => {
       identity: ctx.sender,
       name: "",
       online: true,
-      characterClass: undefined,
-      wins: 0,
-      losses: 0,
+      characterClass: { tag: "Unclassed" },
+      level: 1,
+      xp: 0,
+      xpToNext: 25,
+      hp: 50,
+      maxHp: 50,
+      gold: 50,
+      streakDays: 0,
+      totalActivities: 0,
+      questsCompleted: 0,
+      lastActivityDate: "",
+      str: 0,
+      agi: 0,
+      intStat: 0,
+      con: 0,
+      wis: 0,
+      cha: 0,
+      mp: 0,
+      currentBiome: "plains",
+      currentLocation: undefined,
+      activeTitle: undefined,
+      pvpWins: 0,
+      pvpLosses: 0,
+      unlockedBiomes: "plains",
+      joinedAt: ctx.timestamp,
     });
   }
 });

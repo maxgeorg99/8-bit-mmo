@@ -8,6 +8,7 @@ export const combatLog = table(
     casterId: t.identity(),
     spellName: t.string(),
     damage: t.u32(),
+    isHeal: t.bool(),
     timestamp: t.timestamp(),
   },
 );

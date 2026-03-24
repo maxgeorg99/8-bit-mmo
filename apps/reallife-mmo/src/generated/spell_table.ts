@@ -19,4 +19,5 @@ export default __t.row({
   },
   damage: __t.u32(),
   manaCost: __t.u32().name("mana_cost"),
+  isHeal: __t.bool().name("is_heal"),
 });

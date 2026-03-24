@@ -32,6 +32,7 @@ export const cast_spell = spacetimedb.reducer(
       casterId: sender,
       spellName: sp.name,
       damage: sp.damage,
+      isHeal: sp.isHeal,
       timestamp: ctx.timestamp,
     });
 
@@ -50,13 +51,13 @@ export const cast_spell = spacetimedb.reducer(
       // Update win/loss stats
       const winner = ctx.db.player.identity.find(sender);
       if (winner) {
-        ctx.db.player.identity.update({ ...winner, wins: winner.wins + 1 });
+        ctx.db.player.identity.update({ ...winner, pvpWins: winner.pvpWins + 1 });
       }
       const loserId = isPlayer1 ? c.player2 : c.player1;
       if (loserId) {
         const loser = ctx.db.player.identity.find(loserId);
         if (loser) {
-          ctx.db.player.identity.update({ ...loser, losses: loser.losses + 1 });
+          ctx.db.player.identity.update({ ...loser, pvpLosses: loser.pvpLosses + 1 });
         }
       }
       return;

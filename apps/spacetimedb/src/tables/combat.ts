@@ -5,7 +5,7 @@ export const combat = table(
   { name: "combat", public: true },
   {
     id: t.u64().primaryKey().autoInc(),
-    player1: t.identity(),
+    player1: t.identity().index("btree"),
     player2: t.option(t.identity()),
     player1Hp: t.u32(),
     player2Hp: t.u32(),

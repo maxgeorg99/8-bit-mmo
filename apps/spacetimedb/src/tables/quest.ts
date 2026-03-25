@@ -16,7 +16,7 @@ export const quest = table(
     xpReward: t.u32(),
     completed: t.bool(),
     claimed: t.bool(),
-    expiresAt: t.u64(), // epoch ms, 0 = no expiry
+    expiresAt: t.option(t.timestamp()),
     manualComplete: t.bool(),
   },
 );

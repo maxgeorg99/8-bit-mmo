@@ -21,7 +21,7 @@ export const create_custom_quest = spacetimedb.reducer(
       xpReward,
       completed: false,
       claimed: false,
-      expiresAt: 0n,
+      expiresAt: ctx.timestamp,
       manualComplete: false,
     });
   },

@@ -6,15 +6,14 @@ export const travel_to_biome = spacetimedb.reducer({ biomeId: t.string() }, (ctx
   if (!p) throw new SenderError("Player not found");
 
   // Check if biome is unlocked
-  const unlocked = p.unlockedBiomes.split(",");
-  if (!unlocked.includes(biomeId) && biomeId !== "plains") {
+  if (!p.unlockedBiomes.includes(biomeId) && biomeId !== "plains") {
     throw new SenderError("Biome not unlocked");
   }
 
   ctx.db.player.identity.update({
     ...p,
     currentBiome: biomeId,
-    currentLocation: undefined,
+    currentLocation: "undefined",
   });
 });
 

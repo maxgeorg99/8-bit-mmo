@@ -1,5 +1,6 @@
 import { t, SenderError } from "spacetimedb/server";
 import spacetimedb from "../schema";
+import { Identity } from "spacetimedb";
 
 export const create_guild = spacetimedb.reducer(
   { name: t.string(), tag: t.string(), description: t.string() },
@@ -40,9 +41,11 @@ export const create_guild = spacetimedb.reducer(
       joinedAt: ctx.timestamp,
     });
 
-    ctx.db.guildMessage.insert({
+    ctx.db.message.insert({
       id: 0n,
       guildId: guild.id,
+      biomeId: "",
+      whisperTo: Identity.zero(),
       authorId: ctx.sender,
       authorName: "System",
       text: `Guild "${name}" has been founded!`,
@@ -75,9 +78,11 @@ export const join_guild = spacetimedb.reducer({ guildId: t.u64() }, (ctx, { guil
   // Increment denormalized member count
   ctx.db.guild.id.update({ ...g, memberCount: g.memberCount + 1 });
 
-  ctx.db.guildMessage.insert({
+  ctx.db.message.insert({
     id: 0n,
     guildId,
+    biomeId: "",
+    whisperTo: Identity.zero(),
     authorId: ctx.sender,
     authorName: "System",
     text: `${p.name} has joined the guild!`,
@@ -100,9 +105,11 @@ export const leave_guild = spacetimedb.reducer({}, (ctx) => {
   const g = ctx.db.guild.id.find(guildId);
 
   // Post leave message
-  ctx.db.guildMessage.insert({
+  ctx.db.message.insert({
     id: 0n,
     guildId,
+    biomeId: "",
+    whisperTo: Identity.zero(),
     authorId: ctx.sender,
     authorName: "System",
     text: `${p.name} has left the guild.`,
@@ -122,8 +129,8 @@ export const leave_guild = spacetimedb.reducer({}, (ctx) => {
       ctx.db.guildMember.id.delete(m.id);
     }
     // Delete all guild messages
-    for (const msg of ctx.db.guildMessage.guildId.filter(guildId)) {
-      ctx.db.guildMessage.id.delete(msg.id);
+    for (const msg of ctx.db.message.guildId.filter(guildId)) {
+      ctx.db.message.id.delete(msg.id);
     }
     // Delete any active raids + combatants + logs
     for (const r of ctx.db.raid.guildId.filter(guildId)) {
@@ -164,9 +171,11 @@ export const send_guild_message = spacetimedb.reducer({ text: t.string() }, (ctx
   }
   if (guildId === null) throw new SenderError("Not in a guild");
 
-  ctx.db.guildMessage.insert({
+  ctx.db.message.insert({
     id: 0n,
     guildId,
+    biomeId: "",
+    whisperTo: Identity.zero(),
     authorId: ctx.sender,
     authorName: p.name,
     text,

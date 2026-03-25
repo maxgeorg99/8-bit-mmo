@@ -20,9 +20,9 @@ export const idle_tick = spacetimedb.reducer(
 
     // ── 1. Break streaks for inactive players ──────────────────
     for (const p of ctx.db.player.iter()) {
-      if (!p.lastActivityDate || p.streakDays === 0) continue;
+      if (!p.lastActivityAt || p.streakDays === 0) continue;
 
-      const lastDate = new Date(p.lastActivityDate);
+      const lastDate = p.lastActivityAt.toDate();
       lastDate.setHours(0, 0, 0, 0);
       const today = new Date(todayStr);
       const diffDays = Math.round((today.getTime() - lastDate.getTime()) / oneDayMs);
@@ -35,7 +35,7 @@ export const idle_tick = spacetimedb.reducer(
     // ── 2. Expire daily quests ─────────────────────────────────
     for (const q of ctx.db.quest.iter()) {
       if (q.claimed) continue;
-      if (q.expiresAt > 0n && Number(q.expiresAt) < nowMs) {
+      if (q.expiresAt !== undefined && q.expiresAt.toDate() < now) {
         ctx.db.quest.id.delete(q.id);
       }
     }

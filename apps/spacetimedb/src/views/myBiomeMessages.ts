@@ -2,14 +2,15 @@ import { t } from "spacetimedb/server";
 import spacetimedb from "../schema";
 import { message } from "../tables/message";
 
-export const my_guild_messages = spacetimedb.view(
-  { name: "my_guild_messages", public: true },
+export const my_biome_messages = spacetimedb.view(
+  { name: "my_biome_messages", public: true },
   t.array(message.rowType),
   (ctx) => {
-    // Find which guild the caller is in, then return last 50 messages
-    for (const membership of ctx.db.guildMember.playerId.filter(ctx.sender)) {
+    // Find which biome the caller is in, then return last 50 messages
+    const player = ctx.db.player.identity.find(ctx.sender);
+    if (player && player.currentBiome) {
       const messages = [];
-      for (const msg of ctx.db.message.guildId.filter(membership.guildId)) {
+      for (const msg of ctx.db.message.biomeId.filter(player.currentBiome)) {
         messages.push(msg);
       }
       // Sort by timestamp desc, take last 50

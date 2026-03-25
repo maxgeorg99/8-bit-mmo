@@ -33,7 +33,7 @@ export const claim_quest = spacetimedb.reducer({ questId: t.u64() }, (ctx, { que
     xpNext = xpToNextLevel(level);
   }
 
-  const newMaxHp = maxHp(level, p.con);
+  const newMaxHp = maxHp(level, p.constitution);
   ctx.db.player.identity.update({
     ...p,
     level,

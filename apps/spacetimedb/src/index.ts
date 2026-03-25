@@ -1,4 +1,4 @@
-import { ScheduleAt } from "spacetimedb";
+import { ScheduleAt, Timestamp } from "spacetimedb";
 import spacetimedb from "./schema";
 export default spacetimedb;
 
@@ -64,12 +64,48 @@ export { browse_guilds } from "./views/browseGuilds";
 export const init = spacetimedb.init((ctx) => {
   // Seed spell catalog
   const spells = [
-    { name: "Slash", element: { tag: "Physical" }, damage: 8, manaCost: 0, isHeal: false },
-    { name: "Fireball", element: { tag: "Fire" }, damage: 15, manaCost: 12, isHeal: false },
-    { name: "Ice Shard", element: { tag: "Ice" }, damage: 13, manaCost: 10, isHeal: false },
-    { name: "Thunder", element: { tag: "Lightning" }, damage: 18, manaCost: 16, isHeal: false },
-    { name: "Arcane Bolt", element: { tag: "Arcane" }, damage: 20, manaCost: 20, isHeal: false },
-    { name: "Heal", element: { tag: "Heal" }, damage: 15, manaCost: 14, isHeal: true },
+    {
+      name: "Slash",
+      element: { tag: "Physical" },
+      damage: 8,
+      manaCost: 0,
+      isHeal: false,
+    },
+    {
+      name: "Fireball",
+      element: { tag: "Fire" },
+      damage: 15,
+      manaCost: 12,
+      isHeal: false,
+    },
+    {
+      name: "Ice Shard",
+      element: { tag: "Ice" },
+      damage: 13,
+      manaCost: 10,
+      isHeal: false,
+    },
+    {
+      name: "Thunder",
+      element: { tag: "Lightning" },
+      damage: 18,
+      manaCost: 16,
+      isHeal: false,
+    },
+    {
+      name: "Arcane Bolt",
+      element: { tag: "Arcane" },
+      damage: 20,
+      manaCost: 20,
+      isHeal: false,
+    },
+    {
+      name: "Heal",
+      element: { tag: "Heal" },
+      damage: 15,
+      manaCost: 14,
+      isHeal: true,
+    },
     {
       name: "Chain Lightning",
       element: { tag: "Lightning" },
@@ -77,8 +113,20 @@ export const init = spacetimedb.init((ctx) => {
       manaCost: 30,
       isHeal: false,
     },
-    { name: "Frost Nova", element: { tag: "Ice" }, damage: 20, manaCost: 15, isHeal: false },
-    { name: "Arcane Missile", element: { tag: "Arcane" }, damage: 10, manaCost: 5, isHeal: false },
+    {
+      name: "Frost Nova",
+      element: { tag: "Ice" },
+      damage: 20,
+      manaCost: 15,
+      isHeal: false,
+    },
+    {
+      name: "Arcane Missile",
+      element: { tag: "Arcane" },
+      damage: 10,
+      manaCost: 5,
+      isHeal: false,
+    },
   ];
 
   for (const sp of spells) {
@@ -121,20 +169,20 @@ export const onConnect = spacetimedb.clientConnected((ctx) => {
       streakDays: 0,
       totalActivities: 0,
       questsCompleted: 0,
-      lastActivityDate: "",
-      str: 0,
-      agi: 0,
-      intStat: 0,
-      con: 0,
-      wis: 0,
-      cha: 0,
-      mp: 0,
+      lastActivityAt: ctx.timestamp,
+      strength: 0,
+      agility: 0,
+      intelligence: 0,
+      constitution: 0,
+      wisdom: 0,
+      charisma: 0,
+      mana: 0,
       currentBiome: "plains",
       currentLocation: undefined,
       activeTitle: undefined,
       pvpWins: 0,
       pvpLosses: 0,
-      unlockedBiomes: "plains",
+      unlockedBiomes: ["plains"],
       joinedAt: ctx.timestamp,
     });
   }

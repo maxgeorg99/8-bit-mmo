@@ -25,16 +25,16 @@ export const player = table(
     streakDays: t.u32(),
     totalActivities: t.u32(),
     questsCompleted: t.u32(),
-    lastActivityDate: t.string(),
+    lastActivityAt: t.timestamp(),
 
     // Stats — f32 to preserve fractional gains across sessions
-    str: t.f32(),
-    agi: t.f32(),
-    intStat: t.f32(),
-    con: t.f32(),
-    wis: t.f32(),
-    cha: t.f32(),
-    mp: t.f32(),
+    strength: t.f32(),
+    agility: t.f32(),
+    intelligence: t.f32(),
+    constitution: t.f32(),
+    wisdom: t.f32(),
+    charisma: t.f32(),
+    mana: t.f32(),
 
     // World position
     currentBiome: t.string().index("btree"),
@@ -47,8 +47,8 @@ export const player = table(
     pvpWins: t.u32(),
     pvpLosses: t.u32(),
 
-    // Biome unlocks (comma-separated IDs for simplicity)
-    unlockedBiomes: t.string(),
+    // Biome unlocks
+    unlockedBiomes: t.array(t.string()),
 
     // Timestamps
     joinedAt: t.timestamp(),

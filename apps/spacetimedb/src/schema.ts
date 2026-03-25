@@ -10,7 +10,7 @@ import { playerTitle } from "./tables/playerTitle";
 // Social
 import { guild } from "./tables/guild";
 import { guildMember } from "./tables/guildMember";
-import { guildMessage } from "./tables/guildMessage";
+import { message } from "./tables/message";
 
 // PvP combat
 import { spell } from "./tables/spell";
@@ -36,7 +36,7 @@ const spacetimedb = schema({
   // Social
   guild,
   guildMember,
-  guildMessage,
+  message,
 
   // PvP combat
   spell,

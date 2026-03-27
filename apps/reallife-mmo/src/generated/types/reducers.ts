@@ -6,6 +6,7 @@
 import { type Infer as __Infer } from "spacetimedb";
 
 // Import all reducer arg schemas
+import AbandonRaidReducer from "../abandon_raid_reducer";
 import BuyItemReducer from "../buy_item_reducer";
 import CastSpellReducer from "../cast_spell_reducer";
 import ClaimQuestReducer from "../claim_quest_reducer";
@@ -22,14 +23,19 @@ import LeaveCombatReducer from "../leave_combat_reducer";
 import LeaveGuildReducer from "../leave_guild_reducer";
 import LogActivityReducer from "../log_activity_reducer";
 import PromoteMemberReducer from "../promote_member_reducer";
+import RaidCastSpellReducer from "../raid_cast_spell_reducer";
 import RestAtCityReducer from "../rest_at_city_reducer";
 import SelectTitleReducer from "../select_title_reducer";
 import SellItemReducer from "../sell_item_reducer";
+import SendBiomeMessageReducer from "../send_biome_message_reducer";
 import SendGuildMessageReducer from "../send_guild_message_reducer";
+import SendWhisperReducer from "../send_whisper_reducer";
 import SetPlayerNameReducer from "../set_player_name_reducer";
+import StartRaidReducer from "../start_raid_reducer";
 import TravelToBiomeReducer from "../travel_to_biome_reducer";
 import UnequipItemReducer from "../unequip_item_reducer";
 
+export type AbandonRaidParams = __Infer<typeof AbandonRaidReducer>;
 export type BuyItemParams = __Infer<typeof BuyItemReducer>;
 export type CastSpellParams = __Infer<typeof CastSpellReducer>;
 export type ClaimQuestParams = __Infer<typeof ClaimQuestReducer>;
@@ -46,10 +52,14 @@ export type LeaveCombatParams = __Infer<typeof LeaveCombatReducer>;
 export type LeaveGuildParams = __Infer<typeof LeaveGuildReducer>;
 export type LogActivityParams = __Infer<typeof LogActivityReducer>;
 export type PromoteMemberParams = __Infer<typeof PromoteMemberReducer>;
+export type RaidCastSpellParams = __Infer<typeof RaidCastSpellReducer>;
 export type RestAtCityParams = __Infer<typeof RestAtCityReducer>;
 export type SelectTitleParams = __Infer<typeof SelectTitleReducer>;
 export type SellItemParams = __Infer<typeof SellItemReducer>;
+export type SendBiomeMessageParams = __Infer<typeof SendBiomeMessageReducer>;
 export type SendGuildMessageParams = __Infer<typeof SendGuildMessageReducer>;
+export type SendWhisperParams = __Infer<typeof SendWhisperReducer>;
 export type SetPlayerNameParams = __Infer<typeof SetPlayerNameReducer>;
+export type StartRaidParams = __Infer<typeof StartRaidReducer>;
 export type TravelToBiomeParams = __Infer<typeof TravelToBiomeReducer>;
 export type UnequipItemParams = __Infer<typeof UnequipItemReducer>;

@@ -1,33 +1,78 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router";
+import { useTable } from "spacetimedb/react";
+import { tables } from "@/generated";
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import { Progress } from "@/components/ui/8bit/progress";
 import PlayerProfileCard from "@/components/ui/8bit/blocks/player-profile-card";
 import { RecentActivity } from "@/components/game/RecentActivity";
-import { useGameStore } from "@/lib/gameStore";
+import { useMyPlayer } from "@/hooks/useStdbPlayer";
 import {
   CLASS_SPRITES,
   TIER_GLOW,
   STAT_COLORS,
   getCharacterTier,
   type StatName,
+  type ActivityLog,
+  type ActivityType,
+  type Quest,
 } from "@/lib/types";
 import { TITLE_MAP } from "@/lib/titles";
-import { asset } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { asset, cn } from "@/lib/utils";
+
+/** Convert SpacetimeDB quest row to local Quest type */
+function stdbQuestToLocal(row: any): Quest {
+  return {
+    id: String(row.id),
+    title: row.title,
+    description: row.description,
+    type: row.questType.tag.toLowerCase() as Quest["type"],
+    activityType: row.activityType ? ((row.activityType.value?.tag as ActivityType) ?? null) : null,
+    targetMin: row.targetMin,
+    progressMin: row.progressMin,
+    xpReward: row.xpReward,
+    completed: row.completed,
+    expiresAt: row.expiresAt ? Number(row.expiresAt.value?.toMillis?.() ?? 0) : 0,
+    manualComplete: row.manualComplete,
+  };
+}
 
 export function Dashboard() {
   const navigate = useNavigate();
-  const player = useGameStore((s) => s.player);
-  const logs = useGameStore((s) => s.activityLogs);
-  const quests = useGameStore((s) => s.quests);
-  const checkDailyRefresh = useGameStore((s) => s.checkDailyRefresh);
+  const { player } = useMyPlayer();
+  const [questRows] = useTable(tables.my_quests);
+  const [activityLogRows] = useTable(tables.my_activity_logs);
 
-  // Auto-refresh daily quests when dashboard loads
-  useEffect(() => {
-    checkDailyRefresh();
-  }, [checkDailyRefresh]);
+  const quests = questRows.map(stdbQuestToLocal);
+
+  // Convert activity logs
+  const logs: ActivityLog[] = activityLogRows.map((row) => ({
+    id: String(row.id),
+    type: row.activityType.tag as ActivityType,
+    rawValue: row.rawValue,
+    durationMin: row.durationMin,
+    intensity: row.intensity,
+    timestamp: Number(row.timestamp.toMillis()),
+    note: row.note ?? undefined,
+    statDeltas: {
+      STR: row.deltaStr,
+      AGI: row.deltaAgi,
+      INT: row.deltaInt,
+      CON: row.deltaCon,
+      WIS: row.deltaWis,
+      CHA: row.deltaCha,
+      MP: row.deltaMp,
+    },
+  }));
+
+  // Handle loading state
+  if (!player) {
+    return (
+      <div className="text-center py-12">
+        <p className="retro text-[8px] text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
 
   const completedQuests = quests.filter((q) => q.completed).length;
 

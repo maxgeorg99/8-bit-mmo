@@ -1,4 +1,6 @@
-import { useGameStore } from "@/lib/gameStore";
+import { useTable } from "spacetimedb/react";
+import { tables } from "@/generated";
+import { useMyPlayer } from "@/hooks/useStdbPlayer";
 import { BIOME_UNLOCK_REQS, type BiomeId } from "@/lib/biomeThemes";
 
 export interface BiomeProgress {
@@ -7,8 +9,9 @@ export interface BiomeProgress {
 }
 
 export function useBiomeProgress(biomeId: BiomeId): BiomeProgress {
-  const logs = useGameStore((s) => s.activityLogs);
-  const streakDays = useGameStore((s) => s.player.streakDays);
+  const [activityLogRows] = useTable(tables.my_activity_logs);
+  const { player } = useMyPlayer();
+  const streakDays = player?.streakDays ?? 0;
   const req = BIOME_UNLOCK_REQS[biomeId];
 
   if (!req.count && !req.specialCount) {
@@ -17,7 +20,7 @@ export function useBiomeProgress(biomeId: BiomeId): BiomeProgress {
   }
 
   if (req.activityType && req.count) {
-    const count = logs.filter((l) => l.type === req.activityType).length;
+    const count = activityLogRows.filter((row) => row.activityType.tag === req.activityType).length;
     return { current: Math.min(count, req.count), required: req.count };
   }
 

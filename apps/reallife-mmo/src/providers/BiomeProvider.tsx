@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useGameStore } from "@/lib/gameStore";
+import { useMyPlayer } from "@/hooks/useStdbPlayer";
 import { useThemeConfig } from "@/components/active-theme";
 import { ThemeStyles } from "@/components/theme-styles";
 import { BIOME_TO_THEME, type BiomeId } from "@/lib/biomeThemes";
@@ -9,7 +9,8 @@ import { BIOME_TO_THEME, type BiomeId } from "@/lib/biomeThemes";
  * Wrap inside <ActiveThemeProvider> in main.tsx.
  */
 export function BiomeProvider({ children }: { children: React.ReactNode }) {
-  const currentBiome = useGameStore((s) => s.player.currentBiome ?? "plains") as BiomeId;
+  const { player } = useMyPlayer();
+  const currentBiome = (player?.currentBiome ?? "plains") as BiomeId;
   const { activeTheme, setActiveTheme } = useThemeConfig();
 
   const targetTheme = BIOME_TO_THEME[currentBiome] ?? BIOME_TO_THEME.plains;

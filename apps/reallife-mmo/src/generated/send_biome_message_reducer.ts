@@ -10,11 +10,6 @@ import {
   type Infer as __Infer,
 } from "spacetimedb";
 
-export default __t.row({
-  id: __t.u64().primaryKey(),
-  guildId: __t.u64().name("guild_id"),
-  authorId: __t.identity().name("author_id"),
-  authorName: __t.string().name("author_name"),
+export default {
   text: __t.string(),
-  timestamp: __t.timestamp(),
-});
+};

@@ -1,29 +1,54 @@
-import { useEffect, useRef } from "react";
+import { useCallback } from "react";
+import { useTable, useReducer } from "spacetimedb/react";
+import { tables, reducers } from "@/generated";
 import { ActivityLogger } from "@/components/game/ActivityLogger";
 import { RecentActivity } from "@/components/game/RecentActivity";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import { toast } from "@/components/ui/8bit/toast";
-import { useGameStore } from "@/lib/gameStore";
+import { useMyPlayer } from "@/hooks/useStdbPlayer";
+import type { ActivityLog, ActivityType } from "@/lib/types";
 
 export function Activity() {
-  const player = useGameStore((s) => s.player);
-  const logActivity = useGameStore((s) => s.logActivity);
-  const logs = useGameStore((s) => s.activityLogs);
-  const lastActivityType = useGameStore((s) => s.lastActivityType);
-  const consumeNotifications = useGameStore((s) => s.consumeNotifications);
-  const pendingCount = useGameStore((s) => s.pendingNotifications.length);
-  const prevPendingRef = useRef(pendingCount);
+  const { player } = useMyPlayer();
+  const logActivityReducer = useReducer(reducers.logActivity);
+  const [activityLogRows] = useTable(tables.my_activity_logs);
 
-  // Show toast notifications when new ones appear
-  useEffect(() => {
-    if (pendingCount > prevPendingRef.current) {
-      const notifs = consumeNotifications();
-      for (const msg of notifs) {
-        toast(msg);
-      }
-    }
-    prevPendingRef.current = pendingCount;
-  }, [pendingCount, consumeNotifications]);
+  // Convert SpacetimeDB activity log rows to local ActivityLog type
+  const logs: ActivityLog[] = activityLogRows.map((row) => ({
+    id: String(row.id),
+    type: row.activityType.tag as ActivityType,
+    rawValue: row.rawValue,
+    durationMin: row.durationMin,
+    intensity: row.intensity,
+    timestamp: Number(row.timestamp.toMillis()),
+    note: row.note ?? undefined,
+    statDeltas: {
+      STR: row.deltaStr,
+      AGI: row.deltaAgi,
+      INT: row.deltaInt,
+      CON: row.deltaCon,
+      WIS: row.deltaWis,
+      CHA: row.deltaCha,
+      MP: row.deltaMp,
+    },
+  }));
+
+  const handleLog = useCallback(
+    (type: ActivityType, rawValue: number, intensity: number, note?: string) => {
+      void logActivityReducer({
+        activityType: { tag: type } as any,
+        rawValue,
+        intensity,
+        note: note ?? undefined,
+      });
+      toast("Activity logged!");
+    },
+    [logActivityReducer],
+  );
+
+  // Determine last activity type from most recent log
+  const sortedLogs = [...logs].sort((a, b) => b.timestamp - a.timestamp);
+  const lastActivityType = sortedLogs[0]?.type;
 
   return (
     <div className="space-y-6">
@@ -35,9 +60,9 @@ export function Activity() {
       </div>
 
       <ActivityLogger
-        streakDays={player.streakDays}
+        streakDays={player?.streakDays ?? 0}
         defaultActivityType={lastActivityType}
-        onLog={logActivity}
+        onLog={handleLog}
       />
 
       <Card>

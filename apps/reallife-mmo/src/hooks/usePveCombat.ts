@@ -13,7 +13,7 @@ import {
   type PveSpell,
   type PveCombatLogEntry,
 } from "@/lib/combatEngine";
-import { useGameStore } from "@/lib/gameStore";
+import { useMyPlayer } from "@/hooks/useStdbPlayer";
 import type { EquipmentItem } from "@/lib/types";
 
 export type PveCombatPhase = "idle" | "fighting" | "victory" | "defeat";
@@ -37,7 +37,7 @@ export interface PveCombatState {
 }
 
 export function usePveCombat() {
-  const player = useGameStore((s) => s.player);
+  const { player } = useMyPlayer();
 
   const [state, setState] = useState<PveCombatState>({
     phase: "idle",
@@ -59,6 +59,7 @@ export function usePveCombat() {
 
   const startCombat = useCallback(
     (biomeId: BiomeId) => {
+      if (!player) return;
       const mob = getRandomMob(biomeId);
       const maxHp = pveMaxHp(player.level, player.stats.CON);
       const maxMana = pveMaxMana(player.level, player.stats.MP, player.stats.INT);
@@ -82,7 +83,7 @@ export function usePveCombat() {
         lootDrops: [],
       });
     },
-    [player.level, player.stats],
+    [player?.level, player?.stats],
   );
 
   const castSpell = useCallback((spellId: string) => {

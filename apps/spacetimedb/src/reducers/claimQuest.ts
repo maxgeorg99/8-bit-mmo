@@ -1,5 +1,6 @@
 import { t, SenderError } from "spacetimedb/server";
 import spacetimedb from "../schema";
+import { checkNewTitles } from "../logic/titleChecker";
 
 function xpToNextLevel(level: number): number {
   if (level <= 4) return 25 * level;
@@ -34,13 +35,62 @@ export const claim_quest = spacetimedb.reducer({ questId: t.u64() }, (ctx, { que
   }
 
   const newMaxHp = maxHp(level, p.constitution);
+  const leveledUp = level > p.level;
+  const newQuestsCompleted = p.questsCompleted + 1;
+
   ctx.db.player.identity.update({
     ...p,
     level,
     xp,
     xpToNext: xpNext,
-    hp: newMaxHp,
+    hp: leveledUp ? newMaxHp : Math.min(p.hp, newMaxHp),
     maxHp: newMaxHp,
-    questsCompleted: p.questsCompleted + 1,
+    questsCompleted: newQuestsCompleted,
   });
+
+  // Title unlock check
+  const alreadyUnlocked = new Set<string>();
+  for (const t of ctx.db.playerTitle.playerId.filter(ctx.sender)) {
+    alreadyUnlocked.add(t.titleId);
+  }
+
+  const allLogs = [];
+  for (const log of ctx.db.activityLog.playerId.filter(ctx.sender)) {
+    allLogs.push({
+      activityType: log.activityType.tag,
+      durationMin: log.durationMin,
+      rawValue: log.rawValue,
+      intensity: log.intensity,
+      timestamp: log.timestamp.toDate(),
+    });
+  }
+
+  const equipment = [];
+  for (const eq of ctx.db.equipmentItem.playerId.filter(ctx.sender)) {
+    equipment.push({ slot: eq.slot.tag, rarity: eq.rarity.tag, equipped: eq.equipped });
+  }
+
+  const newTitles = checkNewTitles(
+    alreadyUnlocked,
+    {
+      totalActivities: p.totalActivities,
+      streakDays: p.streakDays,
+      level,
+      pvpWins: p.pvpWins,
+      questsCompleted: newQuestsCompleted,
+      unlockedBiomes: p.unlockedBiomes,
+    },
+    allLogs,
+    equipment,
+    0,
+  );
+
+  for (const titleId of newTitles) {
+    ctx.db.playerTitle.insert({
+      id: 0n,
+      playerId: ctx.sender,
+      titleId,
+      unlockedAt: ctx.timestamp,
+    });
+  }
 });

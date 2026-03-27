@@ -1,35 +1,62 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useTable, useReducer } from "spacetimedb/react";
+import { tables, reducers } from "@/generated";
 import { Button } from "@/components/ui/8bit/button";
 import { Input } from "@/components/ui/8bit/input";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import { QuestCard } from "@/components/game/QuestCard";
-import { useGameStore } from "@/lib/gameStore";
+import type { Quest, ActivityType } from "@/lib/types";
+
+/** Convert a SpacetimeDB quest row to the local Quest type */
+function stdbQuestToLocal(row: any): Quest {
+  return {
+    id: String(row.id),
+    title: row.title,
+    description: row.description,
+    type: row.questType.tag.toLowerCase() as Quest["type"],
+    activityType: row.activityType ? ((row.activityType.value?.tag as ActivityType) ?? null) : null,
+    targetMin: row.targetMin,
+    progressMin: row.progressMin,
+    xpReward: row.xpReward,
+    completed: row.completed,
+    expiresAt: row.expiresAt ? Number(row.expiresAt.value?.toMillis?.() ?? 0) : 0,
+    manualComplete: row.manualComplete,
+  };
+}
 
 export function Quests() {
-  const quests = useGameStore((s) => s.quests);
-  const claimQuest = useGameStore((s) => s.claimQuest);
-  const completeCustomQuest = useGameStore((s) => s.completeCustomQuest);
-  const createCustomQuest = useGameStore((s) => s.createCustomQuest);
-  const checkDailyRefresh = useGameStore((s) => s.checkDailyRefresh);
+  const [questRows] = useTable(tables.my_quests);
+  const claimQuestReducer = useReducer(reducers.claimQuest);
+  const completeCustomQuestReducer = useReducer(reducers.completeCustomQuest);
+  const createCustomQuestReducer = useReducer(reducers.createCustomQuest);
 
   const [showCreate, setShowCreate] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
 
-  // Auto-refresh daily quests on page load
-  useEffect(() => {
-    checkDailyRefresh();
-  }, [checkDailyRefresh]);
+  const quests = questRows.map(stdbQuestToLocal);
 
   const dailyQuests = quests.filter((q) => q.type === "daily");
   const customQuests = quests.filter((q) => q.type === "custom");
-  const completed = quests.filter((q) => q.completed);
+  const completed = quests.filter((q) => q.completed && !q.manualComplete);
   const activeDailies = dailyQuests.filter((q) => !q.completed);
   const activeCustom = customQuests.filter((q) => !q.completed);
 
+  const handleClaim = (questId: string) => {
+    void claimQuestReducer({ questId: BigInt(questId) });
+  };
+
+  const handleCompleteCustom = (questId: string) => {
+    void completeCustomQuestReducer({ questId: BigInt(questId) });
+  };
+
   const handleCreate = () => {
     if (!newTitle.trim()) return;
-    createCustomQuest(newTitle.trim(), newDesc.trim(), 30);
+    void createCustomQuestReducer({
+      title: newTitle.trim(),
+      description: newDesc.trim(),
+      xpReward: 30,
+    });
     setNewTitle("");
     setNewDesc("");
     setShowCreate(false);
@@ -99,7 +126,7 @@ export function Quests() {
         <div className="space-y-3">
           <h2 className="retro text-[10px] text-green-500">Ready to Claim</h2>
           {completed.map((q) => (
-            <QuestCard key={q.id} quest={q} onClaim={claimQuest} />
+            <QuestCard key={q.id} quest={q} onClaim={handleClaim} />
           ))}
         </div>
       )}
@@ -128,7 +155,7 @@ export function Quests() {
                   <Button
                     size="sm"
                     className="text-[8px] w-full"
-                    onClick={() => completeCustomQuest(q.id)}
+                    onClick={() => handleCompleteCustom(q.id)}
                   >
                     Mark as Done
                   </Button>
@@ -147,7 +174,7 @@ export function Quests() {
             All daily quests completed! Come back tomorrow.
           </p>
         ) : (
-          activeDailies.map((q) => <QuestCard key={q.id} quest={q} onClaim={claimQuest} />)
+          activeDailies.map((q) => <QuestCard key={q.id} quest={q} onClaim={handleClaim} />)
         )}
       </div>
     </div>

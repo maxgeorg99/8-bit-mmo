@@ -11,7 +11,7 @@ import {
 } from "spacetimedb";
 
 export default __t.row({
-  id: __t.u64(),
+  id: __t.u64().primaryKey(),
   guildId: __t.u64().name("guild_id"),
   biomeId: __t.string().name("biome_id"),
   whisperTo: __t.identity().name("whisper_to"),

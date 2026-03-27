@@ -9,10 +9,12 @@ import { BIOME_MERCHANTS } from "@/lib/shopItems";
 import { NPC_PLAYERS, type NpcPlayer } from "@/lib/npcPlayers";
 import { CLASS_SPRITES } from "@/lib/types";
 import type { Location } from "@/lib/types";
-import { useGameStore } from "@/lib/gameStore";
+import { useReducer } from "spacetimedb/react";
+import { reducers } from "@/generated";
+import { useMyPlayer, useBiomePlayers, useEquipmentActions } from "@/hooks/useStdbPlayer";
 import { asset } from "@/lib/utils";
 import { ShopDialog } from "./ShopDialog";
-import { PlayerInspect } from "./PlayerInspect";
+import { PlayerInspect, type InspectablePlayer } from "./PlayerInspect";
 
 interface LocationSceneProps {
   location: Location;
@@ -21,13 +23,22 @@ interface LocationSceneProps {
 
 export function LocationScene({ location, biomeId }: LocationSceneProps) {
   const navigate = useNavigate();
-  const player = useGameStore((s) => s.player);
-  const enterLocation = useGameStore((s) => s.enterLocation);
+  const { player } = useMyPlayer();
+  const enterLocation = useReducer(reducers.enterLocation);
   const meta = BIOME_META[biomeId];
+
+  if (!player) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <p className="retro text-[10px] text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
   const hpPercent = player.maxHp > 0 ? Math.round((player.hp / player.maxHp) * 100) : 100;
 
   const handleLeave = () => {
-    enterLocation(null);
+    void enterLocation({ locationId: undefined });
     void navigate("/map");
   };
 
@@ -89,15 +100,27 @@ function CityScene({
   onLeave: () => void;
 }) {
   const [shopOpen, setShopOpen] = useState(false);
-  const [inspecting, setInspecting] = useState<NpcPlayer | null>(null);
-  const player = useGameStore((s) => s.player);
-  const restAtCity = useGameStore((s) => s.restAtCity);
+  const [inspecting, setInspecting] = useState<InspectablePlayer | NpcPlayer | null>(null);
+  const { player } = useMyPlayer();
+  const { restAtCity } = useEquipmentActions();
   const merchant = BIOME_MERCHANTS[biomeId];
+
+  if (!player) {
+    return null;
+  }
+
   const healCost = Math.max(5, Math.floor(player.level * 2));
   const canHeal = hpPercent < 100 && player.gold >= healCost;
 
-  // Pick 2 random NPC players for the town square
-  const cityNpcs = NPC_PLAYERS.filter((n) => n.online).slice(0, 2);
+  // Real players in the same biome from SpacetimeDB (filter out unnamed/empty players)
+  const realPlayers = useBiomePlayers().filter((p) => p.name.length > 0);
+
+  // Mix real players with NPC fallbacks — show up to 4 total
+  const npcFallbacks = NPC_PLAYERS.filter((n) => n.online).slice(
+    0,
+    Math.max(0, 2 - realPlayers.length),
+  );
+  const cityNpcs: (InspectablePlayer | NpcPlayer)[] = [...realPlayers.slice(0, 4), ...npcFallbacks];
 
   return (
     <div className="space-y-4">
@@ -154,13 +177,13 @@ function CityScene({
               <div className="retro text-[5px] text-amber-400 mt-0.5">{merchant.name}</div>
             </button>
 
-            {/* Other players (NPC for now — tappable to inspect) */}
+            {/* Other players — real SpacetimeDB players + NPC fallbacks */}
             {cityNpcs.map((npc, i) => (
               <button
-                key={npc.name}
+                key={`${npc.name}-${i}`}
                 type="button"
                 className="absolute bottom-5 text-center cursor-pointer hover:scale-110 transition-transform"
-                style={{ right: `${15 + i * 20}%` }}
+                style={{ right: `${15 + i * 18}%` }}
                 onClick={() => setInspecting(npc)}
               >
                 <img
@@ -168,7 +191,10 @@ function CityScene({
                   alt={npc.name}
                   className="pixelated w-8 h-8 mx-auto"
                 />
-                <div className="retro text-[5px] text-foreground/70 mt-0.5">{npc.name}</div>
+                <div className="retro text-[5px] text-foreground/70 mt-0.5">
+                  {npc.online ? "🟢 " : ""}
+                  {npc.name}
+                </div>
               </button>
             ))}
           </div>
@@ -198,7 +224,7 @@ function CityScene({
                 size="sm"
                 className="w-full text-[7px]"
                 disabled={!canHeal}
-                onClick={restAtCity}
+                onClick={() => void restAtCity()}
               >
                 {hpPercent >= 100 ? "Full HP" : `Rest (${healCost}g)`}
               </Button>

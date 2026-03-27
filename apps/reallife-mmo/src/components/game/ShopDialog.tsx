@@ -10,7 +10,9 @@ import {
 } from "@/components/ui/8bit/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/8bit/tabs";
 import { Badge } from "@/components/ui/8bit/badge";
-import { useGameStore } from "@/lib/gameStore";
+import { useReducer } from "spacetimedb/react";
+import { reducers } from "@/generated";
+import { useMyPlayer } from "@/hooks/useStdbPlayer";
 import { BIOME_SHOPS, BIOME_MERCHANTS, SELL_PRICES } from "@/lib/shopItems";
 import type { BiomeId } from "@/lib/biomeThemes";
 import { RARITY_COLORS, RARITY_BORDER, SLOT_ICONS } from "@/lib/types";
@@ -23,10 +25,14 @@ interface ShopDialogProps {
 }
 
 export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
-  const player = useGameStore((s) => s.player);
-  const buyItem = useGameStore((s) => s.buyItem);
-  const sellItem = useGameStore((s) => s.sellItem);
+  const { player } = useMyPlayer();
+  const buyItem = useReducer(reducers.buyItem);
+  const sellItem = useReducer(reducers.sellItem);
   const [tab, setTab] = useState<string>("buy");
+
+  if (!player) {
+    return null;
+  }
 
   const merchant = BIOME_MERCHANTS[biomeId];
   const shopItems = BIOME_SHOPS[biomeId];
@@ -39,6 +45,9 @@ export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
 
   // Sellable items: in chest but not equipped
   const sellableItems = player.chest.filter((i) => !equippedIds.has(i.id));
+
+  // Map local slot/rarity strings to SpacetimeDB enum tags (capitalize first letter)
+  const toEnumTag = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -104,7 +113,22 @@ export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
                           size="sm"
                           className="text-[6px] px-2"
                           disabled={!canAfford || !meetsLevel}
-                          onClick={() => buyItem(item, cost)}
+                          onClick={() =>
+                            void buyItem({
+                              itemId: item.id,
+                              itemName: item.name,
+                              slot: { tag: toEnumTag(item.slot) } as any,
+                              rarity: { tag: toEnumTag(item.rarity) } as any,
+                              levelReq: item.levelReq,
+                              bonusStr: item.statBonus.STR ?? 0,
+                              bonusAgi: item.statBonus.AGI ?? 0,
+                              bonusInt: item.statBonus.INT ?? 0,
+                              bonusCon: item.statBonus.CON ?? 0,
+                              bonusWis: item.statBonus.WIS ?? 0,
+                              bonusCha: item.statBonus.CHA ?? 0,
+                              bonusMp: item.statBonus.MP ?? 0,
+                            })
+                          }
                         >
                           {!meetsLevel ? `Lv.${item.levelReq}` : `${cost}g`}
                         </Button>
@@ -144,7 +168,7 @@ export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
                         size="sm"
                         variant="outline"
                         className={cn("text-[6px] px-2 shrink-0", RARITY_BORDER[item.rarity])}
-                        onClick={() => sellItem(item.id)}
+                        onClick={() => void sellItem({ itemId: item.id })}
                       >
                         Sell {price}g
                       </Button>

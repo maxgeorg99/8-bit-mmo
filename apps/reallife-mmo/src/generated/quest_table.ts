@@ -27,6 +27,6 @@ export default __t.row({
   xpReward: __t.u32().name("xp_reward"),
   completed: __t.bool(),
   claimed: __t.bool(),
-  expiresAt: __t.u64().name("expires_at"),
+  expiresAt: __t.option(__t.timestamp()).name("expires_at"),
   manualComplete: __t.bool().name("manual_complete"),
 });

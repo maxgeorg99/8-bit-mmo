@@ -1,5 +1,7 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
+import { useTable, useReducer, useSpacetimeDB } from "spacetimedb/react";
+import { tables, reducers } from "@/generated";
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import { Badge } from "@/components/ui/8bit/badge";
@@ -11,33 +13,65 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/8bit/dialog";
-import { useGuildStore } from "@/lib/guildStore";
-import { useGameStore } from "@/lib/gameStore";
+import { useMyPlayer } from "@/hooks/useStdbPlayer";
+import { openChat } from "@/components/game/ChatPanel";
 import { BIOME_META, ALL_BIOMES } from "@/lib/biomeThemes";
 import { RAID_BOSSES } from "@/lib/bossDefinitions";
 import { CLASS_SPRITES } from "@/lib/types";
-import type { Guild, GuildMember } from "@/lib/types";
-import { asset } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { asset, cn } from "@/lib/utils";
 
 // ── Role colors & labels ──────────────────────────────────────
 
-const ROLE_COLORS: Record<GuildMember["role"], string> = {
-  leader: "text-amber-400",
-  officer: "text-blue-400",
-  member: "text-muted-foreground",
+const ROLE_COLORS: Record<string, string> = {
+  Leader: "text-amber-400",
+  Officer: "text-blue-400",
+  Member: "text-muted-foreground",
 };
 
-const ROLE_LABELS: Record<GuildMember["role"], string> = {
-  leader: "Leader",
-  officer: "Officer",
-  member: "Member",
+const ROLE_LABELS: Record<string, string> = {
+  Leader: "Leader",
+  Officer: "Officer",
+  Member: "Member",
 };
+
+// ── Helpers to join guild members with player data ─────────────
+
+interface GuildMemberDisplay {
+  playerId: { toHexString(): string; isEqual(other: any): boolean };
+  name: string;
+  playerClass: string;
+  level: number;
+  role: string;
+  online: boolean;
+}
+
+function buildMemberList(
+  memberRows: readonly any[],
+  allPlayers: readonly any[],
+): GuildMemberDisplay[] {
+  const playerMap = new Map<string, any>();
+  for (const p of allPlayers) {
+    playerMap.set(p.identity.toHexString(), p);
+  }
+
+  return memberRows.map((m) => {
+    const p = playerMap.get(m.playerId.toHexString());
+    return {
+      playerId: m.playerId,
+      name: p?.name || "Unknown",
+      playerClass: p?.characterClass?.tag ?? "Unclassed",
+      level: p?.level ?? 1,
+      role: m.role.tag,
+      online: p?.online ?? false,
+    };
+  });
+}
 
 // ── Main Page ─────────────────────────────────────────────────
 
 export function GuildPage() {
-  const guild = useGuildStore((s) => s.guild);
+  const [guildRows] = useTable(tables.my_guild);
+  const guild = guildRows[0] ?? null;
 
   return (
     <div className="space-y-6">
@@ -51,9 +85,8 @@ export function GuildPage() {
 
 function NoGuildView() {
   const [showCreate, setShowCreate] = useState(false);
-  const browseGuilds = useGuildStore((s) => s.browseGuilds);
-  const joinGuild = useGuildStore((s) => s.joinGuild);
-  const player = useGameStore((s) => s.player);
+  const [browseRows] = useTable(tables.browse_guilds);
+  const joinGuildReducer = useReducer(reducers.joinGuild);
 
   return (
     <>
@@ -72,8 +105,8 @@ function NoGuildView() {
       {/* Browse guilds */}
       <div className="space-y-2">
         <h2 className="retro text-[10px] text-foreground">Available Guilds</h2>
-        {browseGuilds.map((g) => (
-          <Card key={g.id}>
+        {browseRows.map((g: any) => (
+          <Card key={String(g.id)}>
             <CardContent className="py-3">
               <div className="flex items-center justify-between">
                 <div>
@@ -86,10 +119,7 @@ function NoGuildView() {
                   <p className="retro text-[6px] text-muted-foreground mt-0.5">{g.description}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="retro text-[6px] text-muted-foreground">
-                      👥 {g.members.length}/{g.maxMembers}
-                    </span>
-                    <span className="retro text-[6px] text-muted-foreground">
-                      🟢 {g.members.filter((m) => m.online).length} online
+                      👥 {g.memberCount}/{g.maxMembers}
                     </span>
                   </div>
                 </div>
@@ -97,8 +127,8 @@ function NoGuildView() {
                   size="sm"
                   variant="outline"
                   className="text-[6px] shrink-0"
-                  disabled={g.members.length >= g.maxMembers}
-                  onClick={() => joinGuild(g.id, player.name, player.playerClass, player.level)}
+                  disabled={g.memberCount >= g.maxMembers}
+                  onClick={() => void joinGuildReducer({ guildId: g.id })}
                 >
                   Join
                 </Button>
@@ -106,7 +136,7 @@ function NoGuildView() {
             </CardContent>
           </Card>
         ))}
-        {browseGuilds.length === 0 && (
+        {browseRows.length === 0 && (
           <p className="retro text-[7px] text-muted-foreground text-center py-4">
             No guilds available. Be the first to create one!
           </p>
@@ -130,21 +160,17 @@ function CreateGuildDialog({
   const [name, setName] = useState("");
   const [tag, setTag] = useState("");
   const [desc, setDesc] = useState("");
-  const createGuild = useGuildStore((s) => s.createGuild);
-  const player = useGameStore((s) => s.player);
+  const createGuildReducer = useReducer(reducers.createGuild);
 
   const canCreate = name.trim().length >= 3 && tag.trim().length >= 2;
 
   function handleCreate() {
     if (!canCreate) return;
-    createGuild(
-      name.trim(),
-      tag.trim(),
-      desc.trim(),
-      player.name,
-      player.playerClass,
-      player.level,
-    );
+    void createGuildReducer({
+      name: name.trim(),
+      tag: tag.trim(),
+      description: desc.trim(),
+    });
     onOpenChange(false);
     setName("");
     setTag("");
@@ -204,31 +230,24 @@ function CreateGuildDialog({
 
 // ── Guild View — Members, Chat, Actions ───────────────────────
 
-function GuildView({ guild }: { guild: Guild }) {
-  const player = useGameStore((s) => s.player);
-  const leaveGuild = useGuildStore((s) => s.leaveGuild);
-  const sendMessage = useGuildStore((s) => s.sendMessage);
-  const promoteMember = useGuildStore((s) => s.promoteMember);
-  const kickMember = useGuildStore((s) => s.kickMember);
-  const [chatInput, setChatInput] = useState("");
-  const chatEndRef = useRef<HTMLDivElement>(null);
+function GuildView({ guild }: { guild: any }) {
+  const { identity } = useSpacetimeDB();
+  const [memberRows] = useTable(tables.my_guild_members);
+  const [allPlayers] = useTable(tables.player);
+  const leaveGuildReducer = useReducer(reducers.leaveGuild);
+  const promoteReducer = useReducer(reducers.promoteMember);
+  const kickReducer = useReducer(reducers.kickMember);
 
-  const myMember = guild.members.find((m) => m.name === (player.name || "Hero"));
-  const isLeader = myMember?.role === "leader";
-  const isOfficer = myMember?.role === "leader" || myMember?.role === "officer";
-  const sortedMembers = [...guild.members].sort((a, b) => {
-    const roleOrder = { leader: 0, officer: 1, member: 2 };
-    return roleOrder[a.role] - roleOrder[b.role];
+  const members = buildMemberList(memberRows, allPlayers);
+  const myHex = identity?.toHexString();
+  const myMember = members.find((m) => m.playerId.toHexString() === myHex);
+  const isLeader = myMember?.role === "Leader";
+  const isOfficer = isLeader || myMember?.role === "Officer";
+
+  const sortedMembers = [...members].sort((a, b) => {
+    const roleOrder: Record<string, number> = { Leader: 0, Officer: 1, Member: 2 };
+    return (roleOrder[a.role] ?? 2) - (roleOrder[b.role] ?? 2);
   });
-
-  function handleSend() {
-    const text = chatInput.trim();
-    if (!text) return;
-    sendMessage(player.name || "Hero", text);
-    setChatInput("");
-    // Scroll to bottom after a tick
-    setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
-  }
 
   return (
     <>
@@ -244,15 +263,15 @@ function GuildView({ guild }: { guild: Guild }) {
           </div>
           {guild.description && (
             <p className="retro text-[7px] text-muted-foreground mt-1 italic">
-              "{guild.description}"
+              &quot;{guild.description}&quot;
             </p>
           )}
           <div className="flex items-center justify-center gap-3 mt-2">
             <span className="retro text-[7px] text-muted-foreground">
-              👥 {guild.members.length}/{guild.maxMembers}
+              👥 {members.length}/{guild.maxMembers}
             </span>
             <span className="retro text-[7px] text-muted-foreground">
-              🟢 {guild.members.filter((m) => m.online).length} online
+              🟢 {members.filter((m) => m.online).length} online
             </span>
           </div>
         </CardContent>
@@ -266,7 +285,7 @@ function GuildView({ guild }: { guild: Guild }) {
         <CardContent>
           <div className="space-y-2">
             {sortedMembers.map((m) => (
-              <div key={m.name} className="flex items-center gap-2">
+              <div key={m.playerId.toHexString()} className="flex items-center gap-2">
                 <img
                   src={asset(CLASS_SPRITES[m.playerClass as keyof typeof CLASS_SPRITES])}
                   alt={m.playerClass}
@@ -285,8 +304,13 @@ function GuildView({ guild }: { guild: Guild }) {
                     {m.online && <span className="text-[6px]">🟢</span>}
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={cn("retro text-[6px]", ROLE_COLORS[m.role])}>
-                      {ROLE_LABELS[m.role]}
+                    <span
+                      className={cn(
+                        "retro text-[6px]",
+                        ROLE_COLORS[m.role] ?? "text-muted-foreground",
+                      )}
+                    >
+                      {ROLE_LABELS[m.role] ?? m.role}
                     </span>
                     <span className="retro text-[6px] text-muted-foreground">
                       Lv.{m.level} {m.playerClass}
@@ -294,14 +318,14 @@ function GuildView({ guild }: { guild: Guild }) {
                   </div>
                 </div>
                 {/* Leader/officer actions */}
-                {isOfficer && m.name !== (player.name || "Hero") && m.role === "member" && (
+                {isOfficer && m.playerId.toHexString() !== myHex && m.role === "Member" && (
                   <div className="flex gap-1 shrink-0">
                     {isLeader && (
                       <Button
                         size="sm"
                         variant="outline"
                         className="text-[5px] px-1.5"
-                        onClick={() => promoteMember(m.name)}
+                        onClick={() => void promoteReducer({ targetPlayerId: m.playerId } as any)}
                       >
                         Promote
                       </Button>
@@ -310,7 +334,7 @@ function GuildView({ guild }: { guild: Guild }) {
                       size="sm"
                       variant="outline"
                       className="text-[5px] px-1.5 text-red-400"
-                      onClick={() => kickMember(m.name)}
+                      onClick={() => void kickReducer({ targetPlayerId: m.playerId } as any)}
                     >
                       Kick
                     </Button>
@@ -322,56 +346,19 @@ function GuildView({ guild }: { guild: Guild }) {
         </CardContent>
       </Card>
 
-      {/* Guild chat */}
-      <Card>
-        <CardHeader className="pb-1">
-          <CardTitle className="text-[9px]">Guild Chat</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-32 overflow-y-auto border border-border bg-muted/20 p-2 space-y-1.5 mb-2">
-            {guild.messages.map((msg) => {
-              const isSystem = msg.authorName === "System";
-              return (
-                <div key={msg.id}>
-                  {isSystem ? (
-                    <p className="retro text-[6px] text-amber-400/70 text-center italic">
-                      {msg.text}
-                    </p>
-                  ) : (
-                    <p className="retro text-[6px]">
-                      <span className="text-primary">{msg.authorName}</span>
-                      <span className="text-muted-foreground">: {msg.text}</span>
-                    </p>
-                  )}
-                </div>
-              );
-            })}
-            <div ref={chatEndRef} />
-          </div>
-          <div className="flex gap-2">
-            <Input
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder="Say something..."
-              className="text-[7px] flex-1"
-              maxLength={200}
-            />
-            <Button size="sm" className="text-[6px] shrink-0" onClick={handleSend}>
-              Send
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Guild chat — opens global chat panel */}
+      <Button variant="outline" className="w-full text-[8px]" onClick={() => openChat("guild")}>
+        Open Guild Chat
+      </Button>
 
       {/* Raid bosses */}
-      <RaidSection guild={guild} />
+      <RaidSection memberCount={members.length} />
 
       {/* Leave guild */}
       <Button
         variant="outline"
         className="w-full text-[8px] text-red-400"
-        onClick={() => leaveGuild(player.name || "Hero")}
+        onClick={() => void leaveGuildReducer()}
       >
         Leave Guild
       </Button>
@@ -381,36 +368,11 @@ function GuildView({ guild }: { guild: Guild }) {
 
 // ── Raid Section ─────────────────────────────────────────────
 
-function RaidSection({ guild }: { guild: Guild }) {
+function RaidSection({ memberCount }: { memberCount: number }) {
   const navigate = useNavigate();
-  const canRaid = guild.members.length >= 3;
-  const player = useGameStore((s) => s.player);
-  const unlockedBiomes = new Set(player.unlockedBiomes);
-
-  // If there's an active raid, show resume button
-  if (guild.activeRaid) {
-    const boss = RAID_BOSSES[guild.activeRaid.biomeId as keyof typeof RAID_BOSSES];
-    return (
-      <Card>
-        <CardHeader className="pb-1">
-          <CardTitle className="text-[9px]">⚔️ Active Raid</CardTitle>
-        </CardHeader>
-        <CardContent className="text-center space-y-2">
-          <span className="text-2xl block">{boss?.sprite ?? "⚔️"}</span>
-          <p className="retro text-[8px] text-foreground">{boss?.name ?? "Unknown Boss"}</p>
-          <p className="retro text-[6px] text-muted-foreground">
-            Boss HP: {guild.activeRaid.bossHp}/{guild.activeRaid.bossMaxHp}
-          </p>
-          <Button
-            className="w-full text-[7px]"
-            onClick={() => navigate(`/raid/${guild.activeRaid!.biomeId}`)}
-          >
-            Resume Raid
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
+  const canRaid = memberCount >= 3;
+  const { player } = useMyPlayer();
+  const unlockedBiomes = new Set(player?.unlockedBiomes ?? ["plains"]);
 
   return (
     <Card>
@@ -420,7 +382,7 @@ function RaidSection({ guild }: { guild: Guild }) {
       <CardContent>
         {!canRaid ? (
           <p className="retro text-[7px] text-muted-foreground text-center py-2">
-            Need {3 - guild.members.length} more member(s) to unlock raids.
+            Need {3 - memberCount} more member(s) to unlock raids.
           </p>
         ) : (
           <div className="space-y-2">

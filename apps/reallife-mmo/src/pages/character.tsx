@@ -5,25 +5,70 @@ import XpBar from "@/components/ui/8bit/xp-bar";
 import { CharacterAvatar } from "@/components/game/CharacterAvatar";
 import { ChestPanel } from "@/components/game/ChestPanel";
 import { TitleSelector } from "@/components/game/TitleSelector";
-import { useGameStore } from "@/lib/gameStore";
+import { useTable, useReducer } from "spacetimedb/react";
+import { tables, reducers } from "@/generated";
+import { useMyPlayer, useEquipmentActions } from "@/hooks/useStdbPlayer";
 import { getClassAffinities } from "@/lib/classEngine";
 import { AnimatedStatBar } from "@/components/game/AnimatedStatBar";
-import { CLASS_COLORS, type StatName } from "@/lib/types";
+import { CLASS_COLORS, type StatName, type ActivityLog } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const STAT_ORDER: StatName[] = ["STR", "AGI", "INT", "CON", "WIS", "CHA", "MP"];
 
 export function Character() {
-  const player = useGameStore((s) => s.player);
-  const logs = useGameStore((s) => s.activityLogs);
-  const equipItem = useGameStore((s) => s.equipItem);
-  const unequipSlot = useGameStore((s) => s.unequipSlot);
-  const selectTitle = useGameStore((s) => s.selectTitle);
+  const { player } = useMyPlayer();
+  const [activityLogRows] = useTable(tables.my_activity_logs);
+  const { equipItem, unequipItem } = useEquipmentActions();
+  const selectTitle = useReducer(reducers.selectTitle);
+  const [titleRows] = useTable(tables.my_titles);
+
+  if (!player) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <p className="retro text-[10px] text-muted-foreground">Loading character...</p>
+      </div>
+    );
+  }
+
+  // Convert SpacetimeDB activity log rows to the local ActivityLog shape
+  const logs: ActivityLog[] = activityLogRows.map((row) => ({
+    id: String(row.id),
+    type: row.activityType.tag,
+    rawValue: row.rawValue,
+    durationMin: row.durationMin,
+    intensity: row.intensity,
+    timestamp: Number(row.timestamp.toMillis()),
+    statDeltas: {
+      ...(row.deltaStr ? { STR: row.deltaStr } : {}),
+      ...(row.deltaAgi ? { AGI: row.deltaAgi } : {}),
+      ...(row.deltaInt ? { INT: row.deltaInt } : {}),
+      ...(row.deltaCon ? { CON: row.deltaCon } : {}),
+      ...(row.deltaWis ? { WIS: row.deltaWis } : {}),
+      ...(row.deltaCha ? { CHA: row.deltaCha } : {}),
+      ...(row.deltaMp ? { MP: row.deltaMp } : {}),
+    },
+  }));
+
+  // Read unlocked titles from SpacetimeDB table
+  const unlockedTitles = titleRows.map((t) => t.titleId);
 
   const affinities = getClassAffinities(logs);
   const maxAffinity = affinities.length > 0 ? affinities[0].score : 1;
   const xpPercent = player.xpToNext > 0 ? Math.round((player.xp / player.xpToNext) * 100) : 0;
   const hpPercent = player.maxHp > 0 ? Math.round((player.hp / player.maxHp) * 100) : 100;
+
+  // Adapter: ChestPanel calls onUnequip(slot), but SpacetimeDB needs an itemId.
+  // Find the equipped item for that slot and pass its ID.
+  const handleUnequip = (slot: string) => {
+    const equippedItem = player.equipment[slot as keyof typeof player.equipment];
+    if (equippedItem) {
+      void unequipItem(equippedItem.id);
+    }
+  };
+
+  const handleSelectTitle = (titleId: string | null) => {
+    void selectTitle({ titleId: titleId ?? undefined });
+  };
 
   return (
     <div className="space-y-6">
@@ -115,9 +160,9 @@ export function Character() {
 
       {/* Titles */}
       <TitleSelector
-        unlockedTitles={player.unlockedTitles ?? []}
+        unlockedTitles={unlockedTitles}
         activeTitle={player.activeTitle ?? null}
-        onSelect={selectTitle}
+        onSelect={handleSelectTitle}
       />
 
       {/* Chest / Equipment */}
@@ -126,7 +171,7 @@ export function Character() {
         equipped={player.equipment}
         playerLevel={player.level}
         onEquip={equipItem}
-        onUnequip={unequipSlot}
+        onUnequip={handleUnequip}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { ScheduleAt, Timestamp } from "spacetimedb";
+import { ScheduleAt } from "spacetimedb";
 import spacetimedb from "./schema";
 export default spacetimedb;
 
@@ -35,6 +35,12 @@ export {
   kick_member,
 } from "./reducers/guild";
 
+// Chat (biome + whisper)
+export { send_biome_message, send_whisper } from "./reducers/chat";
+
+// Raids
+export { start_raid, raid_cast_spell, abandon_raid } from "./reducers/raid";
+
 // PvE Rewards
 export { grant_pve_rewards } from "./reducers/grantPveRewards";
 
@@ -50,6 +56,8 @@ export { my_titles } from "./views/myTitles";
 export { my_guild } from "./views/myGuild";
 export { my_guild_members } from "./views/myGuildMembers";
 export { my_guild_messages } from "./views/myGuildMessages";
+export { my_biome_messages } from "./views/myBiomeMessages";
+export { my_whisper_messages } from "./views/myWhisperMessages";
 export { my_combat } from "./views/myCombat";
 export { my_combat_log } from "./views/myCombatLog";
 export { my_raid } from "./views/myRaid";
@@ -58,6 +66,7 @@ export { my_raid_log } from "./views/myRaidLog";
 export { biome_players } from "./views/biomePlayers";
 export { leaderboard } from "./views/leaderboard";
 export { browse_guilds } from "./views/browseGuilds";
+export { my_activity_logs } from "./views/myActivityLogs";
 
 // ── Init (seed spells + schedule idle tick) ──────────────────────
 

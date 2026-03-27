@@ -156,16 +156,6 @@ export const GuildMember = __t.object("GuildMember", {
 });
 export type GuildMember = __Infer<typeof GuildMember>;
 
-export const GuildMessage = __t.object("GuildMessage", {
-  id: __t.u64(),
-  guildId: __t.u64(),
-  authorId: __t.identity(),
-  authorName: __t.string(),
-  text: __t.string(),
-  timestamp: __t.timestamp(),
-});
-export type GuildMessage = __Infer<typeof GuildMessage>;
-
 // The tagged union or sum type for the algebraic type `GuildRole`.
 export const GuildRole = __t.enum("GuildRole", {
   Leader: __t.unit(),
@@ -192,6 +182,24 @@ export type ItemRarity = __Infer<typeof ItemRarity>;
 
 export const Leaderboard = __t.object("Leaderboard", {});
 export type Leaderboard = __Infer<typeof Leaderboard>;
+
+export const Message = __t.object("Message", {
+  id: __t.u64(),
+  guildId: __t.u64(),
+  biomeId: __t.string(),
+  whisperTo: __t.identity(),
+  authorId: __t.identity(),
+  authorName: __t.string(),
+  text: __t.string(),
+  timestamp: __t.timestamp(),
+});
+export type Message = __Infer<typeof Message>;
+
+export const MyActivityLogs = __t.object("MyActivityLogs", {});
+export type MyActivityLogs = __Infer<typeof MyActivityLogs>;
+
+export const MyBiomeMessages = __t.object("MyBiomeMessages", {});
+export type MyBiomeMessages = __Infer<typeof MyBiomeMessages>;
 
 export const MyCombat = __t.object("MyCombat", {});
 export type MyCombat = __Infer<typeof MyCombat>;
@@ -229,6 +237,9 @@ export type MyRaidLog = __Infer<typeof MyRaidLog>;
 export const MyTitles = __t.object("MyTitles", {});
 export type MyTitles = __Infer<typeof MyTitles>;
 
+export const MyWhisperMessages = __t.object("MyWhisperMessages", {});
+export type MyWhisperMessages = __Infer<typeof MyWhisperMessages>;
+
 export const Player = __t.object("Player", {
   identity: __t.identity(),
   name: __t.string(),
@@ -245,20 +256,20 @@ export const Player = __t.object("Player", {
   streakDays: __t.u32(),
   totalActivities: __t.u32(),
   questsCompleted: __t.u32(),
-  lastActivityDate: __t.string(),
-  str: __t.f32(),
-  agi: __t.f32(),
-  intStat: __t.f32(),
-  con: __t.f32(),
-  wis: __t.f32(),
-  cha: __t.f32(),
-  mp: __t.f32(),
+  lastActivityAt: __t.timestamp(),
+  strength: __t.f32(),
+  agility: __t.f32(),
+  intelligence: __t.f32(),
+  constitution: __t.f32(),
+  wisdom: __t.f32(),
+  charisma: __t.f32(),
+  mana: __t.f32(),
   currentBiome: __t.string(),
   currentLocation: __t.option(__t.string()),
   activeTitle: __t.option(__t.string()),
   pvpWins: __t.u32(),
   pvpLosses: __t.u32(),
-  unlockedBiomes: __t.string(),
+  unlockedBiomes: __t.array(__t.string()),
   joinedAt: __t.timestamp(),
 });
 export type Player = __Infer<typeof Player>;
@@ -287,7 +298,7 @@ export const Quest = __t.object("Quest", {
   xpReward: __t.u32(),
   completed: __t.bool(),
   claimed: __t.bool(),
-  expiresAt: __t.u64(),
+  expiresAt: __t.option(__t.timestamp()),
   manualComplete: __t.bool(),
 });
 export type Quest = __Infer<typeof Quest>;

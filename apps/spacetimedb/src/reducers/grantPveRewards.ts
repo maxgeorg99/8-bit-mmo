@@ -80,13 +80,15 @@ export const grant_pve_rewards = spacetimedb.reducer(
     // Gold reward computed server-side (not trusted from client)
     const goldReward = 5 + Math.floor(level * 1.5);
 
-    const newMaxHp = maxHp(level, p.con);
+    const newMaxHp = maxHp(level, p.constitution);
+    const leveledUp = level > p.level;
     ctx.db.player.identity.update({
       ...p,
       level,
       xp,
       xpToNext: xpNext,
-      hp: newMaxHp,
+      // Only fully heal on level-up, otherwise keep current HP (capped to new max)
+      hp: leveledUp ? newMaxHp : Math.min(p.hp, newMaxHp),
       maxHp: newMaxHp,
       gold: p.gold + goldReward,
     });

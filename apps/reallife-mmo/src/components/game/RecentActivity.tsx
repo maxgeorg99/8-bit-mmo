@@ -62,12 +62,14 @@ export function RecentActivity({ logs, limit = 5 }: RecentActivityProps) {
             </div>
           </div>
           <div className="flex flex-col items-end gap-1.5 shrink-0">
-            <div className="flex flex-wrap gap-1 justify-end">
-              {Object.entries(log.statDeltas).map(([stat, val]) => (
-                <Badge key={stat} variant="secondary" className="text-[6px] py-0">
-                  +{(val as number).toFixed(1)} {stat}
-                </Badge>
-              ))}
+            <div className="flex flex-wrap gap-1 justify-end max-w-[120px]">
+              {Object.entries(log.statDeltas)
+                .filter(([, val]) => val != null && (val as number) > 0)
+                .map(([stat, val]) => (
+                  <Badge key={stat} variant="secondary" className="text-[6px] py-0">
+                    +{(val as number).toFixed(1)} {stat}
+                  </Badge>
+                ))}
             </div>
             <span className="retro text-[7px] text-muted-foreground">{timeAgo(log.timestamp)}</span>
           </div>

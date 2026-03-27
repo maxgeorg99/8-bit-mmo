@@ -16,13 +16,31 @@ import {
   SLOT_ICONS,
   RARITY_COLORS,
   type StatName,
+  type PlayerClass,
 } from "@/lib/types";
 import { asset, cn } from "@/lib/utils";
+import { Button } from "@/components/ui/8bit/button";
+import { openChat } from "./ChatPanel";
+
+/** Shape that both NpcPlayer and stdbPlayerToInspectable() produce */
+export interface InspectablePlayer {
+  name: string;
+  level: number;
+  playerClass: PlayerClass;
+  title?: string;
+  stats: Record<StatName, number>;
+  equipment: Record<
+    string,
+    { name: string; rarity: string; statBonus: Record<string, number> } | undefined
+  >;
+  guildName?: string;
+  online: boolean;
+}
 
 interface PlayerInspectProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  player: NpcPlayer | null;
+  player: InspectablePlayer | NpcPlayer | null;
 }
 
 const STATS_ORDER: StatName[] = ["STR", "AGI", "INT", "CON", "WIS", "CHA", "MP"];
@@ -45,29 +63,24 @@ export function PlayerInspect({ open, onOpenChange, player }: PlayerInspectProps
             />
             {player.name}
           </DialogTitle>
-          <DialogDescription className="retro text-[7px] flex items-center gap-2">
-            <span className={CLASS_COLORS[player.playerClass]}>
-              Lv.{player.level} {player.playerClass}
-            </span>
-            {player.guildName && (
-              <Badge variant="outline" className="text-[5px]">
-                {player.guildName}
-              </Badge>
-            )}
-            {player.online ? (
-              <span className="text-[6px] text-green-400">Online</span>
-            ) : (
-              <span className="text-[6px] text-muted-foreground">Offline</span>
-            )}
+          <DialogDescription asChild>
+            <div className="retro text-[7px] space-y-1.5 pt-1">
+              <div className="flex items-center gap-2">
+                <span className={CLASS_COLORS[player.playerClass]}>
+                  Lv.{player.level} {player.playerClass}
+                </span>
+              </div>
+              {player.guildName && (
+                <div>
+                  <Badge variant="outline" className="text-[5px]">
+                    {player.guildName}
+                  </Badge>
+                </div>
+              )}
+              {player.title && <div className="text-amber-400/80 text-[8px]">{player.title}</div>}
+            </div>
           </DialogDescription>
         </DialogHeader>
-
-        {/* Title */}
-        {player.title && (
-          <div className="text-center">
-            <span className="retro text-[8px] text-amber-400/80">{player.title}</span>
-          </div>
-        )}
 
         {/* Stats */}
         <Card>
@@ -102,7 +115,12 @@ export function PlayerInspect({ open, onOpenChange, player }: PlayerInspectProps
                 return (
                   <div key={slot} className="flex items-center gap-2">
                     <span className="text-sm">{SLOT_ICONS[slot as keyof typeof SLOT_ICONS]}</span>
-                    <span className={cn("retro text-[7px]", RARITY_COLORS[item.rarity])}>
+                    <span
+                      className={cn(
+                        "retro text-[7px]",
+                        RARITY_COLORS[item.rarity as keyof typeof RARITY_COLORS],
+                      )}
+                    >
                       {item.name}
                     </span>
                     <span className="retro text-[5px] text-muted-foreground ml-auto">
@@ -116,6 +134,18 @@ export function PlayerInspect({ open, onOpenChange, player }: PlayerInspectProps
             </CardContent>
           </Card>
         )}
+
+        {/* Whisper button */}
+        <Button
+          variant="outline"
+          className="w-full text-[7px] text-purple-400"
+          onClick={() => {
+            openChat("whisper", player.name);
+            onOpenChange(false);
+          }}
+        >
+          Whisper {player.name}
+        </Button>
       </DialogContent>
     </Dialog>
   );

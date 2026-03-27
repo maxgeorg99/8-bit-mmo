@@ -1,6 +1,7 @@
 import { t, SenderError } from "spacetimedb/server";
 import spacetimedb from "../schema";
 import { ActivityType } from "../types/activityType";
+import { checkNewTitles } from "../logic/titleChecker";
 
 // ── Stat engine (mirrors client-side statEngine.ts) ──────────────
 
@@ -190,13 +191,13 @@ export const log_activity = spacetimedb.reducer(
     });
 
     // Update player stats — f32 preserves fractional gains
-    const newStr = p.str + (deltas.str ?? 0);
-    const newAgi = p.agi + (deltas.agi ?? 0);
-    const newInt = p.intStat + (deltas.intStat ?? 0);
-    const newCon = p.con + (deltas.con ?? 0);
-    const newWis = p.wis + (deltas.wis ?? 0);
-    const newCha = p.cha + (deltas.cha ?? 0);
-    const newMp = p.mp + (deltas.mp ?? 0);
+    const newStr = p.strength + (deltas.str ?? 0);
+    const newAgi = p.agility + (deltas.agi ?? 0);
+    const newInt = p.intelligence + (deltas.intStat ?? 0);
+    const newCon = p.constitution + (deltas.con ?? 0);
+    const newWis = p.wisdom + (deltas.wis ?? 0);
+    const newCha = p.charisma + (deltas.cha ?? 0);
+    const newMp = p.mana + (deltas.mp ?? 0);
 
     // Level up
     let level = p.level;
@@ -210,17 +211,15 @@ export const log_activity = spacetimedb.reducer(
 
     // Streak calculation using server timestamp
     let streakDays = p.streakDays;
-    if (p.lastActivityDate) {
+    {
       const today = new Date(now);
       today.setHours(0, 0, 0, 0);
-      const last = new Date(p.lastActivityDate);
+      const last = p.lastActivityAt.toDate();
       last.setHours(0, 0, 0, 0);
       const diffDays = Math.round((today.getTime() - last.getTime()) / (1000 * 60 * 60 * 24));
       if (diffDays === 1) streakDays = p.streakDays + 1;
       else if (diffDays > 1) streakDays = 1;
       // diffDays === 0: same day, no change
-    } else {
-      streakDays = 1;
     }
 
     const newMaxHp = maxHp(level, Math.floor(newCon));
@@ -238,15 +237,17 @@ export const log_activity = spacetimedb.reducer(
     // Derive class from 30-day activity profile
     const newClass = deriveClass(ctx, ctx.sender, now);
 
+    const updatedTotalActivities = p.totalActivities + 1;
+
     ctx.db.player.identity.update({
       ...p,
-      str: newStr,
-      agi: newAgi,
-      intStat: newInt,
-      con: newCon,
-      wis: newWis,
-      cha: newCha,
-      mp: newMp,
+      strength: newStr,
+      agility: newAgi,
+      intelligence: newInt,
+      constitution: newCon,
+      wisdom: newWis,
+      charisma: newCha,
+      mana: newMp,
       characterClass: newClass as any,
       level,
       xp,
@@ -254,8 +255,60 @@ export const log_activity = spacetimedb.reducer(
       hp: newMaxHp,
       maxHp: newMaxHp,
       streakDays,
-      totalActivities: p.totalActivities + 1,
-      lastActivityDate: todayStr,
+      totalActivities: updatedTotalActivities,
+      lastActivityAt: ctx.timestamp,
     });
+
+    // ── Title unlock check ──
+    const alreadyUnlocked = new Set<string>();
+    for (const t of ctx.db.playerTitle.playerId.filter(ctx.sender)) {
+      alreadyUnlocked.add(t.titleId);
+    }
+
+    // Gather all activity logs for title conditions
+    const allLogs = [];
+    for (const log of ctx.db.activityLog.playerId.filter(ctx.sender)) {
+      allLogs.push({
+        activityType: log.activityType.tag,
+        durationMin: log.durationMin,
+        rawValue: log.rawValue,
+        intensity: log.intensity,
+        timestamp: log.timestamp.toDate(),
+      });
+    }
+
+    // Gather equipment for title conditions
+    const equipment = [];
+    for (const eq of ctx.db.equipmentItem.playerId.filter(ctx.sender)) {
+      equipment.push({
+        slot: eq.slot.tag,
+        rarity: eq.rarity.tag,
+        equipped: eq.equipped,
+      });
+    }
+
+    const newTitles = checkNewTitles(
+      alreadyUnlocked,
+      {
+        totalActivities: updatedTotalActivities,
+        streakDays,
+        level,
+        pvpWins: p.pvpWins,
+        questsCompleted: p.questsCompleted,
+        unlockedBiomes: p.unlockedBiomes,
+      },
+      allLogs,
+      equipment,
+      0, // raidKills — not tracked yet
+    );
+
+    for (const titleId of newTitles) {
+      ctx.db.playerTitle.insert({
+        id: 0n,
+        playerId: ctx.sender,
+        titleId,
+        unlockedAt: ctx.timestamp,
+      });
+    }
   },
 );

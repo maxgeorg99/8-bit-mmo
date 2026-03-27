@@ -1,13 +1,14 @@
 import { useParams, useNavigate } from "react-router";
 import { Button } from "@/components/ui/8bit/button";
 import { LocationScene } from "@/components/game/LocationScene";
-import { useGameStore } from "@/lib/gameStore";
+import { useMyPlayer } from "@/hooks/useStdbPlayer";
 import { BIOME_META, type BiomeId } from "@/lib/biomeThemes";
 
 export function LocationPage() {
   const { locationId } = useParams<{ locationId: string }>();
   const navigate = useNavigate();
-  const currentBiome = useGameStore((s) => s.player.currentBiome) as BiomeId;
+  const { player } = useMyPlayer();
+  const currentBiome = (player?.currentBiome ?? "plains") as BiomeId;
   const meta = BIOME_META[currentBiome];
 
   const location = meta.locations.find((l) => l.id === locationId);

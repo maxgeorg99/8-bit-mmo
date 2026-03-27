@@ -34,6 +34,7 @@ import {
 } from "spacetimedb";
 
 // Import all reducer arg schemas
+import AbandonRaidReducer from "./abandon_raid_reducer";
 import BuyItemReducer from "./buy_item_reducer";
 import CastSpellReducer from "./cast_spell_reducer";
 import ClaimQuestReducer from "./claim_quest_reducer";
@@ -50,11 +51,15 @@ import LeaveCombatReducer from "./leave_combat_reducer";
 import LeaveGuildReducer from "./leave_guild_reducer";
 import LogActivityReducer from "./log_activity_reducer";
 import PromoteMemberReducer from "./promote_member_reducer";
+import RaidCastSpellReducer from "./raid_cast_spell_reducer";
 import RestAtCityReducer from "./rest_at_city_reducer";
 import SelectTitleReducer from "./select_title_reducer";
 import SellItemReducer from "./sell_item_reducer";
+import SendBiomeMessageReducer from "./send_biome_message_reducer";
 import SendGuildMessageReducer from "./send_guild_message_reducer";
+import SendWhisperReducer from "./send_whisper_reducer";
 import SetPlayerNameReducer from "./set_player_name_reducer";
+import StartRaidReducer from "./start_raid_reducer";
 import TravelToBiomeReducer from "./travel_to_biome_reducer";
 import UnequipItemReducer from "./unequip_item_reducer";
 
@@ -69,8 +74,10 @@ import CombatLogRow from "./combat_log_table";
 import EquipmentItemRow from "./equipment_item_table";
 import GuildRow from "./guild_table";
 import GuildMemberRow from "./guild_member_table";
-import GuildMessageRow from "./guild_message_table";
 import LeaderboardRow from "./leaderboard_table";
+import MessageRow from "./message_table";
+import MyActivityLogsRow from "./my_activity_logs_table";
+import MyBiomeMessagesRow from "./my_biome_messages_table";
 import MyCombatRow from "./my_combat_table";
 import MyCombatLogRow from "./my_combat_log_table";
 import MyEquipmentRow from "./my_equipment_table";
@@ -83,6 +90,7 @@ import MyRaidRow from "./my_raid_table";
 import MyRaidCombatantsRow from "./my_raid_combatants_table";
 import MyRaidLogRow from "./my_raid_log_table";
 import MyTitlesRow from "./my_titles_table";
+import MyWhisperMessagesRow from "./my_whisper_messages_table";
 import PlayerRow from "./player_table";
 import PlayerTitleRow from "./player_title_table";
 import QuestRow from "./quest_table";
@@ -197,21 +205,39 @@ const tablesSchema = __schema({
     },
     GuildMemberRow,
   ),
-  guildMessage: __table(
+  message: __table(
     {
-      name: "guild_message",
+      name: "message",
       indexes: [
         {
+          accessor: "authorId",
+          name: "message_author_id_idx_btree",
+          algorithm: "btree",
+          columns: ["authorId"],
+        },
+        {
+          accessor: "biomeId",
+          name: "message_biome_id_idx_btree",
+          algorithm: "btree",
+          columns: ["biomeId"],
+        },
+        {
           accessor: "guildId",
-          name: "guild_message_guild_id_idx_btree",
+          name: "message_guild_id_idx_btree",
           algorithm: "btree",
           columns: ["guildId"],
         },
-        { accessor: "id", name: "guild_message_id_idx_btree", algorithm: "btree", columns: ["id"] },
+        { accessor: "id", name: "message_id_idx_btree", algorithm: "btree", columns: ["id"] },
+        {
+          accessor: "whisperTo",
+          name: "message_whisper_to_idx_btree",
+          algorithm: "btree",
+          columns: ["whisperTo"],
+        },
       ],
-      constraints: [{ name: "guild_message_id_key", constraint: "unique", columns: ["id"] }],
+      constraints: [{ name: "message_id_key", constraint: "unique", columns: ["id"] }],
     },
-    GuildMessageRow,
+    MessageRow,
   ),
   player: __table(
     {
@@ -353,6 +379,22 @@ const tablesSchema = __schema({
     },
     LeaderboardRow,
   ),
+  my_activity_logs: __table(
+    {
+      name: "my_activity_logs",
+      indexes: [],
+      constraints: [],
+    },
+    MyActivityLogsRow,
+  ),
+  my_biome_messages: __table(
+    {
+      name: "my_biome_messages",
+      indexes: [],
+      constraints: [],
+    },
+    MyBiomeMessagesRow,
+  ),
   my_combat: __table(
     {
       name: "my_combat",
@@ -449,10 +491,19 @@ const tablesSchema = __schema({
     },
     MyTitlesRow,
   ),
+  my_whisper_messages: __table(
+    {
+      name: "my_whisper_messages",
+      indexes: [],
+      constraints: [],
+    },
+    MyWhisperMessagesRow,
+  ),
 });
 
 /** The schema information for all reducers in this module. This is defined the same way as the reducers would have been defined in the server, except the body of the reducer is omitted in code generation. */
 const reducersSchema = __reducers(
+  __reducerSchema("abandon_raid", AbandonRaidReducer),
   __reducerSchema("buy_item", BuyItemReducer),
   __reducerSchema("cast_spell", CastSpellReducer),
   __reducerSchema("claim_quest", ClaimQuestReducer),
@@ -469,11 +520,15 @@ const reducersSchema = __reducers(
   __reducerSchema("leave_guild", LeaveGuildReducer),
   __reducerSchema("log_activity", LogActivityReducer),
   __reducerSchema("promote_member", PromoteMemberReducer),
+  __reducerSchema("raid_cast_spell", RaidCastSpellReducer),
   __reducerSchema("rest_at_city", RestAtCityReducer),
   __reducerSchema("select_title", SelectTitleReducer),
   __reducerSchema("sell_item", SellItemReducer),
+  __reducerSchema("send_biome_message", SendBiomeMessageReducer),
   __reducerSchema("send_guild_message", SendGuildMessageReducer),
+  __reducerSchema("send_whisper", SendWhisperReducer),
   __reducerSchema("set_player_name", SetPlayerNameReducer),
+  __reducerSchema("start_raid", StartRaidReducer),
   __reducerSchema("travel_to_biome", TravelToBiomeReducer),
   __reducerSchema("unequip_item", UnequipItemReducer),
 );

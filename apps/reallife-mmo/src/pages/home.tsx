@@ -12,15 +12,17 @@ import {
   CardTitle,
 } from "@/components/ui/8bit/card";
 import { Badge } from "@/components/ui/8bit/badge";
-import { useGameStore } from "@/lib/gameStore";
+import { useMyPlayer } from "@/hooks/useStdbPlayer";
+import { useReducer } from "spacetimedb/react";
+import { reducers } from "@/generated";
 
 export function Home() {
   const navigate = useNavigate();
-  const player = useGameStore((s) => s.player);
-  const setPlayerName = useGameStore((s) => s.setPlayerName);
-  const [name, setName] = useState(player.name);
+  const { player } = useMyPlayer();
+  const stdbSetName = useReducer(reducers.setPlayerName);
+  const [name, setName] = useState(player?.name ?? "");
 
-  const hasStarted = player.totalActivities > 0 || player.name !== "";
+  const hasStarted = (player?.totalActivities ?? 0) > 0 || (player?.name ?? "") !== "";
 
   // Returning players skip the landing and go straight to dashboard
   useEffect(() => {
@@ -80,7 +82,8 @@ export function Home() {
           <Button
             className="w-full"
             onClick={() => {
-              setPlayerName(name || "Unnamed Hero");
+              const heroName = name || "Unnamed Hero";
+              void stdbSetName({ name: heroName });
               void navigate("/dashboard");
             }}
           >

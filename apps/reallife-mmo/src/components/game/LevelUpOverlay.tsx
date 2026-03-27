@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { useGameStore } from "@/lib/gameStore";
+import { useMyPlayer } from "@/hooks/useStdbPlayer";
 
 /**
  * Full-screen overlay that flashes briefly when the player levels up.
  * Watches the player's level and triggers on increase.
  */
 export function LevelUpOverlay() {
-  const level = useGameStore((s) => s.player.level);
+  const { player } = useMyPlayer();
+  const level = player?.level ?? 0;
   const [show, setShow] = useState(false);
   const [displayLevel, setDisplayLevel] = useState(level);
   const prevLevelRef = useRef(level);

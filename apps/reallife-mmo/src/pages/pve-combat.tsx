@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
+import { useReducer } from "spacetimedb/react";
+import { reducers } from "@/generated";
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import HealthBar from "@/components/ui/8bit/health-bar";
 import { Progress } from "@/components/ui/8bit/progress";
 import { Badge } from "@/components/ui/8bit/badge";
 import { usePveCombat } from "@/hooks/usePveCombat";
-import { useGameStore } from "@/lib/gameStore";
+import { useMyPlayer } from "@/hooks/useStdbPlayer";
 import { spellEmoji } from "@/lib/combatEngine";
 import { BIOME_META, type BiomeId } from "@/lib/biomeThemes";
 import { CLASS_SPRITES } from "@/lib/types";
@@ -16,8 +18,8 @@ import { asset, cn } from "@/lib/utils";
 export function PveCombat() {
   const navigate = useNavigate();
   const { biomeId } = useParams<{ biomeId: string }>();
-  const player = useGameStore((s) => s.player);
-  const grantPveRewards = useGameStore((s) => s.grantPveRewards);
+  const { player } = useMyPlayer();
+  const grantPveRewardsReducer = useReducer(reducers.grantPveRewards);
 
   const {
     phase,
@@ -38,7 +40,7 @@ export function PveCombat() {
     reset,
   } = usePveCombat();
 
-  const biome = (biomeId ?? player.currentBiome) as BiomeId;
+  const biome = (biomeId ?? player?.currentBiome ?? "plains") as BiomeId;
 
   // Start combat on mount
   useEffect(() => {
@@ -50,7 +52,23 @@ export function PveCombat() {
   // Grant rewards on victory
   useEffect(() => {
     if (phase === "victory" && xpEarned > 0) {
-      grantPveRewards(xpEarned, lootDrops);
+      // Call SpacetimeDB reducer for server-side persistence
+      const loot = lootDrops[0];
+      void grantPveRewardsReducer({
+        xpGain: xpEarned,
+        lootItemId: loot?.id ?? undefined,
+        lootName: loot?.name ?? undefined,
+        lootSlot: loot ? ({ tag: loot.slot } as any) : undefined,
+        lootRarity: loot ? ({ tag: loot.rarity } as any) : undefined,
+        lootLevelReq: loot?.levelReq ?? undefined,
+        lootBonusStr: loot?.statBonus?.STR ?? undefined,
+        lootBonusAgi: loot?.statBonus?.AGI ?? undefined,
+        lootBonusInt: loot?.statBonus?.INT ?? undefined,
+        lootBonusCon: loot?.statBonus?.CON ?? undefined,
+        lootBonusWis: loot?.statBonus?.WIS ?? undefined,
+        lootBonusCha: loot?.statBonus?.CHA ?? undefined,
+        lootBonusMp: loot?.statBonus?.MP ?? undefined,
+      });
     }
     // Only run once when phase becomes "victory"
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -160,11 +178,11 @@ export function PveCombat() {
           className={cn("flex flex-col items-center gap-2 flex-1", isPlayerTurn && "animate-pulse")}
         >
           <Badge variant={isPlayerTurn ? "default" : "secondary"} className="text-[8px]">
-            {player.name || "Hero"} (You)
+            {player?.name || "Hero"} (You)
           </Badge>
           <img
-            src={asset(CLASS_SPRITES[player.playerClass])}
-            alt={player.playerClass}
+            src={asset(CLASS_SPRITES[player?.playerClass ?? "Unclassed"])}
+            alt={player?.playerClass ?? "Unclassed"}
             className="pixelated w-20 h-20 md:w-28 md:h-28 drop-shadow-lg"
           />
           <div className="w-full max-w-32 space-y-1">

@@ -10,13 +10,6 @@ import {
   type Infer as __Infer,
 } from "spacetimedb";
 
-export default __t.row({
-  id: __t.u64(),
-  guildId: __t.u64().name("guild_id"),
-  biomeId: __t.string().name("biome_id"),
-  whisperTo: __t.identity().name("whisper_to"),
-  authorId: __t.identity().name("author_id"),
-  authorName: __t.string().name("author_name"),
-  text: __t.string(),
-  timestamp: __t.timestamp(),
-});
+export default {
+  biomeId: __t.string(),
+};

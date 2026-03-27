@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/8bit/badge";
 import { BIOME_META, type BiomeId } from "@/lib/biomeThemes";
 import { LOCATION_TYPE_LABELS } from "@/lib/types";
 import type { Location } from "@/lib/types";
-import { useGameStore } from "@/lib/gameStore";
-import { useGuildStore } from "@/lib/guildStore";
+import { useTable, useReducer } from "spacetimedb/react";
+import { tables, reducers } from "@/generated";
 
 interface LocationPickerProps {
   biomeId: BiomeId;
@@ -15,14 +15,16 @@ interface LocationPickerProps {
 
 export function LocationPicker({ biomeId, onClose }: LocationPickerProps) {
   const navigate = useNavigate();
-  const enterLocation = useGameStore((s) => s.enterLocation);
-  const guild = useGuildStore((s) => s.guild);
+  const enterLocation = useReducer(reducers.enterLocation);
+  const [guildRows] = useTable(tables.my_guild);
+  const [memberRows] = useTable(tables.my_guild_members);
   const meta = BIOME_META[biomeId];
 
-  const canRaid = guild != null && guild.members.length >= 3;
+  const hasGuild = guildRows.length > 0;
+  const canRaid = hasGuild && memberRows.length >= 3;
 
   const handleEnter = (location: Location) => {
-    enterLocation(location.id);
+    void enterLocation({ locationId: location.id });
     void navigate(`/location/${location.id}`);
   };
 
@@ -86,8 +88,8 @@ export function LocationPicker({ biomeId, onClose }: LocationPickerProps) {
       {/* Boss lair note */}
       {!canRaid && (
         <p className="retro text-[6px] text-muted-foreground text-center">
-          {guild
-            ? `Need ${3 - guild.members.length} more guild member(s) to unlock Boss Lairs`
+          {hasGuild
+            ? `Need ${3 - memberRows.length} more guild member(s) to unlock Boss Lairs`
             : "Join a guild with 3+ members to unlock Boss Lairs"}
         </p>
       )}

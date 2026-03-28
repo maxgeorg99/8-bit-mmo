@@ -164,3 +164,4 @@ From `apps/spacetimedb/`:
 - [ ] Sound effects and retro music
 - [ ] Mobile-responsive layout
 - [ ] Deploy to maincloud (SpacetimeDB hosted)
+- [ ] Spacetime Auth

@@ -6,8 +6,10 @@ at #processMessage...
 Level Up Animation on page load.
 
 Name when whispering is interchanged To / From.
+We should also revisit if we realy need author name or if we should do these always as lookup on player table or store both author and receiver name.
 
-The Title is not displayed Correcrly for other players
+The Title is not displayed correcrly when inspecting other players
 instead of 👣 First Step it is first_step
+Also i did not see their items.
 
 Daily Quests are not generated

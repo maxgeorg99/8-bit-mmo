@@ -8,7 +8,8 @@ export const message = table(
     biomeId: t.string().index("btree"), // 0 = no biome wide message
     whisperTo: t.identity().index("btree"), // 0 = no whisper message
     authorId: t.identity().index("btree"),
-    authorName: t.string(),
+    authorName: t.option(t.string()),
+    recipientName: t.option(t.string()),
     text: t.string(),
     timestamp: t.timestamp(),
   },

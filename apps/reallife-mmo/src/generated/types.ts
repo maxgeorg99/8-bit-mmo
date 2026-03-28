@@ -189,7 +189,8 @@ export const Message = __t.object("Message", {
   biomeId: __t.string(),
   whisperTo: __t.identity(),
   authorId: __t.identity(),
-  authorName: __t.string(),
+  authorName: __t.option(__t.string()),
+  recipientName: __t.option(__t.string()),
   text: __t.string(),
   timestamp: __t.timestamp(),
 });

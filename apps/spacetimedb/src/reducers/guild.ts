@@ -48,6 +48,7 @@ export const create_guild = spacetimedb.reducer(
       whisperTo: Identity.zero(),
       authorId: ctx.sender,
       authorName: "System",
+      recipientName: undefined,
       text: `Guild "${name}" has been founded!`,
       timestamp: ctx.timestamp,
     });
@@ -85,6 +86,7 @@ export const join_guild = spacetimedb.reducer({ guildId: t.u64() }, (ctx, { guil
     whisperTo: Identity.zero(),
     authorId: ctx.sender,
     authorName: "System",
+    recipientName: undefined,
     text: `${p.name} has joined the guild!`,
     timestamp: ctx.timestamp,
   });
@@ -112,6 +114,7 @@ export const leave_guild = spacetimedb.reducer({}, (ctx) => {
     whisperTo: Identity.zero(),
     authorId: ctx.sender,
     authorName: "System",
+    recipientName: undefined,
     text: `${p.name} has left the guild.`,
     timestamp: ctx.timestamp,
   });
@@ -178,6 +181,7 @@ export const send_guild_message = spacetimedb.reducer({ text: t.string() }, (ctx
     whisperTo: Identity.zero(),
     authorId: ctx.sender,
     authorName: p.name,
+    recipientName: undefined,
     text,
     timestamp: ctx.timestamp,
   });

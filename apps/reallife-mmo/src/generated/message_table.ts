@@ -16,7 +16,8 @@ export default __t.row({
   biomeId: __t.string().name("biome_id"),
   whisperTo: __t.identity().name("whisper_to"),
   authorId: __t.identity().name("author_id"),
-  authorName: __t.string().name("author_name"),
+  authorName: __t.option(__t.string()).name("author_name"),
+  recipientName: __t.option(__t.string()).name("recipient_name"),
   text: __t.string(),
   timestamp: __t.timestamp(),
 });

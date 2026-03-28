@@ -15,6 +15,7 @@ export const send_biome_message = spacetimedb.reducer({ text: t.string() }, (ctx
     biomeId: p.currentBiome,
     whisperTo: Identity.zero(),
     authorId: ctx.sender,
+    recipientName: undefined,
     authorName: p.name || "Anonymous",
     text,
     timestamp: ctx.timestamp,
@@ -47,6 +48,7 @@ export const send_whisper = spacetimedb.reducer(
       whisperTo: target.identity,
       authorId: ctx.sender,
       authorName: sender.name || "Anonymous",
+      recipientName: target.name,
       text,
       timestamp: ctx.timestamp,
     });

@@ -221,6 +221,7 @@ export const start_raid = spacetimedb.reducer({ biomeId: t.string() }, (ctx, { b
     whisperTo: Identity.zero(),
     authorId: ctx.sender,
     authorName: "System",
+    recipientName: undefined,
     text: `⚔️ Raid started against ${boss.name}!`,
     timestamp: ctx.timestamp,
   });
@@ -300,7 +301,11 @@ export const raid_cast_spell = spacetimedb.reducer(
 
     // Check boss dead
     if (newBossHp <= 0) {
-      ctx.db.raid.id.update({ ...raid, bossHp: 0, phase: { tag: "Victory" } as any });
+      ctx.db.raid.id.update({
+        ...raid,
+        bossHp: 0,
+        phase: { tag: "Victory" } as any,
+      });
       // Increment guild raid wins
       const guild = ctx.db.guild.id.find(raid.guildId);
       if (guild) {
@@ -313,6 +318,7 @@ export const raid_cast_spell = spacetimedb.reducer(
         whisperTo: Identity.zero(),
         authorId: ctx.sender,
         authorName: "System",
+        recipientName: undefined,
         text: `🎉 ${boss.name} has been defeated! Raid victory!`,
         timestamp: ctx.timestamp,
       });
@@ -420,6 +426,7 @@ export const raid_cast_spell = spacetimedb.reducer(
         whisperTo: Identity.zero(),
         authorId: ctx.sender,
         authorName: "System",
+        recipientName: undefined,
         text: `💀 The guild was defeated by ${boss.name}...`,
         timestamp: ctx.timestamp,
       });

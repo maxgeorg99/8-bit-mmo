@@ -57,7 +57,8 @@ function useChatStore() {
 interface MessageRow {
   id: bigint;
   authorId: { toHexString(): string };
-  authorName: string;
+  authorName?: string;
+  recipientName?: string;
   text: string;
   timestamp: { toMillis(): bigint };
   guildId?: bigint;
@@ -104,7 +105,6 @@ export function ChatPanel() {
     whisperMessages as readonly MessageRow[],
     store.whisperTarget,
     identityOrNull,
-    identityNameMap,
   );
 
   useEffect(() => {
@@ -117,7 +117,6 @@ export function ChatPanel() {
   const whisperPartners = getWhisperPartners(
     whisperMessages as readonly MessageRow[],
     identityOrNull,
-    identityNameMap,
   );
 
   const handleSend = useCallback(() => {
@@ -363,7 +362,9 @@ function ChatMessage({
   return (
     <p className="retro text-[6px]">
       {isWhisper && <span className="text-purple-400/60">{isOwnMessage ? "To " : "From "}</span>}
-      <span className={cn(isWhisper ? "text-purple-400" : "text-primary")}>{msg.authorName}</span>
+      <span className={cn(isWhisper ? "text-purple-400" : "text-primary")}>
+        {isWhisper && isOwnMessage ? msg.recipientName : msg.authorName}
+      </span>
       <span className="text-muted-foreground">: {msg.text}</span>
     </p>
   );
@@ -378,7 +379,6 @@ function getActiveMessages(
   whisper: readonly MessageRow[],
   whisperTarget: string | null,
   identity: { toHexString(): string } | null,
-  nameMap: Map<string, string>,
 ): MessageRow[] {
   switch (tab) {
     case "local":
@@ -389,16 +389,12 @@ function getActiveMessages(
       if (!whisperTarget || !identity) return sortByTimestamp(whisper);
       const myHex = identity.toHexString();
       return sortByTimestamp(
-        whisper.filter((m) => {
-          // Message FROM the whisper target to me
-          if (m.authorName === whisperTarget) return true;
-          // Message FROM me TO the whisper target (resolve whisperTo identity → name)
-          if (m.authorId.toHexString() === myHex && m.whisperTo) {
-            const targetName = nameMap.get(m.whisperTo.toHexString());
-            return targetName === whisperTarget;
-          }
-          return false;
-        }),
+        whisper.filter(
+          (m) =>
+            m.authorId.toHexString() === myHex
+              ? m.recipientName === whisperTarget // sent: use stored recipientName
+              : m.authorName === whisperTarget, // received: use authorName
+        ),
       );
     }
     default:
@@ -419,25 +415,17 @@ function sortByTimestamp(messages: readonly MessageRow[]): MessageRow[] {
 function getWhisperPartners(
   whispers: readonly MessageRow[],
   identity: { toHexString(): string } | null,
-  nameMap: Map<string, string>,
 ): string[] {
   if (!identity) return [];
   const myHex = identity.toHexString();
   const partners = new Set<string>();
-
   for (const m of whispers) {
     if (m.authorId.toHexString() === myHex) {
-      // I sent this — resolve whisperTo identity to a name
-      if (m.whisperTo) {
-        const name = nameMap.get(m.whisperTo.toHexString());
-        if (name) partners.add(name);
-      }
+      if (m.recipientName) partners.add(m.recipientName); // ← was nameMap lookup
     } else {
-      // Received from someone else
-      partners.add(m.authorName);
+      partners.add(m.authorName ?? "Unknown");
     }
   }
-
   return Array.from(partners).sort();
 }
 

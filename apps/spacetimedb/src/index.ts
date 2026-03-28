@@ -1,5 +1,6 @@
 import { ScheduleAt } from "spacetimedb";
 import spacetimedb from "./schema";
+import { generateDailyQuestRows } from "./logic/questGenerator";
 export default spacetimedb;
 
 // ── Reducers ─────────────────────────────────────────────────────
@@ -46,6 +47,7 @@ export { grant_pve_rewards } from "./reducers/grantPveRewards";
 
 // Scheduled
 export { idle_tick } from "./reducers/idleTick";
+export { daily_quest_tick } from "./reducers/dailyQuestTick";
 
 // ── Views ────────────────────────────────────────────────────────
 
@@ -155,6 +157,13 @@ export const init = spacetimedb.init((ctx) => {
     scheduledId: 0n,
     scheduledAt: ScheduleAt.interval(ONE_HOUR_MICROS),
   });
+
+  // Schedule daily quest generation — runs every 24 hours
+  const ONE_DAY_MICROS = 24n * 3_600_000_000n;
+  ctx.db.dailyQuestSchedule.insert({
+    scheduledId: 0n,
+    scheduledAt: ScheduleAt.interval(ONE_DAY_MICROS),
+  });
 });
 
 // ── Lifecycle ────────────────────────────────────────────────────
@@ -194,6 +203,12 @@ export const onConnect = spacetimedb.clientConnected((ctx) => {
       unlockedBiomes: ["plains"],
       joinedAt: ctx.timestamp,
     });
+
+    // Generate initial daily quests for the new player
+    const quests = generateDailyQuestRows(ctx.sender, ctx.timestamp);
+    for (const q of quests) {
+      ctx.db.quest.insert(q as any);
+    }
   }
 });
 

@@ -11,8 +11,16 @@ export function LevelUpOverlay() {
   const [show, setShow] = useState(false);
   const [displayLevel, setDisplayLevel] = useState(level);
   const prevLevelRef = useRef(level);
+  const initialLoadRef = useRef(true);
 
   useEffect(() => {
+    // Skip the first data load — don't animate when SpacetimeDB delivers initial state
+    if (initialLoadRef.current) {
+      initialLoadRef.current = false;
+      prevLevelRef.current = level;
+      return;
+    }
+
     if (level > prevLevelRef.current) {
       setDisplayLevel(level);
       setShow(true);

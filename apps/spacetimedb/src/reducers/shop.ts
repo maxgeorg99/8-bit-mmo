@@ -78,9 +78,12 @@ export const buy_item = spacetimedb.reducer(
     // Check level requirement
     if (p.level < args.levelReq) throw new SenderError("Level too low");
 
+    // Build a unique ID for this player + item combination
+    const uniqueId = `${ctx.sender.toHexString().slice(0, 16)}-${args.itemId}`;
+
     // Check if player already owns this item
-    const existing = ctx.db.equipmentItem.id.find(args.itemId);
-    if (existing && existing.playerId.isEqual(ctx.sender)) {
+    const existing = ctx.db.equipmentItem.id.find(uniqueId);
+    if (existing) {
       throw new SenderError("Already own this item");
     }
 
@@ -89,7 +92,7 @@ export const buy_item = spacetimedb.reducer(
 
     // Add item to inventory
     ctx.db.equipmentItem.insert({
-      id: args.itemId,
+      id: uniqueId,
       playerId: ctx.sender,
       name: args.itemName,
       slot: args.slot,

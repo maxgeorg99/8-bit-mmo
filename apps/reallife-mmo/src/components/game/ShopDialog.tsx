@@ -36,7 +36,13 @@ export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
 
   const merchant = BIOME_MERCHANTS[biomeId];
   const shopItems = BIOME_SHOPS[biomeId];
-  const ownedIds = new Set(player.chest.map((i) => i.id));
+  // Item IDs in DB are prefixed with player identity — extract the shop item ID suffix
+  const ownedShopIds = new Set(
+    player.chest.map((i) => {
+      const dashIdx = i.id.indexOf("-shop-");
+      return dashIdx >= 0 ? i.id.slice(dashIdx + 1) : i.id;
+    }),
+  );
   const equippedIds = new Set(
     Object.values(player.equipment)
       .map((i) => i?.id)
@@ -80,7 +86,7 @@ export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
 
           <TabsContent value="buy" className="space-y-2 mt-2">
             {shopItems.map(({ item, cost }) => {
-              const owned = ownedIds.has(item.id);
+              const owned = ownedShopIds.has(item.id);
               const canAfford = player.gold >= cost;
               const meetsLevel = player.level >= item.levelReq;
 

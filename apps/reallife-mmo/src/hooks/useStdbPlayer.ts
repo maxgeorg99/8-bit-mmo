@@ -2,6 +2,7 @@ import { useTable, useReducer } from "spacetimedb/react";
 import { tables, reducers } from "@/generated";
 import type { Player as StdbPlayer, EquipmentItem as StdbEquipmentItem } from "@/generated/types";
 import type { Player, EquipmentItem, EquipSlot, Stats, PlayerClass, ItemRarity } from "@/lib/types";
+import { TITLE_MAP } from "@/lib/titles";
 
 /**
  * Map a SpacetimeDB Player row to the client-side Player shape.
@@ -74,7 +75,10 @@ export function stdbItemToLocal(item: StdbEquipmentItem): EquipmentItem {
  * Convert a SpacetimeDB biome_players row to the NpcPlayer-compatible shape
  * used by PlayerInspect.
  */
-export function stdbPlayerToInspectable(p: StdbPlayer): {
+export function stdbPlayerToInspectable(
+  p: StdbPlayer,
+  equipmentItems: readonly StdbEquipmentItem[] = [],
+): {
   name: string;
   level: number;
   playerClass: PlayerClass;
@@ -84,11 +88,24 @@ export function stdbPlayerToInspectable(p: StdbPlayer): {
   guildName?: string;
   online: boolean;
 } {
+  // Resolve title ID to formatted display string (e.g. "first_step" → "👣 First Step")
+  const titleDef = p.activeTitle ? TITLE_MAP.get(p.activeTitle) : undefined;
+  const titleDisplay = titleDef ? `${titleDef.icon} ${titleDef.name}` : undefined;
+
+  // Build equipped items map from equipment data
+  const equipped: Partial<Record<EquipSlot, EquipmentItem>> = {};
+  for (const item of equipmentItems) {
+    if (item.equipped) {
+      const localItem = stdbItemToLocal(item);
+      equipped[localItem.slot] = localItem;
+    }
+  }
+
   return {
     name: p.name,
     level: p.level,
     playerClass: (p.characterClass.tag as PlayerClass) ?? "Unclassed",
-    title: p.activeTitle ?? undefined,
+    title: titleDisplay,
     stats: {
       STR: Math.round(p.strength),
       AGI: Math.round(p.agility),
@@ -98,7 +115,7 @@ export function stdbPlayerToInspectable(p: StdbPlayer): {
       CHA: Math.round(p.charisma),
       MP: Math.round(p.mana),
     },
-    equipment: {},
+    equipment: equipped,
     online: p.online,
   };
 }
@@ -124,7 +141,12 @@ export function useMyPlayer() {
  */
 export function useBiomePlayers() {
   const [biomePlayers] = useTable(tables.biome_players);
-  return biomePlayers.map(stdbPlayerToInspectable);
+  const [allEquipment] = useTable(tables.equipmentItem);
+
+  return biomePlayers.map((p) => {
+    const playerEquip = allEquipment.filter((e) => e.playerId.isEqual(p.identity));
+    return stdbPlayerToInspectable(p, playerEquip);
+  });
 }
 
 /**

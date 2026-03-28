@@ -101,6 +101,12 @@ export const CombatStatus = __t.enum("CombatStatus", {
 });
 export type CombatStatus = __Infer<typeof CombatStatus>;
 
+export const DailyQuestSchedule = __t.object("DailyQuestSchedule", {
+  scheduledId: __t.u64(),
+  scheduledAt: __t.scheduleAt(),
+});
+export type DailyQuestSchedule = __Infer<typeof DailyQuestSchedule>;
+
 // The tagged union or sum type for the algebraic type `EquipSlot`.
 export const EquipSlot = __t.enum("EquipSlot", {
   Weapon: __t.unit(),

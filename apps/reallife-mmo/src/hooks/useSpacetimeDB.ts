@@ -61,7 +61,8 @@ function buildConnection(onReconnect: () => void, onConnected: () => void) {
           "SELECT * FROM biome_players",
           "SELECT * FROM leaderboard",
           "SELECT * FROM browse_guilds",
-          // Raw tables for combat
+          // Raw tables for combat + equipment (for inspecting other players)
+          "SELECT * FROM equipment_item",
           "SELECT * FROM combat",
           "SELECT * FROM combat_log",
         ]);

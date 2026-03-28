@@ -24,6 +24,7 @@ import { raidLog } from "./tables/raidLog";
 
 // Scheduled
 import { idleTickSchedule } from "./tables/idleTickSchedule";
+import { dailyQuestSchedule } from "./tables/dailyQuestSchedule";
 
 const spacetimedb = schema({
   // Player core
@@ -50,6 +51,7 @@ const spacetimedb = schema({
 
   // Scheduled
   idleTickSchedule,
+  dailyQuestSchedule,
 });
 
 export default spacetimedb;

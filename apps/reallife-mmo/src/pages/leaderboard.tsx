@@ -60,17 +60,16 @@ export function Leaderboard() {
   }, [allGuilds, allGuildMembers]);
 
   // Build entries from SpacetimeDB leaderboard view
-  const realPlayers: LeaderboardEntry[] = leaderboardRows.map((row: Record<string, unknown>) => {
-    const ident = row.identity as { toHexString(): string } | undefined;
-    const hex = ident?.toHexString();
+  const realPlayers: LeaderboardEntry[] = leaderboardRows.map((row) => {
+    const hex = row.identity?.toHexString();
     return {
-      name: (row.name as string) || "Anonymous",
-      level: row.level as number,
+      name: row.name || "Anonymous",
+      level: row.level,
       playerClass: (row.characterClass as { tag: string })?.tag ?? "Unclassed",
-      value: row.level as number,
+      value: row.level,
       isPlayer: hex === myHex,
       guildName: hex ? guildNameByPlayer.get(hex) : undefined,
-      online: row.online as boolean | undefined,
+      online: row.online,
     };
   });
 
@@ -91,17 +90,17 @@ export function Leaderboard() {
 
   // Stat board
   const statBoard = [
-    ...leaderboardRows.map((row: Record<string, unknown>) => {
-      const ident = row.identity as { toHexString(): string } | undefined;
-      const hex = ident?.toHexString();
+    ...leaderboardRows.map((row) => {
+      const hex = row.identity?.toHexString();
+      const statValue = row[STAT_KEYS[statTab] as keyof typeof row] as number;
       return {
-        name: (row.name as string) || "Anonymous",
-        level: row.level as number,
+        name: row.name || "Anonymous",
+        level: row.level,
         playerClass: (row.characterClass as { tag: string })?.tag ?? "Unclassed",
-        value: Math.round(((row[STAT_KEYS[statTab]] as number) ?? 0) * 10) / 10,
+        value: Math.round((statValue ?? 0) * 10) / 10,
         isPlayer: hex === myHex,
         guildName: hex ? guildNameByPlayer.get(hex) : undefined,
-        online: row.online as boolean | undefined,
+        online: row.online,
       };
     }),
     ...(realPlayers.length < 10

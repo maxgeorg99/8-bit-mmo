@@ -34,15 +34,21 @@ Instructions:
 1. Read `apps/reallife-mmo/docs/ROADMAP.md` for the full phase specification.
 2. Read `apps/reallife-mmo/.claude/CLAUDE.md` for project conventions.
 3. Read `PHASE_TRACKER.md` for context on what's already done.
-4. Implement ALL features described in the phase. Follow the roadmap exactly.
+4. **CHECK FOR BUG FIX QUEUE:** If PHASE_TRACKER.md contains a "Bug Fix Queue" section, this is a fix iteration — fix the listed bugs instead of implementing from scratch. Commit as "fix: resolve playwright-found bugs in phase {PHASE_NUMBER}".
+5. If no bug fix queue exists, implement ALL features described in the phase. Follow the roadmap exactly.
 5. Follow the agent working instructions from CLAUDE.md (schema first → reducer → hooks → UI).
 6. The SpacetimeDB module is TypeScript (NOT Rust) — see `apps/spacetimedb/src/`.
-7. Run `vp check` to ensure TypeScript and lint pass.
-8. Run `vp build` in apps/reallife-mmo to ensure the build succeeds.
-9. Commit your work with a descriptive message: "feat: implement phase {PHASE_NUMBER} — {PHASE_NAME}"
+7. If you modify any SpacetimeDB tables or reducers, you MUST:
+   a. Build the module: `cd apps/spacetimedb && spacetime build`
+   b. Publish the module: `cd apps/spacetimedb && spacetime publish 8bit-combat`
+   c. Regenerate client bindings: `cd apps/spacetimedb && spacetime generate --lang typescript --out-dir ../reallife-mmo/src/generated --module-path .`
+8. Run `vp check` to ensure TypeScript and lint pass.
+9. Run `vp build` in apps/reallife-mmo to ensure the build succeeds.
+10. Commit your work with a descriptive message: "feat: implement phase {PHASE_NUMBER} — {PHASE_NAME}"
 
 Key rules:
 - SpacetimeDB module language is TypeScript (apps/spacetimedb/src/)
+- Always run spacetime build → publish → generate after changing server code
 - Use shadcn/ui components (add via `npx shadcn@latest add <component>` if needed)
 - Use Tailwind CSS v4 for styling
 - Follow existing code patterns in the codebase
@@ -82,6 +88,8 @@ PART A — Code Review:
    - Security: Input validation, no client-side state mutation
    - Performance: No unnecessary re-renders, proper memoization
 5. Fix any issues you find. Do not skip problems — fix them.
+6. If SpacetimeDB server code was changed, verify the build works:
+   `cd apps/spacetimedb && spacetime build`
 
 PART B — Test Writing:
 1. Look at existing tests in `apps/reallife-mmo/src/lib/__tests__/` for patterns.
@@ -110,12 +118,25 @@ After the agent completes:
 
 **Only run if Step 2 is checked and Step 3 is unchecked.**
 
+**IMPORTANT: Before spawning this agent, verify SpacetimeDB is running:**
+
+1. Run `curl -s http://localhost:3000` or check if the spacetime process is alive.
+2. If SpacetimeDB is NOT running, ask the human to start it:
+   - Tell them: "Please start SpacetimeDB by running `spacetime start` in a separate terminal, then press Enter to continue."
+   - Wait for confirmation before proceeding.
+
 Spawn a **general-purpose agent** with this prompt:
 
 ```
 You are the PLAYWRIGHT EVALUATION AGENT for Reallife MMO.
 
 Your task: Verify that phase {PHASE_NUMBER} — {PHASE_NAME} works correctly in the running application.
+
+Pre-flight checks:
+1. Verify SpacetimeDB is running: `curl -s http://localhost:3000` should respond.
+   If it's not running, STOP and report: "SpacetimeDB is not running. Please start it with `spacetime start`."
+2. Verify the module is published: `spacetime logs 8bit-combat` should show output.
+   If not published, run: `cd apps/spacetimedb && spacetime publish 8bit-combat`
 
 Instructions:
 1. Read `apps/reallife-mmo/docs/ROADMAP.md` for what phase {PHASE_NUMBER} should do.
@@ -126,6 +147,7 @@ Instructions:
    - Navigate to each page affected by this phase
    - Verify the new features are visible and interactive
    - Test the core user flows described in the roadmap phase
+   - Save all screenshots to `apps/reallife-mmo/docs/verification/screenshots/` (create dir if needed)
    - Take snapshots of key states for the record
 5. Create a verification report listing:
    - ✅ Features that work as expected
@@ -148,7 +170,11 @@ Test checklist for common pages:
 After the agent completes:
 
 - If all features pass: Check the Step 3 checkbox in `PHASE_TRACKER.md`
-- If failures exist: Leave Step 3 unchecked and add failure notes to the log
+- If failures exist (any ❌ items):
+  1. Leave Step 3 unchecked
+  2. **Uncheck Step 1 and Step 2** as well — this forces a fix iteration
+  3. Save the failure report to `PHASE_TRACKER.md` under "Bug Fix Queue"
+  4. The next iteration will re-run: Implementation Agent (to fix bugs) → Review Agent → Playwright Agent
 - Append a log entry to `PHASE_TRACKER.md`:
   ```
   ### Iteration {N} — {DATE}
@@ -157,18 +183,33 @@ After the agent completes:
   - Issues: {summary or "none"}
   ```
 
+### Bug Fix Loop
+
+When the Playwright agent finds bugs:
+
+1. All step checkboxes are reset (unchecked)
+2. The bugs are documented in `PHASE_TRACKER.md` under a "Bug Fix Queue" section
+3. The NEXT iteration's Implementation Agent reads the bug list and fixes them instead of implementing from scratch
+4. The Review Agent then verifies the fixes and updates tests
+5. The Playwright Agent re-verifies in the browser
+6. This loop repeats until Playwright passes with no ❌ items
+7. After 3 consecutive bug-fix iterations on the same phase, ask for human intervention
+
+The Implementation Agent prompt (Step 1) should always check for a "Bug Fix Queue" section in PHASE_TRACKER.md. If one exists, fix those bugs instead of implementing from scratch.
+
 ### Phase Advancement
 
-When all 3 steps are checked:
+When all 3 steps are checked (and Playwright found no bugs):
 
-1. Move the current phase to the "Completed Phases" table in `PHASE_TRACKER.md`
-2. Update the roadmap `ROADMAP.md` — mark the phase status as "Done"
-3. Set the next phase as current and reset the checkboxes
-4. The next Ralph Loop iteration will start implementing the new phase
+1. Remove any "Bug Fix Queue" section from `PHASE_TRACKER.md`
+2. Move the current phase to the "Completed Phases" table in `PHASE_TRACKER.md`
+3. Update the roadmap `ROADMAP.md` — mark the phase status as "Done"
+4. Set the next phase as current and reset the checkboxes
+5. The next Ralph Loop iteration will start implementing the new phase
 
 ### Failure Recovery
 
-If a step fails:
+If an agent crashes or a step fails for non-bug reasons:
 
 - The checkbox stays unchecked
 - The next iteration re-reads the state and retries the failed step
@@ -185,12 +226,24 @@ When ALL phases in the roadmap are marked done:
 
 ---
 
+## SpacetimeDB Operations Reference
+
+| Operation            | Command                                                                                                               | When                                    |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| Build module         | `cd apps/spacetimedb && spacetime build`                                                                              | After changing server code              |
+| Publish module       | `cd apps/spacetimedb && spacetime publish 8bit-combat`                                                                | After build, to deploy changes          |
+| Publish (reset data) | `cd apps/spacetimedb && spacetime publish 8bit-combat --delete-data`                                                  | When schema changes break existing data |
+| Generate bindings    | `cd apps/spacetimedb && spacetime generate --lang typescript --out-dir ../reallife-mmo/src/generated --module-path .` | After publish, to update client types   |
+| Check server running | `curl -s http://localhost:3000`                                                                                       | Before playwright testing               |
+| Start server         | `spacetime start` (human must run this)                                                                               | If server check fails                   |
+
 ## Key File Paths
 
-| File                                   | Purpose                               |
-| -------------------------------------- | ------------------------------------- |
-| `PHASE_TRACKER.md`                     | Current state (phase + step progress) |
-| `apps/reallife-mmo/docs/ROADMAP.md`    | Phase specifications                  |
-| `apps/reallife-mmo/.claude/CLAUDE.md`  | Project conventions                   |
-| `apps/reallife-mmo/src/lib/__tests__/` | Test directory                        |
-| `apps/reallife-mmo/docs/verification/` | Playwright verification reports       |
+| File                                   | Purpose                                    |
+| -------------------------------------- | ------------------------------------------ |
+| `PHASE_TRACKER.md`                     | Current state (phase + step progress)      |
+| `apps/reallife-mmo/docs/ROADMAP.md`    | Phase specifications                       |
+| `apps/reallife-mmo/.claude/CLAUDE.md`  | Project conventions                        |
+| `apps/reallife-mmo/src/lib/__tests__/` | Test directory                             |
+| `apps/reallife-mmo/docs/verification/` | Playwright verification reports            |
+| `apps/spacetimedb/package.json`        | SpacetimeDB build/publish/generate scripts |

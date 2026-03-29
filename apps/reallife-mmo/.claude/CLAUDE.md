@@ -33,7 +33,7 @@
 
 | Concern            | Choice                             |
 | ------------------ | ---------------------------------- |
-| Database + server  | SpacetimeDB (Rust module)          |
+| Database + server  | SpacetimeDB (typescript module)    |
 | Auth               | SpacetimeDB Identity (token-based) |
 | Hosting (backend)  | SpacetimeDB Cloud                  |
 | Hosting (frontend) | Vercel                             |
@@ -180,7 +180,7 @@ Class **commitment** unlocks at Level 20. A committed player gets +10% primary s
 
 ## 5. SpacetimeDB Conventions
 
-- **Module language:** Rust
+- **Module language:** Typescript
 - **Client SDK:** `@clockworklabs/spacetimedb-sdk` (TypeScript)
 - **All game state lives in SpacetimeDB.** The React app is a thin subscriber — it never holds canonical state.
 - **Subscriptions:** Subscribe per-page to only the tables needed. Do not subscribe to everything globally.
@@ -353,7 +353,6 @@ Run tests:
 
 ```bash
 pnpm test           # Vitest unit + component tests
-cargo test          # Rust reducer unit tests (in server/)
 ```
 
 ---

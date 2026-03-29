@@ -185,9 +185,9 @@ A Final Fantasy-style shared overworld where you see other players standing in b
 > **Status:** Not started
 > **Depends on:** Phases 1-3 (gameplay systems built first)
 
-### 4.1 — Server Module (Rust)
+### 4.1 — Server Module (TypeScript)
 
-Migrate all tables and logic to SpacetimeDB Rust module:
+Migrate all tables and logic to SpacetimeDB TypeScript module:
 
 **Tables:**
 

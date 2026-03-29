@@ -11,9 +11,16 @@
 
 ## Step Progress
 
-- [x] Step 1: Implementation (working agent)
-- [x] Step 2: Code review + test writing (review agent)
+- [ ] Step 1: Implementation (working agent)
+- [ ] Step 2: Code review + test writing (review agent)
 - [ ] Step 3: Playwright verification (evaluation agent)
+
+## Bug Fix Queue
+
+| ID  | Severity | Page        | Description                                                                                                                                                                                                     |
+| --- | -------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| B1  | Medium   | Leaderboard | Duplicate player entry: real player appears twice (as "TestHero" and "TestHero (You)"), causing React duplicate key errors. Deduplicate NPC + real player list by name/identity and use unique ID as React key. |
+| B2  | Low      | Leaderboard | Grammar: "1 players online" should be "1 player online" (singular form when count is 1).                                                                                                                        |
 
 ## Completed Phases
 
@@ -50,3 +57,14 @@
 - Server changes: friendship table, send_friend_request/accept_friend_request/reject_friend_request/remove_friend reducers, my_friends view
 - Client changes: /friends page, useFriends hook, updated leaderboard with guild name resolution + online indicators, Friends button on dashboard
 - Issues: none
+
+### Iteration 3b — 2026-03-29
+
+- Phase: 4.3 — Shared World Features (Playwright Verification)
+- Steps completed: Playwright verification run
+- Result: 17/17 functional checks pass, 2 bugs found
+- Bug B1 (Medium): Leaderboard duplicate player entry + React key collision
+- Bug B2 (Low): Leaderboard "1 players online" grammar
+- Verification report: `apps/reallife-mmo/docs/verification/phase-4.3.md`
+- Screenshots saved to: `apps/reallife-mmo/docs/verification/screenshots/`
+- Steps 1-3 unchecked pending bug fixes

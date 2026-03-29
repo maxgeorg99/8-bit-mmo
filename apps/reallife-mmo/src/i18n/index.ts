@@ -19,7 +19,21 @@ export const SUPPORTED_LANGUAGES = [
   { code: "zh", label: "中文" },
 ] as const;
 
-const savedLanguage = localStorage.getItem("language") ?? "en";
+const SUPPORTED_CODES: string[] = SUPPORTED_LANGUAGES.map((l) => l.code);
+
+/** Detect initial language: localStorage > browser language > fallback "en" */
+function detectLanguage(): string {
+  const saved = localStorage.getItem("language");
+  if (saved && SUPPORTED_CODES.includes(saved)) return saved;
+
+  // Check browser language (e.g. "de-DE" → "de")
+  const browserLang = navigator.language.split("-")[0];
+  if (browserLang && SUPPORTED_CODES.includes(browserLang)) return browserLang;
+
+  return "en";
+}
+
+const savedLanguage = detectLanguage();
 
 void i18n.use(initReactI18next).init({
   resources: {

@@ -366,9 +366,9 @@ export const init = spacetimedb.init((ctx) => {
       sprite: "\uD83D\uDD25",
       hp: 75,
       mana: 40,
-      damageMin: 12,
-      damageMax: 18,
-      xpReward: 45,
+      damageMin: 14,
+      damageMax: 20,
+      xpReward: 50,
       tier: 4,
     },
     {

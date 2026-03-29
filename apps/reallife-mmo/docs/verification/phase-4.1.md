@@ -75,7 +75,7 @@ All tables and reducers listed in the ROADMAP Phase 4.1 specification are presen
 Only one recurring error across all pages:
 
 ```
-WebSocket connection to 'ws://127.0.0.1:3000/v1/database/8bit-combat/subscribe' failed:
+WebSocket connection to 'ws://127.0.0.1:3000/v1/database/8bit-mmo/subscribe' failed:
 Error in connection establishment: net::ERR_CONNECTION_REFUSED
 ```
 

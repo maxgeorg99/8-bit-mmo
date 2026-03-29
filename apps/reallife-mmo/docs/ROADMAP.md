@@ -263,6 +263,27 @@ idle_tick (scheduled hourly: streak check, quest refresh, raid expiry)
 
 ---
 
+## Phase 6: Localization & Refactoring
+
+### 6.1 - Localization
+
+- Use i18n and $t to do localization to replace all the hardcoded strings. We will start with de,en,es,fr,pt,jp,zh
+- Use placeholders where necessary for item names / number values and so on
+
+### 6.2 - Refactoring
+
+- Reduce WAT commands, refactor styles into meaningfull classes, and avoid unnecassary duplication.
+
+## Phase 7: Third Party Activity Import
+
+Use third party APIs to connect to 8bit-mmo to make the import easier for users already using these services.
+
+### Phase 7.1 - Strava
+
+### Phase 7.2 - Garmin
+
+### Phase 7.3 - Yazio
+
 ## Architecture Decisions
 
 1. **Build gameplay client-side first (Phases 1-3), migrate to SpacetimeDB after (Phase 4).** Avoids server bottleneck during rapid iteration.
@@ -291,11 +312,3 @@ idle_tick (scheduled hourly: streak check, quest refresh, raid expiry)
 | **P3**   | 5.3   | Player inspection         | 4.3        |
 
 ---
-
-## Verification Checklist (per phase)
-
-- [ ] `vp check` — TypeScript + lint passes
-- [ ] `vp test` — all unit tests pass
-- [ ] `vp build` — production build succeeds with PWA
-- [ ] Manual: navigate all pages, test new features end-to-end
-- [ ] Post Phase 4: verify SpacetimeDB connection, reducers, subscriptions

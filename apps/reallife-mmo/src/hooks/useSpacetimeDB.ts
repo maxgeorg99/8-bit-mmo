@@ -5,7 +5,7 @@ import { tables } from "@/generated";
 const SPACETIMEDB_URI =
   import.meta.env.VITE_SPACETIMEDB_URI ||
   (import.meta.env.PROD ? "wss://maincloud.spacetimedb.com" : "ws://127.0.0.1:3000");
-const DATABASE_NAME = import.meta.env.VITE_SPACETIMEDB_DB || "8bit-combat";
+const DATABASE_NAME = import.meta.env.VITE_SPACETIMEDB_DB || "8bit-mmo";
 const TOKEN_KEY = "spacetimedb_auth_token";
 
 const RECONNECT_DELAYS = [1000, 2000, 4000, 8000, 15000];

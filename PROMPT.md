@@ -40,7 +40,7 @@ Instructions:
 6. The SpacetimeDB module is TypeScript (NOT Rust) — see `apps/spacetimedb/src/`.
 7. If you modify any SpacetimeDB tables or reducers, you MUST:
    a. Build the module: `cd apps/spacetimedb && spacetime build`
-   b. Publish the module: `cd apps/spacetimedb && spacetime publish 8bit-combat`
+   b. Publish the module: `cd apps/spacetimedb && spacetime publish 8bit-mmo`
    c. Regenerate client bindings: `cd apps/spacetimedb && spacetime generate --lang typescript --out-dir ../reallife-mmo/src/generated --module-path .`
 8. Run `vp check` to ensure TypeScript and lint pass.
 9. Run `vp build` in apps/reallife-mmo to ensure the build succeeds.
@@ -135,8 +135,8 @@ Your task: Verify that phase {PHASE_NUMBER} — {PHASE_NAME} works correctly in 
 Pre-flight checks:
 1. Verify SpacetimeDB is running: `curl -s http://localhost:3000` should respond.
    If it's not running, STOP and report: "SpacetimeDB is not running. Please start it with `spacetime start`."
-2. Verify the module is published: `spacetime logs 8bit-combat` should show output.
-   If not published, run: `cd apps/spacetimedb && spacetime publish 8bit-combat`
+2. Verify the module is published: `spacetime logs 8bit-mmo` should show output.
+   If not published, run: `cd apps/spacetimedb && spacetime publish 8bit-mmo`
 
 Instructions:
 1. Read `apps/reallife-mmo/docs/ROADMAP.md` for what phase {PHASE_NUMBER} should do.
@@ -231,8 +231,8 @@ When ALL phases in the roadmap are marked done:
 | Operation            | Command                                                                                                               | When                                    |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
 | Build module         | `cd apps/spacetimedb && spacetime build`                                                                              | After changing server code              |
-| Publish module       | `cd apps/spacetimedb && spacetime publish 8bit-combat`                                                                | After build, to deploy changes          |
-| Publish (reset data) | `cd apps/spacetimedb && spacetime publish 8bit-combat --delete-data`                                                  | When schema changes break existing data |
+| Publish module       | `cd apps/spacetimedb && spacetime publish 8bit-mmo`                                                                   | After build, to deploy changes          |
+| Publish (reset data) | `cd apps/spacetimedb && spacetime publish 8bit-mmo --delete-data`                                                     | When schema changes break existing data |
 | Generate bindings    | `cd apps/spacetimedb && spacetime generate --lang typescript --out-dir ../reallife-mmo/src/generated --module-path .` | After publish, to update client types   |
 | Check server running | `curl -s http://localhost:3000`                                                                                       | Before playwright testing               |
 | Start server         | `spacetime start` (human must run this)                                                                               | If server check fails                   |

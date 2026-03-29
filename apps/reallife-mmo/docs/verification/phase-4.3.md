@@ -3,7 +3,7 @@
 > **Date:** 2026-03-29
 > **Agent:** Evaluation (Playwright)
 > **Dev server:** localhost:5175 (Vite+ dev)
-> **SpacetimeDB:** localhost:3000, module `8bit-combat`
+> **SpacetimeDB:** localhost:3000, module `8bit-mmo`
 
 ---
 

@@ -57,7 +57,7 @@ vp install
 # Build and publish the SpacetimeDB module
 cd apps/spacetimedb
 spacetime build
-spacetime publish 8bit-combat
+spacetime publish 8bit-mmo
 
 # Generate TypeScript client bindings
 npm run generate
@@ -76,7 +76,7 @@ From `apps/spacetimedb/`:
 | Script             | Command                                                |
 | ------------------ | ------------------------------------------------------ |
 | `npm run build`    | `spacetime build`                                      |
-| `npm run publish`  | `spacetime publish 8bit-combat`                        |
+| `npm run publish`  | `spacetime publish 8bit-mmo`                           |
 | `npm run generate` | Generates TS bindings to `apps/website/src/generated/` |
 
 ### Environment Variables
@@ -84,7 +84,7 @@ From `apps/spacetimedb/`:
 | Variable               | Default               | Description               |
 | ---------------------- | --------------------- | ------------------------- |
 | `VITE_SPACETIMEDB_URI` | `ws://127.0.0.1:3000` | SpacetimeDB WebSocket URI |
-| `VITE_SPACETIMEDB_DB`  | `8bit-combat`         | Database name             |
+| `VITE_SPACETIMEDB_DB`  | `8bit-mmo`            | Database name             |
 
 ## Combat System
 

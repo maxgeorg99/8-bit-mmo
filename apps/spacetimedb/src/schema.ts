@@ -17,6 +17,11 @@ import { spell } from "./tables/spell";
 import { combat } from "./tables/combat";
 import { combatLog } from "./tables/combatLog";
 
+// PvE combat
+import { mob } from "./tables/mob";
+import { pveCombat } from "./tables/pveCombat";
+import { pveCombatLog } from "./tables/pveCombatLog";
+
 // Raids
 import { raid } from "./tables/raid";
 import { raidCombatant } from "./tables/raidCombatant";
@@ -43,6 +48,11 @@ const spacetimedb = schema({
   spell,
   combat,
   combatLog,
+
+  // PvE combat
+  mob,
+  pveCombat,
+  pveCombatLog,
 
   // Raids
   raid,

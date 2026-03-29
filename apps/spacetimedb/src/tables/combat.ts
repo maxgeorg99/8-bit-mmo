@@ -14,5 +14,7 @@ export const combat = table(
     currentTurn: t.identity(),
     status: CombatStatus,
     winnerId: t.option(t.identity()),
+    startedAt: t.timestamp(),
+    finishedAt: t.option(t.timestamp()),
   },
 );

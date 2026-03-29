@@ -56,7 +56,20 @@ export const idle_tick = spacetimedb.reducer(
       }
     }
 
-    // ── 4. Expire stale raids ──────────────────────────────────
+    // ── 4. Clean up finished PvE combats older than 1h ──────────
+    for (const pve of ctx.db.pveCombat.iter()) {
+      if (!pve.finished) continue;
+      const pveMs = Number(pve.startedAt.toMillis());
+      if (nowMs - pveMs > oneDayMs / 24) {
+        // Clean up logs
+        for (const log of ctx.db.pveCombatLog.combatId.filter(pve.id)) {
+          ctx.db.pveCombatLog.id.delete(log.id);
+        }
+        ctx.db.pveCombat.id.delete(pve.id);
+      }
+    }
+
+    // ── 5. Expire stale raids ──────────────────────────────────
     for (const r of ctx.db.raid.iter()) {
       if (r.phase.tag === "Victory" || r.phase.tag === "Defeat") {
         const raidMs = Number(r.startedAt.toMillis());

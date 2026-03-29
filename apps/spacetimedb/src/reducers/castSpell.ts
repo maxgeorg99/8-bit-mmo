@@ -46,6 +46,7 @@ export const cast_spell = spacetimedb.reducer(
         player2Mana: isPlayer1 ? c.player2Mana : newCasterMana,
         status: { tag: "Finished" },
         winnerId: sender,
+        finishedAt: ctx.timestamp,
       });
 
       // Update win/loss stats

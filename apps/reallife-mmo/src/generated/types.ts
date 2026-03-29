@@ -46,6 +46,9 @@ export const ActivityType = __t.enum("ActivityType", {
 });
 export type ActivityType = __Infer<typeof ActivityType>;
 
+export const BiomeMobs = __t.object("BiomeMobs", {});
+export type BiomeMobs = __Infer<typeof BiomeMobs>;
+
 export const BiomePlayers = __t.object("BiomePlayers", {});
 export type BiomePlayers = __Infer<typeof BiomePlayers>;
 
@@ -79,6 +82,8 @@ export const Combat = __t.object("Combat", {
     return CombatStatus;
   },
   winnerId: __t.option(__t.identity()),
+  startedAt: __t.timestamp(),
+  finishedAt: __t.option(__t.timestamp()),
 });
 export type Combat = __Infer<typeof Combat>;
 
@@ -202,6 +207,20 @@ export const Message = __t.object("Message", {
 });
 export type Message = __Infer<typeof Message>;
 
+export const Mob = __t.object("Mob", {
+  id: __t.string(),
+  biomeId: __t.string(),
+  name: __t.string(),
+  sprite: __t.string(),
+  hp: __t.u32(),
+  mana: __t.u32(),
+  damageMin: __t.u32(),
+  damageMax: __t.u32(),
+  xpReward: __t.u32(),
+  tier: __t.u32(),
+});
+export type Mob = __Infer<typeof Mob>;
+
 export const MyActivityLogs = __t.object("MyActivityLogs", {});
 export type MyActivityLogs = __Infer<typeof MyActivityLogs>;
 
@@ -228,6 +247,12 @@ export type MyGuildMessages = __Infer<typeof MyGuildMessages>;
 
 export const MyPlayer = __t.object("MyPlayer", {});
 export type MyPlayer = __Infer<typeof MyPlayer>;
+
+export const MyPveCombat = __t.object("MyPveCombat", {});
+export type MyPveCombat = __Infer<typeof MyPveCombat>;
+
+export const MyPveCombatLog = __t.object("MyPveCombatLog", {});
+export type MyPveCombatLog = __Infer<typeof MyPveCombatLog>;
 
 export const MyQuests = __t.object("MyQuests", {});
 export type MyQuests = __Infer<typeof MyQuests>;
@@ -288,6 +313,40 @@ export const PlayerTitle = __t.object("PlayerTitle", {
   unlockedAt: __t.timestamp(),
 });
 export type PlayerTitle = __Infer<typeof PlayerTitle>;
+
+export const PveCombat = __t.object("PveCombat", {
+  id: __t.u64(),
+  playerId: __t.identity(),
+  mobId: __t.string(),
+  mobName: __t.string(),
+  biomeId: __t.string(),
+  playerHp: __t.u32(),
+  playerMaxHp: __t.u32(),
+  playerMana: __t.u32(),
+  playerMaxMana: __t.u32(),
+  mobHp: __t.u32(),
+  mobMaxHp: __t.u32(),
+  mobMana: __t.u32(),
+  mobDamageMin: __t.u32(),
+  mobDamageMax: __t.u32(),
+  isPlayerTurn: __t.bool(),
+  finished: __t.bool(),
+  playerWon: __t.bool(),
+  startedAt: __t.timestamp(),
+});
+export type PveCombat = __Infer<typeof PveCombat>;
+
+export const PveCombatLog = __t.object("PveCombatLog", {
+  id: __t.u64(),
+  combatId: __t.u64(),
+  casterName: __t.string(),
+  targetName: __t.string(),
+  spellName: __t.string(),
+  damage: __t.u32(),
+  isHeal: __t.bool(),
+  timestamp: __t.timestamp(),
+});
+export type PveCombatLog = __Infer<typeof PveCombatLog>;
 
 export const Quest = __t.object("Quest", {
   id: __t.u64(),

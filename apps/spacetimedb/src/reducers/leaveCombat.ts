@@ -24,6 +24,7 @@ export const leave_combat = spacetimedb.reducer({ combatId: t.u64() }, (ctx, { c
       ...c,
       status: { tag: "Finished" },
       winnerId,
+      finishedAt: ctx.timestamp,
     });
 
     const winner = ctx.db.player.identity.find(winnerId);

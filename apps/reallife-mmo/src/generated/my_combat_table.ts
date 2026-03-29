@@ -24,4 +24,6 @@ export default __t.row({
     return CombatStatus;
   },
   winnerId: __t.option(__t.identity()).name("winner_id"),
+  startedAt: __t.timestamp().name("started_at"),
+  finishedAt: __t.option(__t.timestamp()).name("finished_at"),
 });

@@ -39,8 +39,10 @@ import BuyItemReducer from "./buy_item_reducer";
 import CastSpellReducer from "./cast_spell_reducer";
 import ClaimQuestReducer from "./claim_quest_reducer";
 import CompleteCustomQuestReducer from "./complete_custom_quest_reducer";
+import ContributeToRaidReducer from "./contribute_to_raid_reducer";
 import CreateCustomQuestReducer from "./create_custom_quest_reducer";
 import CreateGuildReducer from "./create_guild_reducer";
+import CreatePlayerReducer from "./create_player_reducer";
 import EnterLocationReducer from "./enter_location_reducer";
 import EquipItemReducer from "./equip_item_reducer";
 import GrantPveRewardsReducer from "./grant_pve_rewards_reducer";
@@ -51,6 +53,7 @@ import LeaveCombatReducer from "./leave_combat_reducer";
 import LeaveGuildReducer from "./leave_guild_reducer";
 import LogActivityReducer from "./log_activity_reducer";
 import PromoteMemberReducer from "./promote_member_reducer";
+import PveCastSpellReducer from "./pve_cast_spell_reducer";
 import RaidCastSpellReducer from "./raid_cast_spell_reducer";
 import RestAtCityReducer from "./rest_at_city_reducer";
 import SelectTitleReducer from "./select_title_reducer";
@@ -59,6 +62,7 @@ import SendBiomeMessageReducer from "./send_biome_message_reducer";
 import SendGuildMessageReducer from "./send_guild_message_reducer";
 import SendWhisperReducer from "./send_whisper_reducer";
 import SetPlayerNameReducer from "./set_player_name_reducer";
+import StartPveCombatReducer from "./start_pve_combat_reducer";
 import StartRaidReducer from "./start_raid_reducer";
 import TravelToBiomeReducer from "./travel_to_biome_reducer";
 import UnequipItemReducer from "./unequip_item_reducer";
@@ -67,6 +71,7 @@ import UnequipItemReducer from "./unequip_item_reducer";
 
 // Import all table schema definitions
 import ActivityLogRow from "./activity_log_table";
+import BiomeMobsRow from "./biome_mobs_table";
 import BiomePlayersRow from "./biome_players_table";
 import BrowseGuildsRow from "./browse_guilds_table";
 import CombatRow from "./combat_table";
@@ -76,6 +81,7 @@ import GuildRow from "./guild_table";
 import GuildMemberRow from "./guild_member_table";
 import LeaderboardRow from "./leaderboard_table";
 import MessageRow from "./message_table";
+import MobRow from "./mob_table";
 import MyActivityLogsRow from "./my_activity_logs_table";
 import MyBiomeMessagesRow from "./my_biome_messages_table";
 import MyCombatRow from "./my_combat_table";
@@ -85,6 +91,8 @@ import MyGuildRow from "./my_guild_table";
 import MyGuildMembersRow from "./my_guild_members_table";
 import MyGuildMessagesRow from "./my_guild_messages_table";
 import MyPlayerRow from "./my_player_table";
+import MyPveCombatRow from "./my_pve_combat_table";
+import MyPveCombatLogRow from "./my_pve_combat_log_table";
 import MyQuestsRow from "./my_quests_table";
 import MyRaidRow from "./my_raid_table";
 import MyRaidCombatantsRow from "./my_raid_combatants_table";
@@ -93,6 +101,8 @@ import MyTitlesRow from "./my_titles_table";
 import MyWhisperMessagesRow from "./my_whisper_messages_table";
 import PlayerRow from "./player_table";
 import PlayerTitleRow from "./player_title_table";
+import PveCombatRow from "./pve_combat_table";
+import PveCombatLogRow from "./pve_combat_log_table";
 import QuestRow from "./quest_table";
 import RaidRow from "./raid_table";
 import RaidCombatantRow from "./raid_combatant_table";
@@ -239,6 +249,22 @@ const tablesSchema = __schema({
     },
     MessageRow,
   ),
+  mob: __table(
+    {
+      name: "mob",
+      indexes: [
+        {
+          accessor: "biomeId",
+          name: "mob_biome_id_idx_btree",
+          algorithm: "btree",
+          columns: ["biomeId"],
+        },
+        { accessor: "id", name: "mob_id_idx_btree", algorithm: "btree", columns: ["id"] },
+      ],
+      constraints: [{ name: "mob_id_key", constraint: "unique", columns: ["id"] }],
+    },
+    MobRow,
+  ),
   player: __table(
     {
       name: "player",
@@ -275,6 +301,43 @@ const tablesSchema = __schema({
       constraints: [{ name: "player_title_id_key", constraint: "unique", columns: ["id"] }],
     },
     PlayerTitleRow,
+  ),
+  pveCombat: __table(
+    {
+      name: "pve_combat",
+      indexes: [
+        { accessor: "id", name: "pve_combat_id_idx_btree", algorithm: "btree", columns: ["id"] },
+        {
+          accessor: "playerId",
+          name: "pve_combat_player_id_idx_btree",
+          algorithm: "btree",
+          columns: ["playerId"],
+        },
+      ],
+      constraints: [{ name: "pve_combat_id_key", constraint: "unique", columns: ["id"] }],
+    },
+    PveCombatRow,
+  ),
+  pveCombatLog: __table(
+    {
+      name: "pve_combat_log",
+      indexes: [
+        {
+          accessor: "combatId",
+          name: "pve_combat_log_combat_id_idx_btree",
+          algorithm: "btree",
+          columns: ["combatId"],
+        },
+        {
+          accessor: "id",
+          name: "pve_combat_log_id_idx_btree",
+          algorithm: "btree",
+          columns: ["id"],
+        },
+      ],
+      constraints: [{ name: "pve_combat_log_id_key", constraint: "unique", columns: ["id"] }],
+    },
+    PveCombatLogRow,
   ),
   quest: __table(
     {
@@ -354,6 +417,14 @@ const tablesSchema = __schema({
       constraints: [{ name: "spell_id_key", constraint: "unique", columns: ["id"] }],
     },
     SpellRow,
+  ),
+  biome_mobs: __table(
+    {
+      name: "biome_mobs",
+      indexes: [],
+      constraints: [],
+    },
+    BiomeMobsRow,
   ),
   biome_players: __table(
     {
@@ -451,6 +522,22 @@ const tablesSchema = __schema({
     },
     MyPlayerRow,
   ),
+  my_pve_combat: __table(
+    {
+      name: "my_pve_combat",
+      indexes: [],
+      constraints: [],
+    },
+    MyPveCombatRow,
+  ),
+  my_pve_combat_log: __table(
+    {
+      name: "my_pve_combat_log",
+      indexes: [],
+      constraints: [],
+    },
+    MyPveCombatLogRow,
+  ),
   my_quests: __table(
     {
       name: "my_quests",
@@ -508,8 +595,10 @@ const reducersSchema = __reducers(
   __reducerSchema("cast_spell", CastSpellReducer),
   __reducerSchema("claim_quest", ClaimQuestReducer),
   __reducerSchema("complete_custom_quest", CompleteCustomQuestReducer),
+  __reducerSchema("contribute_to_raid", ContributeToRaidReducer),
   __reducerSchema("create_custom_quest", CreateCustomQuestReducer),
   __reducerSchema("create_guild", CreateGuildReducer),
+  __reducerSchema("create_player", CreatePlayerReducer),
   __reducerSchema("enter_location", EnterLocationReducer),
   __reducerSchema("equip_item", EquipItemReducer),
   __reducerSchema("grant_pve_rewards", GrantPveRewardsReducer),
@@ -520,6 +609,7 @@ const reducersSchema = __reducers(
   __reducerSchema("leave_guild", LeaveGuildReducer),
   __reducerSchema("log_activity", LogActivityReducer),
   __reducerSchema("promote_member", PromoteMemberReducer),
+  __reducerSchema("pve_cast_spell", PveCastSpellReducer),
   __reducerSchema("raid_cast_spell", RaidCastSpellReducer),
   __reducerSchema("rest_at_city", RestAtCityReducer),
   __reducerSchema("select_title", SelectTitleReducer),
@@ -528,6 +618,7 @@ const reducersSchema = __reducers(
   __reducerSchema("send_guild_message", SendGuildMessageReducer),
   __reducerSchema("send_whisper", SendWhisperReducer),
   __reducerSchema("set_player_name", SetPlayerNameReducer),
+  __reducerSchema("start_pve_combat", StartPveCombatReducer),
   __reducerSchema("start_raid", StartRaidReducer),
   __reducerSchema("travel_to_biome", TravelToBiomeReducer),
   __reducerSchema("unequip_item", UnequipItemReducer),

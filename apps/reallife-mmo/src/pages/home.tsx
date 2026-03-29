@@ -1,6 +1,7 @@
 import { asset } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/8bit/button";
 import { Input } from "@/components/ui/8bit/input";
 import {
@@ -15,8 +16,10 @@ import { Badge } from "@/components/ui/8bit/badge";
 import { useMyPlayer } from "@/hooks/useStdbPlayer";
 import { useReducer } from "spacetimedb/react";
 import { reducers } from "@/generated";
+import { LanguageSelector } from "@/components/game/LanguageSelector";
 
 export function Home() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { player } = useMyPlayer();
   const stdbSetName = useReducer(reducers.setPlayerName);
@@ -33,10 +36,11 @@ export function Home() {
     <div className="min-h-screen flex flex-col items-center justify-center p-6 gap-8">
       {/* Hero */}
       <div className="text-center space-y-3">
-        <h1 className="retro text-2xl md:text-4xl text-foreground leading-tight">Reallife MMO</h1>
+        <h1 className="retro text-2xl md:text-4xl text-foreground leading-tight">
+          {t("home.title")}
+        </h1>
         <p className="retro text-[8px] md:text-[10px] text-muted-foreground max-w-sm mx-auto">
-          Your life is the grind. The gym bro becomes a Warrior, the bookworm a Mage, the runner a
-          Rogue — all from real logged activity.
+          {t("home.subtitle")}
         </p>
       </div>
 
@@ -45,7 +49,7 @@ export function Home() {
         <div className="text-center">
           <img src={asset("8bit-wizard.png")} alt="Mage" className="pixelated w-16 h-16 mx-auto" />
           <Badge variant="secondary" className="text-[6px] mt-1">
-            Mage
+            {t("home.classes.mage")}
           </Badge>
         </div>
         <div className="text-center">
@@ -54,12 +58,12 @@ export function Home() {
             alt="Warrior"
             className="pixelated w-20 h-20 mx-auto"
           />
-          <Badge className="text-[6px] mt-1">Warrior</Badge>
+          <Badge className="text-[6px] mt-1">{t("home.classes.warrior")}</Badge>
         </div>
         <div className="text-center">
           <img src={asset("8bit-ogre.png")} alt="Tank" className="pixelated w-16 h-16 mx-auto" />
           <Badge variant="secondary" className="text-[6px] mt-1">
-            Tank
+            {t("home.classes.tank")}
           </Badge>
         </div>
       </div>
@@ -67,27 +71,35 @@ export function Home() {
       {/* Name entry — only shown for new players (returning players are redirected) */}
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-sm">Choose Your Name</CardTitle>
-          <CardDescription className="text-[8px]">Every hero needs an identity</CardDescription>
+          <CardTitle className="text-sm">{t("home.chooseYourName")}</CardTitle>
+          <CardDescription className="text-[8px]">
+            {t("home.everyHeroNeedsIdentity")}
+          </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-3">
           <Input
-            placeholder="Enter hero name..."
+            placeholder={t("home.enterHeroName")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="text-xs"
           />
+          <div className="space-y-1">
+            <label className="retro text-[8px] text-muted-foreground">
+              {t("settings.language")}
+            </label>
+            <LanguageSelector />
+          </div>
         </CardContent>
         <CardFooter>
           <Button
             className="w-full"
             onClick={() => {
-              const heroName = name || "Unnamed Hero";
+              const heroName = name || t("home.unnamedHero");
               void stdbSetName({ name: heroName });
               void navigate("/dashboard");
             }}
           >
-            Begin Adventure
+            {t("home.beginAdventure")}
           </Button>
         </CardFooter>
       </Card>
@@ -95,10 +107,26 @@ export function Home() {
       {/* Feature highlights */}
       <div className="grid grid-cols-2 gap-3 w-full max-w-sm">
         {[
-          { icon: "💪", label: "Log Activities", desc: "Gym, running, study..." },
-          { icon: "⚔️", label: "Earn Stats", desc: "STR, INT, AGI..." },
-          { icon: "📜", label: "Daily Quests", desc: "Challenges & rewards" },
-          { icon: "🏟️", label: "PvP Arena", desc: "Battle other players" },
+          {
+            icon: "💪",
+            label: t("home.features.logActivities"),
+            desc: t("home.features.logActivitiesDesc"),
+          },
+          {
+            icon: "⚔️",
+            label: t("home.features.earnStats"),
+            desc: t("home.features.earnStatsDesc"),
+          },
+          {
+            icon: "📜",
+            label: t("home.features.dailyQuests"),
+            desc: t("home.features.dailyQuestsDesc"),
+          },
+          {
+            icon: "🏟️",
+            label: t("home.features.pvpArena"),
+            desc: t("home.features.pvpArenaDesc"),
+          },
         ].map((f) => (
           <div key={f.label} className="border border-border p-3 text-center">
             <div className="text-lg">{f.icon}</div>

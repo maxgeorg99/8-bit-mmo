@@ -1,9 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import { Badge } from "@/components/ui/8bit/badge";
 import { Button } from "@/components/ui/8bit/button";
 import { Progress } from "@/components/ui/8bit/progress";
 import type { Quest } from "@/lib/types";
-import { ACTIVITY_ICONS, ACTIVITY_LABELS } from "@/lib/types";
+import { ACTIVITY_ICONS } from "@/lib/types";
 
 interface QuestCardProps {
   quest: Quest;
@@ -11,6 +12,7 @@ interface QuestCardProps {
 }
 
 export function QuestCard({ quest, onClaim }: QuestCardProps) {
+  const { t } = useTranslation();
   const hasProgress = quest.activityType !== null && quest.targetMin > 0;
   const progress = hasProgress
     ? Math.min(Math.round((quest.progressMin / quest.targetMin) * 100), 100)
@@ -26,7 +28,7 @@ export function QuestCard({ quest, onClaim }: QuestCardProps) {
             {quest.title}
           </CardTitle>
           <Badge variant={quest.completed ? "default" : "secondary"} className="text-[7px]">
-            {quest.completed ? "DONE" : quest.type.toUpperCase()}
+            {quest.completed ? t("common.done") : quest.type.toUpperCase()}
           </Badge>
         </div>
       </CardHeader>
@@ -36,14 +38,14 @@ export function QuestCard({ quest, onClaim }: QuestCardProps) {
         )}
         {quest.activityType && (
           <div className="retro text-[7px] text-muted-foreground">
-            {ACTIVITY_LABELS[quest.activityType]}
+            {t(`activityTypes.${quest.activityType}`)}
           </div>
         )}
 
         {hasProgress && (
           <div className="space-y-1">
             <div className="flex justify-between retro text-[7px] text-muted-foreground">
-              <span>Progress</span>
+              <span>{t("quests.progress")}</span>
               <span>
                 {Math.min(quest.progressMin, quest.targetMin)}/{quest.targetMin} min
               </span>
@@ -58,10 +60,12 @@ export function QuestCard({ quest, onClaim }: QuestCardProps) {
         )}
       </CardContent>
       <CardFooter className="flex justify-between items-center">
-        <span className="retro text-[7px] text-yellow-500">+{quest.xpReward} XP</span>
+        <span className="retro text-[7px] text-yellow-500">
+          +{quest.xpReward} {t("common.xp")}
+        </span>
         {quest.completed && (
           <Button size="sm" onClick={() => onClaim(quest.id)} className="text-[8px]">
-            Claim Reward
+            {t("quests.claimReward")}
           </Button>
         )}
       </CardFooter>

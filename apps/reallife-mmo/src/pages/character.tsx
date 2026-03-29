@@ -6,6 +6,7 @@ import { CharacterAvatar } from "@/components/game/CharacterAvatar";
 import { ChestPanel } from "@/components/game/ChestPanel";
 import { TitleSelector } from "@/components/game/TitleSelector";
 import { useTable, useReducer } from "spacetimedb/react";
+import { useTranslation } from "react-i18next";
 import { tables, reducers } from "@/generated";
 import { useMyPlayer, useEquipmentActions } from "@/hooks/useStdbPlayer";
 import { getClassAffinities } from "@/lib/classEngine";
@@ -16,6 +17,7 @@ import { cn } from "@/lib/utils";
 const STAT_ORDER: StatName[] = ["STR", "AGI", "INT", "CON", "WIS", "CHA", "MP"];
 
 export function Character() {
+  const { t } = useTranslation();
   const { player } = useMyPlayer();
   const [activityLogRows] = useTable(tables.my_activity_logs);
   const { equipItem, unequipItem } = useEquipmentActions();
@@ -25,7 +27,7 @@ export function Character() {
   if (!player) {
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="retro text-[10px] text-muted-foreground">Loading character...</p>
+        <p className="retro text-[10px] text-muted-foreground">{t("character.loadingCharacter")}</p>
       </div>
     );
   }
@@ -86,7 +88,7 @@ export function Character() {
         <CardContent className="space-y-3 pt-4">
           <div className="space-y-1">
             <div className="flex justify-between retro text-[8px] text-muted-foreground">
-              <span className="text-red-500">HP</span>
+              <span className="text-red-500">{t("common.hp")}</span>
               <span>
                 {player.hp}/{player.maxHp}
               </span>
@@ -95,7 +97,7 @@ export function Character() {
           </div>
           <div className="space-y-1">
             <div className="flex justify-between retro text-[8px] text-muted-foreground">
-              <span className="text-yellow-500">XP</span>
+              <span className="text-yellow-500">{t("common.xp")}</span>
               <span>
                 {player.xp}/{player.xpToNext}
               </span>
@@ -108,7 +110,7 @@ export function Character() {
       {/* Stats */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-xs">Attributes</CardTitle>
+          <CardTitle className="text-xs">{t("character.attributes")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -124,8 +126,8 @@ export function Character() {
             })}
           </div>
           <div className="flex justify-between retro text-[7px] text-muted-foreground pt-3">
-            <span>Streak: {player.streakDays}d</span>
-            <span>Activities: {player.totalActivities}</span>
+            <span>{t("character.streak", { days: player.streakDays })}</span>
+            <span>{t("character.activities", { count: player.totalActivities })}</span>
           </div>
         </CardContent>
       </Card>
@@ -134,11 +136,11 @@ export function Character() {
       {affinities.length > 0 && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs">Class Affinities</CardTitle>
+            <CardTitle className="text-xs">{t("character.classAffinities")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <p className="retro text-[7px] text-muted-foreground">
-              Your activity profile determines your class
+              {t("character.affinityDescription")}
             </p>
             {affinities.map((a) => {
               const pct = Math.round((a.score / maxAffinity) * 100);

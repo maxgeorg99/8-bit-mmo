@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { asset } from "@/lib/utils";
 import { CharacterDisplay } from "./CharacterDisplay";
 import { SpellMenu } from "./SpellMenu";
@@ -32,12 +33,13 @@ export function CombatArena({
   opponentMana,
   onCast,
 }: CombatArenaProps) {
+  const { t } = useTranslation();
   return (
     <div className="w-full max-w-3xl mx-auto space-y-6">
       {/* Characters facing each other */}
       <div className="flex items-start justify-between gap-4 md:gap-8">
         <CharacterDisplay
-          name={isPlayer1 ? "Mage (You)" : "Mage"}
+          name={isPlayer1 ? t("combat.mageYou") : t("combat.mage")}
           imageUrl={asset("8bit-wizard.png")}
           hp={isPlayer1 ? myHp : opponentHp}
           maxHp={100}
@@ -49,11 +51,11 @@ export function CombatArena({
 
         {/* VS divider */}
         <div className="flex flex-col items-center justify-center pt-16">
-          <span className="retro text-xl md:text-3xl text-destructive">VS</span>
+          <span className="retro text-xl md:text-3xl text-destructive">{t("common.vs")}</span>
         </div>
 
         <CharacterDisplay
-          name={!isPlayer1 ? "Orc (You)" : "Orc"}
+          name={!isPlayer1 ? t("combat.orcYou") : t("combat.orc")}
           imageUrl={asset("8bit-orc-warrior.png")}
           hp={!isPlayer1 ? myHp : opponentHp}
           maxHp={100}

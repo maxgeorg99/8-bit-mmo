@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useMyPlayer } from "@/hooks/useStdbPlayer";
 
 /**
@@ -6,6 +7,7 @@ import { useMyPlayer } from "@/hooks/useStdbPlayer";
  * Watches the player's level and triggers on increase.
  */
 export function LevelUpOverlay() {
+  const { t } = useTranslation();
   const { player } = useMyPlayer();
   const level = player?.level ?? 0;
   const hasPlayer = player !== null && player !== undefined;
@@ -44,9 +46,11 @@ export function LevelUpOverlay() {
       {/* Level up text */}
       <div className="relative flex flex-col items-center gap-2 animate-bounce">
         <div className="retro text-3xl text-yellow-400 drop-shadow-[0_0_20px_rgba(234,179,8,0.8)]">
-          LEVEL UP!
+          {t("levelUp.title")}
         </div>
-        <div className="retro text-lg text-foreground">Level {displayLevel}</div>
+        <div className="retro text-lg text-foreground">
+          {t("levelUp.level", { level: displayLevel })}
+        </div>
       </div>
     </div>
   );

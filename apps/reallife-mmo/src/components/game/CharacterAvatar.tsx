@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/8bit/badge";
 import type { PlayerClass, CharacterTier, EquipSlot, EquipmentItem } from "@/lib/types";
 import {
@@ -46,6 +47,7 @@ export function CharacterAvatar({
   equipment,
   activeTitle,
 }: CharacterAvatarProps) {
+  const { t } = useTranslation();
   const tier = getCharacterTier(level);
   const sprite = CLASS_SPRITES[playerClass];
   const title = activeTitle ? TITLE_MAP.get(activeTitle) : null;
@@ -90,7 +92,7 @@ export function CharacterAvatar({
 
       {/* Name + class + title */}
       <div className="text-center">
-        <div className="retro text-[11px]">{name || "Unnamed Hero"}</div>
+        <div className="retro text-[11px]">{name || t("home.unnamedHero")}</div>
         <div className={cn("retro text-[9px]", CLASS_COLORS[playerClass])}>{playerClass}</div>
         {title && (
           <div className="retro text-[7px] text-amber-400/80 mt-0.5">
@@ -119,7 +121,9 @@ export function CharacterAvatar({
                   {item.name}
                 </span>
               ) : (
-                <span className="retro text-[5px] text-muted-foreground/50 mt-1">Empty</span>
+                <span className="retro text-[5px] text-muted-foreground/50 mt-1">
+                  {t("common.empty")}
+                </span>
               )}
             </div>
           );

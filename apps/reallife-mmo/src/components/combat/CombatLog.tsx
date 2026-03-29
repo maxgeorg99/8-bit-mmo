@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { CombatLog as CombatLogEntry, Combat } from "@/hooks/useCombat";
 import type { Identity } from "spacetimedb";
 import { useEffect, useRef } from "react";
@@ -9,6 +10,7 @@ interface CombatLogProps {
 }
 
 export function CombatLog({ logs, combat, identity }: CombatLogProps) {
+  const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -16,9 +18,9 @@ export function CombatLog({ logs, combat, identity }: CombatLogProps) {
   }, [logs.length]);
 
   function getCasterName(casterId: Identity) {
-    if (identity && casterId.isEqual(identity)) return "You";
-    if (casterId.isEqual(combat.player1)) return "Mage";
-    return "Orc";
+    if (identity && casterId.isEqual(identity)) return t("common.you");
+    if (casterId.isEqual(combat.player1)) return t("combat.mage");
+    return t("combat.orc");
   }
 
   return (
@@ -26,7 +28,7 @@ export function CombatLog({ logs, combat, identity }: CombatLogProps) {
       ref={scrollRef}
       className="w-full bg-card/50 border border-border rounded-none p-3 h-28 overflow-y-auto retro text-[9px] md:text-[10px] space-y-1"
     >
-      {logs.length === 0 && <p className="text-muted-foreground">Battle begins...</p>}
+      {logs.length === 0 && <p className="text-muted-foreground">{t("combat.battleBegins")}</p>}
       {logs.map((log) => (
         <p key={String(log.id)} className="text-foreground">
           <span className="text-primary">{getCasterName(log.casterId)}</span>

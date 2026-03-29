@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import { Button } from "@/components/ui/8bit/button";
 import { Badge } from "@/components/ui/8bit/badge";
@@ -12,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/8bit/select";
 import type { ActivityType } from "@/lib/types";
-import { ACTIVITY_ICONS, ACTIVITY_INPUT, ACTIVITY_LABELS, ACTIVITY_TYPES } from "@/lib/types";
+import { ACTIVITY_ICONS, ACTIVITY_INPUT, ACTIVITY_TYPES } from "@/lib/types";
 import { calculateStatDeltas, calculateXpGain } from "@/lib/statEngine";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +24,7 @@ interface ActivityLoggerProps {
 }
 
 export function ActivityLogger({ streakDays, defaultActivityType, onLog }: ActivityLoggerProps) {
+  const { t } = useTranslation();
   const [selectedType, setSelectedType] = useState<ActivityType>(
     defaultActivityType ?? "StrengthTraining",
   );
@@ -72,12 +74,14 @@ export function ActivityLogger({ streakDays, defaultActivityType, onLog }: Activ
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-sm">Log Activity</CardTitle>
+        <CardTitle className="text-sm">{t("activity.logActivity")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
         {/* Activity type select */}
         <div className="space-y-2">
-          <label className="retro text-[10px] text-muted-foreground">Activity Type</label>
+          <label className="retro text-[10px] text-muted-foreground">
+            {t("activity.activityType")}
+          </label>
           <Select value={selectedType} onValueChange={(v) => setSelectedType(v as ActivityType)}>
             <SelectTrigger className="w-full">
               <SelectValue />
@@ -85,7 +89,7 @@ export function ActivityLogger({ streakDays, defaultActivityType, onLog }: Activ
             <SelectContent>
               {ACTIVITY_TYPES.map((type) => (
                 <SelectItem key={type} value={type}>
-                  {ACTIVITY_ICONS[type]} {ACTIVITY_LABELS[type]}
+                  {ACTIVITY_ICONS[type]} {t(`activityTypes.${type}`)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -128,7 +132,7 @@ export function ActivityLogger({ streakDays, defaultActivityType, onLog }: Activ
         {config.hasIntensity && (
           <div className="space-y-3">
             <label className="retro text-[10px] text-muted-foreground">
-              Intensity: <span className="text-foreground">{intensity}/10</span>
+              {t("activity.intensity", { value: intensity })}
             </label>
             <Slider
               min={1}
@@ -138,9 +142,9 @@ export function ActivityLogger({ streakDays, defaultActivityType, onLog }: Activ
               onValueChange={([v]) => setIntensity(v)}
             />
             <div className="flex justify-between retro text-[6px] text-muted-foreground">
-              <span>Easy</span>
-              <span>Moderate</span>
-              <span>Max</span>
+              <span>{t("activity.intensityEasy")}</span>
+              <span>{t("activity.intensityModerate")}</span>
+              <span>{t("activity.intensityMax")}</span>
             </div>
           </div>
         )}
@@ -148,14 +152,15 @@ export function ActivityLogger({ streakDays, defaultActivityType, onLog }: Activ
         {/* Note */}
         <div className="space-y-2">
           <label className="retro text-[10px] text-muted-foreground">
-            Note <span className="text-muted-foreground/50">(optional)</span>
+            {t("activity.note")}{" "}
+            <span className="text-muted-foreground/50">{t("activity.noteOptional")}</span>
           </label>
           <Input value={note} onChange={(e) => setNote(e.target.value)} className="text-xs" />
         </div>
 
         {/* Preview */}
         <div className="border border-border p-3 space-y-2">
-          <div className="retro text-[8px] text-muted-foreground">Preview Gains</div>
+          <div className="retro text-[8px] text-muted-foreground">{t("activity.previewGains")}</div>
           <div className="retro text-[9px] text-yellow-500">+{previewXp} XP</div>
           <div className="flex flex-wrap gap-2">
             {Object.entries(previewDeltas).map(([stat, val]) => (
@@ -172,7 +177,7 @@ export function ActivityLogger({ streakDays, defaultActivityType, onLog }: Activ
           className={cn("w-full", justLogged && "bg-green-600")}
           disabled={justLogged}
         >
-          {justLogged ? "Logged!" : "Log Activity"}
+          {justLogged ? t("activity.logged") : t("activity.logActivity")}
         </Button>
       </CardFooter>
     </Card>

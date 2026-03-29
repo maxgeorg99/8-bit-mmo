@@ -1,20 +1,24 @@
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/8bit/badge";
 import type { ActivityLog } from "@/lib/types";
-import { ACTIVITY_ICONS, ACTIVITY_INPUT, ACTIVITY_LABELS } from "@/lib/types";
+import { ACTIVITY_ICONS, ACTIVITY_INPUT } from "@/lib/types";
 
 interface RecentActivityProps {
   logs: ActivityLog[];
   limit?: number;
 }
 
-function timeAgo(timestamp: number): string {
-  const diff = Date.now() - timestamp;
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  return `${Math.floor(hours / 24)}d ago`;
+function useTimeAgo() {
+  const { t } = useTranslation();
+  return (timestamp: number): string => {
+    const diff = Date.now() - timestamp;
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return t("timeAgo.justNow");
+    if (mins < 60) return t("timeAgo.minutesAgo", { count: mins });
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return t("timeAgo.hoursAgo", { count: hours });
+    return t("timeAgo.daysAgo", { count: Math.floor(hours / 24) });
+  };
 }
 
 function formatLogValue(log: ActivityLog): string {
@@ -36,12 +40,14 @@ function formatLogValue(log: ActivityLog): string {
 }
 
 export function RecentActivity({ logs, limit = 5 }: RecentActivityProps) {
+  const { t } = useTranslation();
+  const timeAgo = useTimeAgo();
   const recent = [...logs].sort((a, b) => b.timestamp - a.timestamp).slice(0, limit);
 
   if (recent.length === 0) {
     return (
       <div className="text-center py-6">
-        <p className="retro text-[8px] text-muted-foreground">No activities yet. Start logging!</p>
+        <p className="retro text-[8px] text-muted-foreground">{t("activity.noActivities")}</p>
       </div>
     );
   }
@@ -56,7 +62,7 @@ export function RecentActivity({ logs, limit = 5 }: RecentActivityProps) {
           <div className="flex items-start gap-3">
             <span className="text-xl mt-0.5">{ACTIVITY_ICONS[log.type]}</span>
             <div className="space-y-1">
-              <div className="retro text-[9px]">{ACTIVITY_LABELS[log.type]}</div>
+              <div className="retro text-[9px]">{t(`activityTypes.${log.type}`)}</div>
               {log.note && <div className="retro text-[8px] text-foreground/80">{log.note}</div>}
               <div className="retro text-[7px] text-muted-foreground">{formatLogValue(log)}</div>
             </div>

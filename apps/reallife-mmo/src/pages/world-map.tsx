@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import { WorldMapSVG } from "@/components/game/WorldMapSVG";
@@ -8,6 +9,7 @@ import { useBiome } from "@/hooks/useBiome";
 import { BIOME_META, type BiomeId } from "@/lib/biomeThemes";
 
 export function WorldMap() {
+  const { t } = useTranslation();
   const { currentBiome, unlockedBiomes, travelTo, isUnlocked } = useBiome();
   const [selectedBiome, setSelectedBiome] = useState<BiomeId | null>(null);
   const [confirmTravel, setConfirmTravel] = useState(false);
@@ -15,7 +17,6 @@ export function WorldMap() {
 
   const handleRegionClick = (biomeId: BiomeId) => {
     if (biomeId === currentBiome) {
-      // Clicking current biome opens location picker directly
       setSelectedBiome(null);
       setConfirmTravel(false);
       setShowLocations(true);
@@ -38,7 +39,7 @@ export function WorldMap() {
     <div className="flex flex-col min-h-[calc(100vh-5rem)]">
       {/* Header */}
       <div className="flex items-center justify-between pb-3">
-        <h1 className="retro text-sm text-foreground">World Map</h1>
+        <h1 className="retro text-sm text-foreground">{t("worldMap.title")}</h1>
         <div className="flex items-center gap-2">
           <span className="text-sm">{BIOME_META[currentBiome].icon}</span>
           <span className="retro text-[8px] text-primary">{BIOME_META[currentBiome].name}</span>
@@ -75,12 +76,13 @@ export function WorldMap() {
       {confirmTravel && selectedBiome && (
         <Card className="mt-3">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs">Travel to {BIOME_META[selectedBiome].name}?</CardTitle>
+            <CardTitle className="text-xs">
+              {t("worldMap.travelTo", { name: BIOME_META[selectedBiome].name })}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="retro text-[7px] text-muted-foreground">
-              Your world shifts to match. The UI, the colours, everything. You carry your stats —
-              but the boss changes.
+              {t("worldMap.travelDescription")}
             </p>
           </CardContent>
           <CardFooter className="flex gap-3">
@@ -90,10 +92,10 @@ export function WorldMap() {
               className="text-[8px] flex-1"
               onClick={() => setConfirmTravel(false)}
             >
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button size="sm" className="text-[8px] flex-1" onClick={handleTravel}>
-              Travel
+              {t("common.travel")}
             </Button>
           </CardFooter>
         </Card>
@@ -102,7 +104,7 @@ export function WorldMap() {
       {/* Unlocked count */}
       <div className="text-center pt-3">
         <span className="retro text-[7px] text-muted-foreground">
-          {unlockedBiomes.length}/9 regions discovered
+          {t("worldMap.regionsDiscovered", { count: unlockedBiomes.length })}
         </span>
       </div>
     </div>

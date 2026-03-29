@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/8bit/button";
 import { asset } from "@/lib/utils";
 import { useCombat } from "@/hooks/useCombat";
@@ -7,6 +8,7 @@ import { WaitingScreen } from "@/components/combat/WaitingScreen";
 import { VictoryScreen } from "@/components/combat/VictoryScreen";
 
 export function Combat() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     connected,
@@ -30,16 +32,16 @@ export function Combat() {
       {/* Header */}
       <div className="flex items-center justify-between w-full max-w-3xl">
         <Button variant="ghost" onClick={() => navigate("/")}>
-          &lt; Back
+          &lt; {t("common.back")}
         </Button>
-        <h1 className="retro text-lg md:text-2xl text-foreground">8-Bit Arena</h1>
+        <h1 className="retro text-lg md:text-2xl text-foreground">{t("combat.arena")}</h1>
         <div className="w-20" />
       </div>
 
       {/* Connection status */}
       {!connected && (
         <div className="text-center space-y-4 flex-1 flex flex-col items-center justify-center">
-          <p className="retro text-sm text-muted-foreground">Connecting to server...</p>
+          <p className="retro text-sm text-muted-foreground">{t("combat.connectingToServer")}</p>
         </div>
       )}
 
@@ -52,7 +54,7 @@ export function Combat() {
               alt="Mage"
               className="pixelated w-32 h-32 md:w-40 md:h-40"
             />
-            <span className="retro text-2xl text-destructive mb-8">VS</span>
+            <span className="retro text-2xl text-destructive mb-8">{t("common.vs")}</span>
             <img
               src={asset("8bit-orc-warrior.png")}
               alt="Orc"
@@ -60,9 +62,9 @@ export function Combat() {
             />
           </div>
           <p className="retro text-xs text-muted-foreground max-w-sm">
-            Enter the arena and face your opponent in magical combat!
+            {t("combat.enterArenaDescription")}
           </p>
-          <Button onClick={joinCombat}>Enter Arena</Button>
+          <Button onClick={joinCombat}>{t("combat.enterArena")}</Button>
         </div>
       )}
 
@@ -97,7 +99,6 @@ export function Combat() {
             winnerId={combat.winnerId}
             identity={identity}
             onPlayAgain={() => {
-              // Leave finished combat, then rejoin
               leaveCombat();
               setTimeout(joinCombat, 500);
             }}

@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTable, useSpacetimeDB } from "spacetimedb/react";
+import { useTranslation } from "react-i18next";
 import { tables } from "@/generated";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/8bit/tabs";
@@ -32,6 +33,7 @@ const STAT_KEYS: Record<StatName, string> = {
 const STAT_TABS: StatName[] = ["STR", "AGI", "INT", "CON", "WIS", "CHA"];
 
 export function Leaderboard() {
+  const { t } = useTranslation();
   const { identity } = useSpacetimeDB();
   const [leaderboardRows] = useTable(tables.leaderboard);
   const [guildRows] = useTable(tables.my_guild);
@@ -127,7 +129,7 @@ export function Leaderboard() {
 
   return (
     <div className="space-y-4">
-      <h1 className="retro text-sm text-center text-foreground">Leaderboard</h1>
+      <h1 className="retro text-sm text-center text-foreground">{t("leaderboard.title")}</h1>
 
       {/* Guild rank banner */}
       {guild && (
@@ -136,10 +138,10 @@ export function Leaderboard() {
             <span className="text-sm">🏰</span>
             <span className="retro text-[8px] text-foreground">{guild.name}</span>
             <Badge variant="outline" className="text-[5px]">
-              {memberRows.length} members
+              {t("guild.membersCount", { count: memberRows.length })}
             </Badge>
             <Badge variant="outline" className="text-[5px] text-amber-400">
-              {guild.raidWins ?? 0} raid wins
+              {t("leaderboard.raidWins", { count: guild.raidWins ?? 0 })}
             </Badge>
           </CardContent>
         </Card>
@@ -148,17 +150,17 @@ export function Leaderboard() {
       {/* Online player count */}
       <div className="flex justify-center">
         <Badge variant="outline" className="text-[6px] text-green-400">
-          {onlineCount} {onlineCount === 1 ? "player" : "players"} online
+          {t("common.playerCount", { count: onlineCount })}
         </Badge>
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="w-full">
           <TabsTrigger value="level" className="flex-1 text-[7px]">
-            Level
+            {t("leaderboard.levelTab")}
           </TabsTrigger>
           <TabsTrigger value="stats" className="flex-1 text-[7px]">
-            Stats
+            {t("leaderboard.statsTab")}
           </TabsTrigger>
         </TabsList>
 
@@ -192,10 +194,11 @@ export function Leaderboard() {
 }
 
 function RankList({ entries, label }: { entries: LeaderboardEntry[]; label: string }) {
+  const { t } = useTranslation();
   return (
     <Card>
       <CardHeader className="pb-1">
-        <CardTitle className="text-[9px]">Top Players — {label}</CardTitle>
+        <CardTitle className="text-[9px]">{t("leaderboard.topPlayers", { label })}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-1.5">
@@ -238,7 +241,7 @@ function RankList({ entries, label }: { entries: LeaderboardEntry[]; label: stri
                       )}
                     >
                       {entry.name}
-                      {entry.isPlayer && " (You)"}
+                      {entry.isPlayer && t("leaderboard.youSuffix")}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">

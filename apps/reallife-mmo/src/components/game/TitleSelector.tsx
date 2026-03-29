@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import {
   Accordion,
@@ -16,12 +17,12 @@ interface TitleSelectorProps {
   onSelect: (titleId: string | null) => void;
 }
 
-const CATEGORY_LABELS: Record<TitleCategory, string> = {
-  real_world: "Real-World Achievements",
-  in_game: "In-Game Achievements",
-};
-
 export function TitleSelector({ unlockedTitles, activeTitle, onSelect }: TitleSelectorProps) {
+  const { t } = useTranslation();
+  const CATEGORY_LABELS: Record<TitleCategory, string> = {
+    real_world: t("character.realWorldAchievements"),
+    in_game: t("character.inGameAchievements"),
+  };
   const unlockedSet = new Set(unlockedTitles);
   const categories: TitleCategory[] = ["real_world", "in_game"];
 
@@ -29,9 +30,12 @@ export function TitleSelector({ unlockedTitles, activeTitle, onSelect }: TitleSe
     <Card>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xs">Titles</CardTitle>
+          <CardTitle className="text-xs">{t("character.titles")}</CardTitle>
           <span className="retro text-[7px] text-muted-foreground">
-            {unlockedTitles.length}/{TITLES.length} unlocked
+            {t("character.titlesUnlocked", {
+              unlocked: unlockedTitles.length,
+              total: TITLES.length,
+            })}
           </span>
         </div>
       </CardHeader>
@@ -42,7 +46,7 @@ export function TitleSelector({ unlockedTitles, activeTitle, onSelect }: TitleSe
             onClick={() => onSelect(null)}
             className="w-full text-center retro text-[7px] text-muted-foreground hover:text-foreground transition-colors"
           >
-            Remove active title
+            {t("character.removeActiveTitle")}
           </button>
         )}
 
@@ -98,7 +102,7 @@ export function TitleSelector({ unlockedTitles, activeTitle, onSelect }: TitleSe
                               </span>
                               {isActive && (
                                 <Badge variant="secondary" className="text-[5px] px-1 py-0">
-                                  Active
+                                  {t("common.active")}
                                 </Badge>
                               )}
                             </div>

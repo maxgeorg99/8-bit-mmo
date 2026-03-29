@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useTable, useReducer, useSpacetimeDB } from "spacetimedb/react";
+import { useTranslation } from "react-i18next";
 import { tables, reducers } from "@/generated";
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/card";
@@ -20,18 +21,12 @@ import { RAID_BOSSES } from "@/lib/bossDefinitions";
 import { CLASS_SPRITES } from "@/lib/types";
 import { asset, cn } from "@/lib/utils";
 
-// ── Role colors & labels ──────────────────────────────────────
+// ── Role colors ──────────────────────────────────────
 
 const ROLE_COLORS: Record<string, string> = {
   Leader: "text-amber-400",
   Officer: "text-blue-400",
   Member: "text-muted-foreground",
-};
-
-const ROLE_LABELS: Record<string, string> = {
-  Leader: "Leader",
-  Officer: "Officer",
-  Member: "Member",
 };
 
 // ── Helpers to join guild members with player data ─────────────
@@ -70,12 +65,13 @@ function buildMemberList(
 // ── Main Page ─────────────────────────────────────────────────
 
 export function GuildPage() {
+  const { t } = useTranslation();
   const [guildRows] = useTable(tables.my_guild);
   const guild = guildRows[0] ?? null;
 
   return (
     <div className="space-y-6">
-      <h1 className="retro text-sm text-center text-foreground">Guild Hall</h1>
+      <h1 className="retro text-sm text-center text-foreground">{t("guild.guildHall")}</h1>
       {guild ? <GuildView guild={guild} /> : <NoGuildView />}
     </div>
   );
@@ -84,6 +80,7 @@ export function GuildPage() {
 // ── No Guild — Browse / Create ────────────────────────────────
 
 function NoGuildView() {
+  const { t } = useTranslation();
   const [showCreate, setShowCreate] = useState(false);
   const [browseRows] = useTable(tables.browse_guilds);
   const joinGuildReducer = useReducer(reducers.joinGuild);
@@ -93,18 +90,16 @@ function NoGuildView() {
       <Card>
         <CardContent className="py-4 text-center">
           <span className="text-3xl block mb-2">🏰</span>
-          <p className="retro text-[8px] text-muted-foreground">
-            You are not in a guild. Create your own or join an existing one!
-          </p>
+          <p className="retro text-[8px] text-muted-foreground">{t("guild.notInGuild")}</p>
           <Button className="mt-3 text-[8px]" onClick={() => setShowCreate(true)}>
-            Create Guild
+            {t("guild.createGuild")}
           </Button>
         </CardContent>
       </Card>
 
       {/* Browse guilds */}
       <div className="space-y-2">
-        <h2 className="retro text-[10px] text-foreground">Available Guilds</h2>
+        <h2 className="retro text-[10px] text-foreground">{t("guild.availableGuilds")}</h2>
         {browseRows.map((g: any) => (
           <Card key={String(g.id)}>
             <CardContent className="py-3">
@@ -130,7 +125,7 @@ function NoGuildView() {
                   disabled={g.memberCount >= g.maxMembers}
                   onClick={() => void joinGuildReducer({ guildId: g.id })}
                 >
-                  Join
+                  {t("common.join")}
                 </Button>
               </div>
             </CardContent>
@@ -138,7 +133,7 @@ function NoGuildView() {
         ))}
         {browseRows.length === 0 && (
           <p className="retro text-[7px] text-muted-foreground text-center py-4">
-            No guilds available. Be the first to create one!
+            {t("guild.noGuildsAvailable")}
           </p>
         )}
       </div>
@@ -177,50 +172,56 @@ function CreateGuildDialog({
     setDesc("");
   }
 
+  const { t } = useTranslation();
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-xs">Create Guild</DialogTitle>
+          <DialogTitle className="text-xs">{t("guild.createGuildTitle")}</DialogTitle>
           <DialogDescription className="retro text-[7px]">
-            Found your own guild! Minimum 3 characters for name, 2 for tag.
+            {t("guild.createGuildDescription")}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
           <div>
-            <label className="retro text-[7px] text-muted-foreground block mb-1">Guild Name</label>
+            <label className="retro text-[7px] text-muted-foreground block mb-1">
+              {t("guild.guildName")}
+            </label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Iron Wolves"
+              placeholder={t("guild.guildNamePlaceholder")}
               className="text-[8px]"
               maxLength={24}
             />
           </div>
           <div>
             <label className="retro text-[7px] text-muted-foreground block mb-1">
-              Tag (2-4 chars)
+              {t("guild.tag")}
             </label>
             <Input
               value={tag}
               onChange={(e) => setTag(e.target.value.toUpperCase())}
-              placeholder="IW"
+              placeholder={t("guild.tagPlaceholder")}
               className="text-[8px]"
               maxLength={4}
             />
           </div>
           <div>
-            <label className="retro text-[7px] text-muted-foreground block mb-1">Description</label>
+            <label className="retro text-[7px] text-muted-foreground block mb-1">
+              {t("guild.description")}
+            </label>
             <Input
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
-              placeholder="Warriors forged in iron..."
+              placeholder={t("guild.descriptionPlaceholder")}
               className="text-[8px]"
               maxLength={80}
             />
           </div>
           <Button className="w-full text-[8px]" disabled={!canCreate} onClick={handleCreate}>
-            Found Guild
+            {t("guild.foundGuild")}
           </Button>
         </div>
       </DialogContent>
@@ -231,6 +232,7 @@ function CreateGuildDialog({
 // ── Guild View — Members, Chat, Actions ───────────────────────
 
 function GuildView({ guild }: { guild: any }) {
+  const { t } = useTranslation();
   const { identity } = useSpacetimeDB();
   const [memberRows] = useTable(tables.my_guild_members);
   const [allPlayers] = useTable(tables.player);
@@ -271,7 +273,7 @@ function GuildView({ guild }: { guild: any }) {
               👥 {members.length}/{guild.maxMembers}
             </span>
             <span className="retro text-[7px] text-muted-foreground">
-              🟢 {members.filter((m) => m.online).length} online
+              🟢 {t("guild.onlineCount", { count: members.filter((m) => m.online).length })}
             </span>
           </div>
         </CardContent>
@@ -280,7 +282,7 @@ function GuildView({ guild }: { guild: any }) {
       {/* Member list */}
       <Card>
         <CardHeader className="pb-1">
-          <CardTitle className="text-[9px]">Members</CardTitle>
+          <CardTitle className="text-[9px]">{t("guild.members")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -310,7 +312,7 @@ function GuildView({ guild }: { guild: any }) {
                         ROLE_COLORS[m.role] ?? "text-muted-foreground",
                       )}
                     >
-                      {ROLE_LABELS[m.role] ?? m.role}
+                      {t(`guild.roles.${m.role}`, { defaultValue: m.role })}
                     </span>
                     <span className="retro text-[6px] text-muted-foreground">
                       Lv.{m.level} {m.playerClass}
@@ -327,7 +329,7 @@ function GuildView({ guild }: { guild: any }) {
                         className="text-[5px] px-1.5"
                         onClick={() => void promoteReducer({ targetPlayerId: m.playerId } as any)}
                       >
-                        Promote
+                        {t("guild.promote")}
                       </Button>
                     )}
                     <Button
@@ -336,7 +338,7 @@ function GuildView({ guild }: { guild: any }) {
                       className="text-[5px] px-1.5 text-red-400"
                       onClick={() => void kickReducer({ targetPlayerId: m.playerId } as any)}
                     >
-                      Kick
+                      {t("guild.kick")}
                     </Button>
                   </div>
                 )}
@@ -348,7 +350,7 @@ function GuildView({ guild }: { guild: any }) {
 
       {/* Guild chat — opens global chat panel */}
       <Button variant="outline" className="w-full text-[8px]" onClick={() => openChat("guild")}>
-        Open Guild Chat
+        {t("guild.openGuildChat")}
       </Button>
 
       {/* Raid bosses */}
@@ -360,7 +362,7 @@ function GuildView({ guild }: { guild: any }) {
         className="w-full text-[8px] text-red-400"
         onClick={() => void leaveGuildReducer()}
       >
-        Leave Guild
+        {t("guild.leaveGuild")}
       </Button>
     </>
   );
@@ -369,6 +371,7 @@ function GuildView({ guild }: { guild: any }) {
 // ── Raid Section ─────────────────────────────────────────────
 
 function RaidSection({ memberCount }: { memberCount: number }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const canRaid = memberCount >= 3;
   const { player } = useMyPlayer();
@@ -377,12 +380,12 @@ function RaidSection({ memberCount }: { memberCount: number }) {
   return (
     <Card>
       <CardHeader className="pb-1">
-        <CardTitle className="text-[9px]">⚔️ Raid Bosses</CardTitle>
+        <CardTitle className="text-[9px]">⚔️ {t("guild.raidBosses")}</CardTitle>
       </CardHeader>
       <CardContent>
         {!canRaid ? (
           <p className="retro text-[7px] text-muted-foreground text-center py-2">
-            Need {3 - memberCount} more member(s) to unlock raids.
+            {t("guild.needMoreMembers", { count: 3 - memberCount })}
           </p>
         ) : (
           <div className="space-y-2">
@@ -402,7 +405,7 @@ function RaidSection({ memberCount }: { memberCount: number }) {
                     className="text-[6px] shrink-0"
                     onClick={() => navigate(`/raid/${biomeId}`)}
                   >
-                    Challenge
+                    {t("guild.challenge")}
                   </Button>
                 </div>
               );

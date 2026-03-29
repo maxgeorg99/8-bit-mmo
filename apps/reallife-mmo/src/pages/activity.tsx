@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useTable, useReducer } from "spacetimedb/react";
+import { useTranslation } from "react-i18next";
 import { tables, reducers } from "@/generated";
 import { ActivityLogger } from "@/components/game/ActivityLogger";
 import { RecentActivity } from "@/components/game/RecentActivity";
@@ -9,6 +10,7 @@ import { useMyPlayer } from "@/hooks/useStdbPlayer";
 import type { ActivityLog, ActivityType } from "@/lib/types";
 
 export function Activity() {
+  const { t } = useTranslation();
   const { player } = useMyPlayer();
   const logActivityReducer = useReducer(reducers.logActivity);
   const [activityLogRows] = useTable(tables.my_activity_logs);
@@ -41,9 +43,9 @@ export function Activity() {
         intensity,
         note: note ?? undefined,
       });
-      toast("Activity logged!");
+      toast(t("activity.activityLogged"));
     },
-    [logActivityReducer],
+    [logActivityReducer, t],
   );
 
   // Determine last activity type from most recent log
@@ -53,10 +55,8 @@ export function Activity() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="retro text-lg text-foreground">Log Activity</h1>
-        <p className="retro text-[8px] text-muted-foreground mt-1">
-          Your real-world grind powers your character
-        </p>
+        <h1 className="retro text-lg text-foreground">{t("activity.logActivity")}</h1>
+        <p className="retro text-[8px] text-muted-foreground mt-1">{t("activity.subtitle")}</p>
       </div>
 
       <ActivityLogger
@@ -67,7 +67,7 @@ export function Activity() {
 
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-xs">Activity History</CardTitle>
+          <CardTitle className="text-xs">{t("activity.activityHistory")}</CardTitle>
         </CardHeader>
         <CardContent>
           <RecentActivity logs={logs} limit={10} />

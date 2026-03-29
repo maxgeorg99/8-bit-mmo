@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/8bit/button";
 import { asset } from "@/lib/utils";
 
 export function NotFound() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -16,18 +18,18 @@ export function NotFound() {
 
       {/* Error text */}
       <div className="space-y-4">
-        <h1 className="retro text-4xl md:text-6xl text-destructive">404</h1>
-        <h2 className="retro text-sm md:text-lg text-foreground">You made the Ogre angry!</h2>
+        <h1 className="retro text-4xl md:text-6xl text-destructive">{t("notFound.title")}</h1>
+        <h2 className="retro text-sm md:text-lg text-foreground">{t("notFound.ogreAngry")}</h2>
         <p className="retro text-[10px] md:text-xs text-muted-foreground max-w-sm mx-auto">
-          This room doesn't exist. Turn back before it's too late.
+          {t("notFound.roomDoesntExist")}
         </p>
       </div>
 
       {/* Navigation */}
       <div className="flex gap-6">
-        <Button onClick={() => navigate("/dashboard")}>Return to Town</Button>
+        <Button onClick={() => navigate("/dashboard")}>{t("notFound.returnToTown")}</Button>
         <Button variant="outline" onClick={() => navigate(-1)}>
-          Go Back
+          {t("notFound.goBack")}
         </Button>
       </div>
     </div>

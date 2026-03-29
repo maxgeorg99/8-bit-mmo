@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { SpacetimeDBProvider } from "spacetimedb/react";
+import "./i18n";
 import "./index.css";
 import { ActiveThemeProvider } from "./components/active-theme";
 import { BiomeProvider } from "./providers/BiomeProvider";

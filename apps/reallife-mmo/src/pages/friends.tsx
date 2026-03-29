@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent } from "@/components/ui/8bit/card";
 import { Badge } from "@/components/ui/8bit/badge";
@@ -22,6 +23,7 @@ import { asset, cn } from "@/lib/utils";
 const STATS_ORDER: StatName[] = ["STR", "AGI", "INT", "CON", "WIS", "CHA", "MP"];
 
 export function FriendsPage() {
+  const { t } = useTranslation();
   const [tab, setTab] = useState("friends");
   const {
     friends,
@@ -45,7 +47,7 @@ export function FriendsPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="retro text-sm text-center text-foreground">Friends</h1>
+      <h1 className="retro text-sm text-center text-foreground">{t("friends.title")}</h1>
 
       {/* Add friend bar */}
       <Card>
@@ -54,7 +56,7 @@ export function FriendsPage() {
             <Input
               value={addName}
               onChange={(e) => setAddName(e.target.value)}
-              placeholder="Player name..."
+              placeholder={t("friends.playerNamePlaceholder")}
               className="text-[8px] flex-1"
               onKeyDown={(e) => e.key === "Enter" && handleAdd()}
             />
@@ -64,7 +66,7 @@ export function FriendsPage() {
               disabled={addName.trim().length < 1}
               onClick={handleAdd}
             >
-              Add Friend
+              {t("friends.addFriend")}
             </Button>
           </div>
         </CardContent>
@@ -73,10 +75,10 @@ export function FriendsPage() {
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="w-full">
           <TabsTrigger value="friends" className="flex-1 text-[7px]">
-            Friends ({friends.length})
+            {t("friends.friendsTab", { count: friends.length })}
           </TabsTrigger>
           <TabsTrigger value="requests" className="flex-1 text-[7px]">
-            Requests{" "}
+            {t("friends.requestsTab")}{" "}
             {incomingRequests.length > 0 && (
               <Badge variant="outline" className="ml-1 text-[5px] text-amber-400">
                 {incomingRequests.length}
@@ -91,7 +93,7 @@ export function FriendsPage() {
               <CardContent className="py-6 text-center">
                 <span className="text-2xl block mb-2">👥</span>
                 <p className="retro text-[8px] text-muted-foreground">
-                  No friends yet. Add someone by name above!
+                  {t("friends.noFriendsYet")}
                 </p>
               </CardContent>
             </Card>
@@ -111,7 +113,7 @@ export function FriendsPage() {
           {/* Incoming */}
           {incomingRequests.length > 0 && (
             <div className="space-y-2">
-              <h2 className="retro text-[9px] text-foreground">Incoming Requests</h2>
+              <h2 className="retro text-[9px] text-foreground">{t("friends.incomingRequests")}</h2>
               {incomingRequests.map((r) => (
                 <Card key={String(r.friendshipId)}>
                   <CardContent className="py-2">
@@ -135,7 +137,7 @@ export function FriendsPage() {
                           className="text-[6px] px-2"
                           onClick={() => void acceptFriendRequest(r.friendshipId)}
                         >
-                          Accept
+                          {t("common.accept")}
                         </Button>
                         <Button
                           size="sm"
@@ -143,7 +145,7 @@ export function FriendsPage() {
                           className="text-[6px] px-2 text-red-400"
                           onClick={() => void rejectFriendRequest(r.friendshipId)}
                         >
-                          Decline
+                          {t("common.decline")}
                         </Button>
                       </div>
                     </div>
@@ -156,7 +158,7 @@ export function FriendsPage() {
           {/* Outgoing */}
           {outgoingRequests.length > 0 && (
             <div className="space-y-2">
-              <h2 className="retro text-[9px] text-foreground">Sent Requests</h2>
+              <h2 className="retro text-[9px] text-foreground">{t("friends.sentRequests")}</h2>
               {outgoingRequests.map((r) => (
                 <Card key={String(r.friendshipId)}>
                   <CardContent className="py-2">
@@ -169,7 +171,7 @@ export function FriendsPage() {
                       <div className="flex-1 min-w-0">
                         <span className="retro text-[8px] text-foreground">{r.name}</span>
                         <span className="retro text-[6px] text-muted-foreground block">
-                          Pending...
+                          {t("friends.pending")}
                         </span>
                       </div>
                       <Button
@@ -190,7 +192,9 @@ export function FriendsPage() {
           {incomingRequests.length === 0 && outgoingRequests.length === 0 && (
             <Card>
               <CardContent className="py-6 text-center">
-                <p className="retro text-[8px] text-muted-foreground">No pending requests.</p>
+                <p className="retro text-[8px] text-muted-foreground">
+                  {t("friends.noPendingRequests")}
+                </p>
               </CardContent>
             </Card>
           )}
@@ -218,6 +222,7 @@ function FriendCard({
   onRemove: () => void;
   onCompare: () => void;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const biomeMeta = BIOME_META[friend.currentBiome as keyof typeof BIOME_META];
 
@@ -263,7 +268,7 @@ function FriendCard({
         {/* Action buttons */}
         <div className="flex gap-1.5 mt-2">
           <Button size="sm" variant="outline" className="text-[6px] flex-1" onClick={onCompare}>
-            Compare Stats
+            {t("friends.compareStats")}
           </Button>
           {friend.online && (
             <Button
@@ -272,7 +277,7 @@ function FriendCard({
               className="text-[6px] flex-1 text-red-400"
               onClick={() => void navigate("/combat")}
             >
-              PvP Challenge
+              {t("friends.pvpChallenge")}
             </Button>
           )}
           <Button
@@ -281,7 +286,7 @@ function FriendCard({
             className="text-[6px] text-muted-foreground px-2 shrink-0"
             onClick={onRemove}
           >
-            Remove
+            {t("common.remove")}
           </Button>
         </div>
       </CardContent>
@@ -300,6 +305,7 @@ function StatCompareDialog({
   onOpenChange: (open: boolean) => void;
   friend: FriendDisplay | null;
 }) {
+  const { t } = useTranslation();
   const { player } = useMyPlayer();
 
   if (!friend || !player) return null;
@@ -308,9 +314,9 @@ function StatCompareDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-xs">Stat Comparison</DialogTitle>
+          <DialogTitle className="text-xs">{t("friends.statComparison")}</DialogTitle>
           <DialogDescription className="retro text-[7px]">
-            {player.name} vs {friend.name}
+            {t("friends.vsLabel", { name1: player.name, name2: friend.name })}
           </DialogDescription>
         </DialogHeader>
 
@@ -401,13 +407,17 @@ function StatCompareDialog({
         {/* Total power comparison */}
         <div className="flex items-center justify-between px-2">
           <div className="text-center">
-            <span className="retro text-[6px] text-muted-foreground">Total Power</span>
+            <span className="retro text-[6px] text-muted-foreground">
+              {t("friends.totalPower")}
+            </span>
             <span className="retro text-[10px] text-primary block">
               {Math.round(STATS_ORDER.reduce((sum, s) => sum + player.stats[s], 0))}
             </span>
           </div>
           <div className="text-center">
-            <span className="retro text-[6px] text-muted-foreground">Total Power</span>
+            <span className="retro text-[6px] text-muted-foreground">
+              {t("friends.totalPower")}
+            </span>
             <span className="retro text-[10px] text-foreground block">
               {Math.round(STATS_ORDER.reduce((sum, s) => sum + friend.stats[s], 0))}
             </span>

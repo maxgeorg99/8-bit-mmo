@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTable, useReducer } from "spacetimedb/react";
+import { useTranslation } from "react-i18next";
 import { tables, reducers } from "@/generated";
 import { Button } from "@/components/ui/8bit/button";
 import { Input } from "@/components/ui/8bit/input";
@@ -25,6 +26,7 @@ function stdbQuestToLocal(row: any): Quest {
 }
 
 export function Quests() {
+  const { t } = useTranslation();
   const [questRows] = useTable(tables.my_quests);
   const claimQuestReducer = useReducer(reducers.claimQuest);
   const completeCustomQuestReducer = useReducer(reducers.completeCustomQuest);
@@ -66,10 +68,8 @@ export function Quests() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="retro text-lg text-foreground">Quest Board</h1>
-          <p className="retro text-[8px] text-muted-foreground mt-1">
-            Daily quests refresh each day. Create your own goals too!
-          </p>
+          <h1 className="retro text-lg text-foreground">{t("quests.questBoard")}</h1>
+          <p className="retro text-[8px] text-muted-foreground mt-1">{t("quests.subtitle")}</p>
         </div>
         <Button
           variant="outline"
@@ -77,7 +77,7 @@ export function Quests() {
           className="text-[8px]"
           onClick={() => setShowCreate(!showCreate)}
         >
-          {showCreate ? "Cancel" : "+ New Goal"}
+          {showCreate ? t("common.cancel") : t("quests.newGoal")}
         </Button>
       </div>
 
@@ -85,13 +85,13 @@ export function Quests() {
       {showCreate && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs">Create Personal Goal</CardTitle>
+            <CardTitle className="text-xs">{t("quests.createPersonalGoal")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-1">
-              <label className="retro text-[8px] text-muted-foreground">Goal</label>
+              <label className="retro text-[8px] text-muted-foreground">{t("quests.goal")}</label>
               <Input
-                placeholder="e.g. Learn a handstand, Run 10km, Bake sourdough..."
+                placeholder={t("quests.goalPlaceholder")}
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
                 className="text-xs"
@@ -99,10 +99,11 @@ export function Quests() {
             </div>
             <div className="space-y-1">
               <label className="retro text-[8px] text-muted-foreground">
-                Details <span className="text-muted-foreground/50">(optional)</span>
+                {t("quests.details")}{" "}
+                <span className="text-muted-foreground/50">{t("quests.detailsOptional")}</span>
               </label>
               <Input
-                placeholder="Any extra notes or milestones..."
+                placeholder={t("quests.detailsPlaceholder")}
                 value={newDesc}
                 onChange={(e) => setNewDesc(e.target.value)}
                 className="text-xs"
@@ -115,7 +116,7 @@ export function Quests() {
               className="w-full text-[8px]"
               disabled={!newTitle.trim()}
             >
-              Create Goal (+30 XP on completion)
+              {t("quests.createGoalButton", { xp: 30 })}
             </Button>
           </CardFooter>
         </Card>
@@ -124,7 +125,7 @@ export function Quests() {
       {/* Completed quests ready to claim */}
       {completed.length > 0 && (
         <div className="space-y-3">
-          <h2 className="retro text-[10px] text-green-500">Ready to Claim</h2>
+          <h2 className="retro text-[10px] text-green-500">{t("quests.readyToClaim")}</h2>
           {completed.map((q) => (
             <QuestCard key={q.id} quest={q} onClaim={handleClaim} />
           ))}
@@ -134,18 +135,18 @@ export function Quests() {
       {/* Personal goals */}
       {(activeCustom.length > 0 || customQuests.length > 0) && (
         <div className="space-y-3">
-          <h2 className="retro text-[10px] text-foreground">Personal Goals</h2>
+          <h2 className="retro text-[10px] text-foreground">{t("quests.personalGoals")}</h2>
           {activeCustom.length === 0 ? (
-            <p className="retro text-[7px] text-muted-foreground">
-              No active goals. Create one above!
-            </p>
+            <p className="retro text-[7px] text-muted-foreground">{t("quests.noActiveGoals")}</p>
           ) : (
             activeCustom.map((q) => (
               <Card key={q.id} className="w-full">
                 <CardContent className="pt-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="retro text-[9px]">{q.title}</div>
-                    <span className="retro text-[7px] text-yellow-500">+{q.xpReward} XP</span>
+                    <span className="retro text-[7px] text-yellow-500">
+                      +{q.xpReward} {t("common.xp")}
+                    </span>
                   </div>
                   {q.description && (
                     <p className="retro text-[7px] text-muted-foreground">{q.description}</p>
@@ -157,7 +158,7 @@ export function Quests() {
                     className="text-[8px] w-full"
                     onClick={() => handleCompleteCustom(q.id)}
                   >
-                    Mark as Done
+                    {t("quests.markAsDone")}
                   </Button>
                 </CardFooter>
               </Card>
@@ -168,10 +169,10 @@ export function Quests() {
 
       {/* Daily quests */}
       <div className="space-y-3">
-        <h2 className="retro text-[10px] text-muted-foreground">Daily Quests</h2>
+        <h2 className="retro text-[10px] text-muted-foreground">{t("quests.dailyQuests")}</h2>
         {activeDailies.length === 0 ? (
           <p className="retro text-[7px] text-muted-foreground text-center py-4">
-            All daily quests completed! Come back tomorrow.
+            {t("quests.allDailyCompleted")}
           </p>
         ) : (
           activeDailies.map((q) => <QuestCard key={q.id} quest={q} onClaim={handleClaim} />)

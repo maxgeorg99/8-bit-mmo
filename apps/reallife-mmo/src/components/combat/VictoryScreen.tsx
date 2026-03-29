@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import { asset } from "@/lib/utils";
@@ -11,6 +12,7 @@ interface VictoryScreenProps {
 }
 
 export function VictoryScreen({ winnerId, identity, onPlayAgain, onGoHome }: VictoryScreenProps) {
+  const { t } = useTranslation();
   const isWinner = identity && winnerId && winnerId.isEqual(identity);
 
   return (
@@ -19,7 +21,7 @@ export function VictoryScreen({ winnerId, identity, onPlayAgain, onGoHome }: Vic
         <CardTitle
           className={`text-2xl text-center ${isWinner ? "text-primary" : "text-destructive"}`}
         >
-          {isWinner ? "Victory!" : "Defeat!"}
+          {isWinner ? t("combat.victory") : t("combat.defeat")}
         </CardTitle>
       </CardHeader>
       <CardContent className="text-center space-y-4">
@@ -29,13 +31,13 @@ export function VictoryScreen({ winnerId, identity, onPlayAgain, onGoHome }: Vic
           className="pixelated w-40 h-40 mx-auto"
         />
         <p className="retro text-xs text-muted-foreground">
-          {isWinner ? "The enemy has been vanquished!" : "You have fallen in battle..."}
+          {isWinner ? t("combat.enemyVanquished") : t("combat.fallenInBattle")}
         </p>
       </CardContent>
       <CardFooter className="justify-center gap-4">
-        <Button onClick={onPlayAgain}>Play Again</Button>
+        <Button onClick={onPlayAgain}>{t("combat.playAgain")}</Button>
         <Button variant="outline" onClick={onGoHome}>
-          Go Home
+          {t("combat.goHome")}
         </Button>
       </CardFooter>
     </Card>

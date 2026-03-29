@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import { useTable } from "spacetimedb/react";
+import { useTranslation } from "react-i18next";
 import { tables } from "@/generated";
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/card";
@@ -38,6 +39,7 @@ function stdbQuestToLocal(row: any): Quest {
 }
 
 export function Dashboard() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { player } = useMyPlayer();
   const [questRows] = useTable(tables.my_quests);
@@ -69,7 +71,7 @@ export function Dashboard() {
   if (!player) {
     return (
       <div className="text-center py-12">
-        <p className="retro text-[8px] text-muted-foreground">Loading...</p>
+        <p className="retro text-[8px] text-muted-foreground">{t("common.loading")}</p>
       </div>
     );
   }
@@ -97,7 +99,7 @@ export function Dashboard() {
         />
       </div>
       <PlayerProfileCard
-        playerName={player.name || "Unnamed Hero"}
+        playerName={player.name || t("dashboard.unnamedHero")}
         playerClass={player.playerClass}
         level={player.level}
         stats={{
@@ -119,7 +121,9 @@ export function Dashboard() {
       {player.streakDays > 0 && (
         <div className="flex items-center justify-center gap-2 py-2 border border-border">
           <span className="text-lg">🔥</span>
-          <span className="retro text-[10px] text-foreground">{player.streakDays} day streak</span>
+          <span className="retro text-[10px] text-foreground">
+            {t("dashboard.dayStreak", { count: player.streakDays })}
+          </span>
           {player.streakDays >= 7 && <span className="text-lg">🔥</span>}
         </div>
       )}
@@ -127,29 +131,33 @@ export function Dashboard() {
       {/* Gold display */}
       <div className="flex items-center justify-center gap-1">
         <span className="text-sm">💰</span>
-        <span className="retro text-[10px] text-amber-400">{player.gold}g</span>
+        <span className="retro text-[10px] text-amber-400">
+          {t("common.goldAmount", { amount: player.gold })}
+        </span>
       </div>
 
       {/* Quick actions */}
       <div className="grid grid-cols-2 gap-3">
         <Button onClick={() => navigate("/activity")} className="text-[8px]">
-          Log Activity
+          {t("dashboard.logActivity")}
         </Button>
         <Button onClick={() => navigate("/quests")} variant="outline" className="text-[8px]">
-          Quests {completedQuests > 0 && `(${completedQuests} ready)`}
+          {completedQuests > 0
+            ? t("dashboard.questsReady", { count: completedQuests })
+            : t("dashboard.quests")}
         </Button>
         <Button onClick={() => navigate("/leaderboard")} variant="outline" className="text-[8px]">
-          Leaderboard
+          {t("dashboard.leaderboard")}
         </Button>
         <Button onClick={() => navigate("/guild")} variant="outline" className="text-[8px]">
-          Guild
+          {t("dashboard.guild")}
         </Button>
         <Button
           onClick={() => navigate("/friends")}
           variant="outline"
           className="text-[8px] col-span-2"
         >
-          Friends
+          {t("dashboard.friends")}
         </Button>
       </div>
 
@@ -157,7 +165,7 @@ export function Dashboard() {
       {quests.filter((q) => !q.completed).length > 0 && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs">Active Quests</CardTitle>
+            <CardTitle className="text-xs">{t("dashboard.activeQuests")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
@@ -189,7 +197,7 @@ export function Dashboard() {
       {/* Recent activity */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-xs">Recent Activity</CardTitle>
+          <CardTitle className="text-xs">{t("dashboard.recentActivity")}</CardTitle>
         </CardHeader>
         <CardContent>
           <RecentActivity logs={logs} limit={5} />

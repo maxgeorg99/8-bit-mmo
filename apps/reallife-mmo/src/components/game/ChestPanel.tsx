@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import { Button } from "@/components/ui/8bit/button";
 import type { EquipSlot, EquipmentItem } from "@/lib/types";
@@ -13,6 +14,7 @@ interface ChestPanelProps {
 }
 
 export function ChestPanel({ items, equipped, playerLevel, onEquip, onUnequip }: ChestPanelProps) {
+  const { t } = useTranslation();
   const equippedIds = new Set(
     Object.values(equipped)
       .map((i) => i?.id)
@@ -25,12 +27,12 @@ export function ChestPanel({ items, equipped, playerLevel, onEquip, onUnequip }:
         <CardHeader className="pb-2">
           <CardTitle className="text-xs flex items-center gap-2">
             <img src={asset("8bit-treasure.png")} alt="Chest" className="pixelated w-6 h-6" />
-            Chest
+            {t("character.chest")}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="retro text-[7px] text-muted-foreground text-center py-4">
-            Your chest is empty. Keep leveling up and logging activities to earn loot!
+            {t("character.chestEmpty")}
           </p>
         </CardContent>
       </Card>
@@ -51,7 +53,7 @@ export function ChestPanel({ items, equipped, playerLevel, onEquip, onUnequip }:
       <CardHeader className="pb-2">
         <CardTitle className="text-xs flex items-center gap-2">
           <img src={asset("8bit-treasure.png")} alt="Chest" className="pixelated w-6 h-6" />
-          Chest ({items.length} items)
+          {t("character.chestCount", { count: items.length })}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -89,7 +91,7 @@ export function ChestPanel({ items, equipped, playerLevel, onEquip, onUnequip }:
                     className="text-[6px] px-2"
                     onClick={() => onUnequip(item.slot)}
                   >
-                    Unequip
+                    {t("common.unequip")}
                   </Button>
                 ) : (
                   <Button
@@ -98,7 +100,7 @@ export function ChestPanel({ items, equipped, playerLevel, onEquip, onUnequip }:
                     disabled={!canEquip}
                     onClick={() => onEquip(item.id)}
                   >
-                    {canEquip ? "Equip" : `Lv.${item.levelReq}`}
+                    {canEquip ? t("common.equip") : t("common.levelAbbr", { level: item.levelReq })}
                   </Button>
                 )}
               </div>

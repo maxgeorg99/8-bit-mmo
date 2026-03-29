@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import HealthBar from "@/components/ui/8bit/health-bar";
@@ -22,6 +23,7 @@ interface LocationSceneProps {
 }
 
 export function LocationScene({ location, biomeId }: LocationSceneProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { player } = useMyPlayer();
   const enterLocation = useReducer(reducers.enterLocation);
@@ -30,7 +32,7 @@ export function LocationScene({ location, biomeId }: LocationSceneProps) {
   if (!player) {
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="retro text-[10px] text-muted-foreground">Loading...</p>
+        <p className="retro text-[10px] text-muted-foreground">{t("common.loading")}</p>
       </div>
     );
   }
@@ -71,14 +73,12 @@ export function LocationScene({ location, biomeId }: LocationSceneProps) {
       <span className="text-4xl">{location.icon}</span>
       <h2 className="retro text-sm text-foreground">{location.name}</h2>
       <p className="retro text-[8px] text-muted-foreground italic">"{location.description}"</p>
-      <p className="retro text-[8px] text-muted-foreground">
-        Gather your guild and challenge the raid boss!
-      </p>
+      <p className="retro text-[8px] text-muted-foreground">{t("location.gatherGuild")}</p>
       <Button className="text-[8px]" onClick={() => void navigate(`/raid/${biomeId}`)}>
-        Enter Raid
+        {t("location.enterRaid")}
       </Button>
       <Button variant="outline" onClick={handleLeave} className="text-[8px]">
-        Return to Map
+        {t("location.returnToMap")}
       </Button>
     </div>
   );
@@ -99,6 +99,7 @@ function CityScene({
   hpPercent: number;
   onLeave: () => void;
 }) {
+  const { t } = useTranslation();
   const [shopOpen, setShopOpen] = useState(false);
   const [inspecting, setInspecting] = useState<InspectablePlayer | NpcPlayer | null>(null);
   const { player } = useMyPlayer();
@@ -128,7 +129,9 @@ function CityScene({
       <div className="text-center space-y-1">
         <span className="text-3xl">{location.icon}</span>
         <h2 className="retro text-sm text-foreground">{location.name}</h2>
-        <p className="retro text-[7px] text-muted-foreground">{biomeName} — City</p>
+        <p className="retro text-[7px] text-muted-foreground">
+          {biomeName} — {t("worldMap.city")}
+        </p>
       </div>
 
       {/* Gold bar */}
@@ -149,7 +152,7 @@ function CityScene({
       {/* ── Town Square scene — pixel-art sprites ── */}
       <Card>
         <CardHeader className="pb-1">
-          <CardTitle className="text-[9px]">👥 Town Square</CardTitle>
+          <CardTitle className="text-[9px]">👥 {t("location.townSquare")}</CardTitle>
         </CardHeader>
         <CardContent>
           {/* Ground / scene area */}
@@ -200,7 +203,7 @@ function CityScene({
           </div>
 
           <p className="retro text-[6px] text-muted-foreground text-center mt-2">
-            Tap players to inspect them. Tap the merchant to shop.
+            {t("location.tapToInspect")}
           </p>
         </CardContent>
       </Card>
@@ -209,16 +212,18 @@ function CityScene({
       <div className="grid grid-cols-2 gap-3">
         <Card>
           <CardHeader className="pb-1">
-            <CardTitle className="text-[9px]">🏥 Rest & Heal</CardTitle>
+            <CardTitle className="text-[9px]">🏥 {t("location.restAndHeal")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
               <HealthBar value={hpPercent} variant="retro" className="h-2" />
               <p className="retro text-[7px] text-muted-foreground">
-                {hpPercent >= 100 ? "Fully healed!" : `Rest at the inn to recover. (${healCost}g)`}
+                {hpPercent >= 100
+                  ? t("location.fullyHealed")
+                  : t("location.restAtInn", { cost: healCost })}
               </p>
               {hpPercent < 100 && player.gold < healCost && (
-                <p className="retro text-[6px] text-red-400">Not enough gold!</p>
+                <p className="retro text-[6px] text-red-400">{t("location.notEnoughGold")}</p>
               )}
               <Button
                 size="sm"
@@ -226,7 +231,9 @@ function CityScene({
                 disabled={!canHeal}
                 onClick={() => void restAtCity()}
               >
-                {hpPercent >= 100 ? "Full HP" : `Rest (${healCost}g)`}
+                {hpPercent >= 100
+                  ? t("location.fullHp")
+                  : t("location.restCost", { cost: healCost })}
               </Button>
             </div>
           </CardContent>
@@ -234,13 +241,13 @@ function CityScene({
 
         <Card>
           <CardHeader className="pb-1">
-            <CardTitle className="text-[9px]">🛒 Shop</CardTitle>
+            <CardTitle className="text-[9px]">🛒 {t("location.shop")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-center space-y-2">
               <span className="text-2xl block">{merchant.sprite}</span>
               <p className="retro text-[7px] text-muted-foreground">
-                {merchant.name} sells biome gear
+                {t("location.sellsBiomeGear", { name: merchant.name })}
               </p>
               <Button
                 size="sm"
@@ -248,7 +255,7 @@ function CityScene({
                 className="w-full text-[7px]"
                 onClick={() => setShopOpen(true)}
               >
-                Browse Wares
+                {t("location.browseWares")}
               </Button>
             </div>
           </CardContent>
@@ -256,7 +263,7 @@ function CityScene({
       </div>
 
       <Button variant="outline" onClick={onLeave} className="w-full text-[8px]">
-        Leave City
+        {t("location.leaveCity")}
       </Button>
 
       <ShopDialog open={shopOpen} onOpenChange={setShopOpen} biomeId={biomeId} />
@@ -282,6 +289,7 @@ function WildernessScene({
   biomeId: BiomeId;
   onLeave: () => void;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const mobs = BIOME_MOBS[biomeId];
 
@@ -291,7 +299,9 @@ function WildernessScene({
       <div className="text-center space-y-1">
         <span className="text-3xl">{location.icon}</span>
         <h2 className="retro text-sm text-foreground">{location.name}</h2>
-        <p className="retro text-[7px] text-muted-foreground">{biomeName} — Wilderness</p>
+        <p className="retro text-[7px] text-muted-foreground">
+          {biomeName} — {t("worldMap.wilderness")}
+        </p>
       </div>
 
       <Card>
@@ -305,7 +315,7 @@ function WildernessScene({
       {/* Encounter zone — shows actual mobs from this biome */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-[9px]">⚔️ Encounter Zone</CardTitle>
+          <CardTitle className="text-[9px]">⚔️ {t("location.encounterZone")}</CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-3">
           <div className="flex justify-center gap-4">
@@ -319,11 +329,9 @@ function WildernessScene({
               </div>
             ))}
           </div>
-          <p className="retro text-[7px] text-muted-foreground">
-            Hostile creatures roam this area. Defeat them for XP and loot!
-          </p>
+          <p className="retro text-[7px] text-muted-foreground">{t("location.hostileCreatures")}</p>
           <Button className="text-[8px]" onClick={() => void navigate(`/pve/${biomeId}`)}>
-            Fight
+            {t("common.fight")}
           </Button>
         </CardContent>
       </Card>
@@ -333,16 +341,16 @@ function WildernessScene({
         <CardContent className="py-3 flex items-center gap-3">
           <span className="text-lg">🎁</span>
           <div>
-            <p className="retro text-[8px] text-foreground">Loot Drops</p>
+            <p className="retro text-[8px] text-foreground">{t("location.lootDrops")}</p>
             <p className="retro text-[6px] text-muted-foreground">
-              Defeat mobs here to earn biome-specific equipment
+              {t("location.defeatMobsForGear")}
             </p>
           </div>
         </CardContent>
       </Card>
 
       <Button variant="outline" onClick={onLeave} className="w-full text-[8px]">
-        Leave Wilderness
+        {t("location.leaveWilderness")}
       </Button>
     </div>
   );

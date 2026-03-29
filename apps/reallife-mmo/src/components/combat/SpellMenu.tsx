@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import type { Spell } from "@/hooks/useCombat";
@@ -16,11 +17,13 @@ interface SpellMenuProps {
 }
 
 export function SpellMenu({ spells, currentMana, isMyTurn, onCast }: SpellMenuProps) {
+  const { t } = useTranslation();
+
   return (
     <Card className="w-full">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">
-          {isMyTurn ? "Your Turn - Choose a Spell" : "Waiting for opponent..."}
+          {isMyTurn ? t("combat.yourTurn") : t("combat.waitingForOpponent")}
         </CardTitle>
       </CardHeader>
       <CardContent>

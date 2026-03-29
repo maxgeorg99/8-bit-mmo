@@ -1,10 +1,12 @@
 import { useParams, useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/8bit/button";
 import { LocationScene } from "@/components/game/LocationScene";
 import { useMyPlayer } from "@/hooks/useStdbPlayer";
 import { BIOME_META, type BiomeId } from "@/lib/biomeThemes";
 
 export function LocationPage() {
+  const { t } = useTranslation();
   const { locationId } = useParams<{ locationId: string }>();
   const navigate = useNavigate();
   const { player } = useMyPlayer();
@@ -16,9 +18,9 @@ export function LocationPage() {
   if (!location) {
     return (
       <div className="text-center py-12 space-y-4">
-        <p className="retro text-[10px] text-muted-foreground">Location not found.</p>
+        <p className="retro text-[10px] text-muted-foreground">{t("worldMap.locationNotFound")}</p>
         <Button variant="outline" onClick={() => navigate("/map")} className="text-[8px]">
-          Back to Map
+          {t("worldMap.backToMap")}
         </Button>
       </div>
     );
@@ -28,7 +30,7 @@ export function LocationPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <Button variant="ghost" onClick={() => navigate("/map")} className="text-[8px]">
-          &lt; Map
+          {t("worldMap.backToMap")}
         </Button>
         <span className="retro text-[8px] text-muted-foreground">
           {meta.icon} {meta.name}

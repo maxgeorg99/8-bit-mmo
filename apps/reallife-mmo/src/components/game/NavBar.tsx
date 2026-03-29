@@ -1,17 +1,19 @@
 import { useLocation, useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
-const NAV_ITEMS = [
-  { path: "/character", label: "Hero", icon: "⚔️" },
-  { path: "/activity", label: "Log", icon: "📝" },
-  { path: "/quests", label: "Quests", icon: "📜" },
-  { path: "/map", label: "Map", icon: "🗺️" },
-  { path: "/guild", label: "Guild", icon: "🏰" },
-];
-
 export function NavBar() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const NAV_ITEMS = [
+    { path: "/character", label: t("nav.hero"), icon: "⚔️" },
+    { path: "/activity", label: t("nav.log"), icon: "📝" },
+    { path: "/quests", label: t("nav.quests"), icon: "📜" },
+    { path: "/map", label: t("nav.map"), icon: "🗺️" },
+    { path: "/guild", label: t("nav.guild"), icon: "🏰" },
+  ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t-4 border-foreground dark:border-ring">

@@ -61,10 +61,15 @@ function buildConnection(onReconnect: () => void, onConnected: () => void) {
           "SELECT * FROM biome_players",
           "SELECT * FROM leaderboard",
           "SELECT * FROM browse_guilds",
+          "SELECT * FROM my_friends",
           // Raw tables for combat + equipment (for inspecting other players)
           "SELECT * FROM equipment_item",
           "SELECT * FROM combat",
           "SELECT * FROM combat_log",
+          // Guild tables (for leaderboard guild name resolution + friend features)
+          "SELECT * FROM guild",
+          "SELECT * FROM guild_member",
+          "SELECT * FROM friendship",
         ]);
     })
     .onDisconnect((_ctx, error) => {

@@ -19,6 +19,7 @@ import { PveCombat } from "./pages/pve-combat";
 import { GuildPage } from "./pages/guild";
 import { RaidPage } from "./pages/raid";
 import { Leaderboard } from "./pages/leaderboard";
+import { FriendsPage } from "./pages/friends";
 import { NotFound } from "./pages/not-found";
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
                 <Route path="/guild" element={<GuildPage />} />
                 <Route path="/raid/:biomeId" element={<RaidPage />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/friends" element={<FriendsPage />} />
                 <Route path="/combat" element={<Combat />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

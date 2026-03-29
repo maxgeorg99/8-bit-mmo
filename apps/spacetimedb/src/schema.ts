@@ -22,6 +22,9 @@ import { mob } from "./tables/mob";
 import { pveCombat } from "./tables/pveCombat";
 import { pveCombatLog } from "./tables/pveCombatLog";
 
+// Friends
+import { friendship } from "./tables/friendship";
+
 // Raids
 import { raid } from "./tables/raid";
 import { raidCombatant } from "./tables/raidCombatant";
@@ -43,6 +46,7 @@ const spacetimedb = schema({
   guild,
   guildMember,
   message,
+  friendship,
 
   // PvP combat
   spell,

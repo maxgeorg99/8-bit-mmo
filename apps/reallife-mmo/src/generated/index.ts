@@ -35,6 +35,7 @@ import {
 
 // Import all reducer arg schemas
 import AbandonRaidReducer from "./abandon_raid_reducer";
+import AcceptFriendRequestReducer from "./accept_friend_request_reducer";
 import BuyItemReducer from "./buy_item_reducer";
 import CastSpellReducer from "./cast_spell_reducer";
 import ClaimQuestReducer from "./claim_quest_reducer";
@@ -55,10 +56,13 @@ import LogActivityReducer from "./log_activity_reducer";
 import PromoteMemberReducer from "./promote_member_reducer";
 import PveCastSpellReducer from "./pve_cast_spell_reducer";
 import RaidCastSpellReducer from "./raid_cast_spell_reducer";
+import RejectFriendRequestReducer from "./reject_friend_request_reducer";
+import RemoveFriendReducer from "./remove_friend_reducer";
 import RestAtCityReducer from "./rest_at_city_reducer";
 import SelectTitleReducer from "./select_title_reducer";
 import SellItemReducer from "./sell_item_reducer";
 import SendBiomeMessageReducer from "./send_biome_message_reducer";
+import SendFriendRequestReducer from "./send_friend_request_reducer";
 import SendGuildMessageReducer from "./send_guild_message_reducer";
 import SendWhisperReducer from "./send_whisper_reducer";
 import SetPlayerNameReducer from "./set_player_name_reducer";
@@ -77,6 +81,7 @@ import BrowseGuildsRow from "./browse_guilds_table";
 import CombatRow from "./combat_table";
 import CombatLogRow from "./combat_log_table";
 import EquipmentItemRow from "./equipment_item_table";
+import FriendshipRow from "./friendship_table";
 import GuildRow from "./guild_table";
 import GuildMemberRow from "./guild_member_table";
 import LeaderboardRow from "./leaderboard_table";
@@ -87,6 +92,7 @@ import MyBiomeMessagesRow from "./my_biome_messages_table";
 import MyCombatRow from "./my_combat_table";
 import MyCombatLogRow from "./my_combat_log_table";
 import MyEquipmentRow from "./my_equipment_table";
+import MyFriendsRow from "./my_friends_table";
 import MyGuildRow from "./my_guild_table";
 import MyGuildMembersRow from "./my_guild_members_table";
 import MyGuildMessagesRow from "./my_guild_messages_table";
@@ -181,6 +187,28 @@ const tablesSchema = __schema({
       constraints: [{ name: "equipment_item_id_key", constraint: "unique", columns: ["id"] }],
     },
     EquipmentItemRow,
+  ),
+  friendship: __table(
+    {
+      name: "friendship",
+      indexes: [
+        { accessor: "id", name: "friendship_id_idx_btree", algorithm: "btree", columns: ["id"] },
+        {
+          accessor: "receiverId",
+          name: "friendship_receiver_id_idx_btree",
+          algorithm: "btree",
+          columns: ["receiverId"],
+        },
+        {
+          accessor: "senderId",
+          name: "friendship_sender_id_idx_btree",
+          algorithm: "btree",
+          columns: ["senderId"],
+        },
+      ],
+      constraints: [{ name: "friendship_id_key", constraint: "unique", columns: ["id"] }],
+    },
+    FriendshipRow,
   ),
   guild: __table(
     {
@@ -490,6 +518,14 @@ const tablesSchema = __schema({
     },
     MyEquipmentRow,
   ),
+  my_friends: __table(
+    {
+      name: "my_friends",
+      indexes: [],
+      constraints: [],
+    },
+    MyFriendsRow,
+  ),
   my_guild: __table(
     {
       name: "my_guild",
@@ -591,6 +627,7 @@ const tablesSchema = __schema({
 /** The schema information for all reducers in this module. This is defined the same way as the reducers would have been defined in the server, except the body of the reducer is omitted in code generation. */
 const reducersSchema = __reducers(
   __reducerSchema("abandon_raid", AbandonRaidReducer),
+  __reducerSchema("accept_friend_request", AcceptFriendRequestReducer),
   __reducerSchema("buy_item", BuyItemReducer),
   __reducerSchema("cast_spell", CastSpellReducer),
   __reducerSchema("claim_quest", ClaimQuestReducer),
@@ -611,10 +648,13 @@ const reducersSchema = __reducers(
   __reducerSchema("promote_member", PromoteMemberReducer),
   __reducerSchema("pve_cast_spell", PveCastSpellReducer),
   __reducerSchema("raid_cast_spell", RaidCastSpellReducer),
+  __reducerSchema("reject_friend_request", RejectFriendRequestReducer),
+  __reducerSchema("remove_friend", RemoveFriendReducer),
   __reducerSchema("rest_at_city", RestAtCityReducer),
   __reducerSchema("select_title", SelectTitleReducer),
   __reducerSchema("sell_item", SellItemReducer),
   __reducerSchema("send_biome_message", SendBiomeMessageReducer),
+  __reducerSchema("send_friend_request", SendFriendRequestReducer),
   __reducerSchema("send_guild_message", SendGuildMessageReducer),
   __reducerSchema("send_whisper", SendWhisperReducer),
   __reducerSchema("set_player_name", SetPlayerNameReducer),

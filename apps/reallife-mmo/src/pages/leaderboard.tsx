@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTable, useSpacetimeDB } from "spacetimedb/react";
 import { tables } from "@/generated";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/8bit/tabs";
 import { Badge } from "@/components/ui/8bit/badge";
-// Guild banner uses SpacetimeDB guild data
 import { NPC_PLAYERS } from "@/lib/npcPlayers";
 import { CLASS_SPRITES, CLASS_COLORS, type StatName } from "@/lib/types";
 import { asset, cn } from "@/lib/utils";
@@ -16,6 +15,7 @@ interface LeaderboardEntry {
   value: number;
   isPlayer: boolean;
   guildName?: string;
+  online?: boolean;
 }
 
 const STAT_KEYS: Record<StatName, string> = {
@@ -35,20 +35,44 @@ export function Leaderboard() {
   const [leaderboardRows] = useTable(tables.leaderboard);
   const [guildRows] = useTable(tables.my_guild);
   const [memberRows] = useTable(tables.my_guild_members);
+  const [allGuildMembers] = useTable(tables.guildMember);
+  const [allGuilds] = useTable(tables.guild);
   const guild = guildRows[0] ?? null;
   const [tab, setTab] = useState("level");
   const [statTab, setStatTab] = useState<StatName>("STR");
 
-  // Build entries from SpacetimeDB leaderboard view + NPC fallback
   const myHex = identity?.toHexString();
 
-  const realPlayers: LeaderboardEntry[] = leaderboardRows.map((row: any) => ({
-    name: row.name || "Anonymous",
-    level: row.level,
-    playerClass: row.characterClass?.tag ?? "Unclassed",
-    value: row.level,
-    isPlayer: row.identity?.toHexString() === myHex,
-  }));
+  // Build guild lookup: playerIdentityHex -> guildName
+  const guildNameByPlayer = useMemo(() => {
+    const guildMap = new Map<bigint, string>();
+    for (const g of allGuilds) {
+      guildMap.set(g.id, g.name);
+    }
+    const playerGuild = new Map<string, string>();
+    for (const m of allGuildMembers) {
+      const gName = guildMap.get(m.guildId);
+      if (gName) {
+        playerGuild.set(m.playerId.toHexString(), gName);
+      }
+    }
+    return playerGuild;
+  }, [allGuilds, allGuildMembers]);
+
+  // Build entries from SpacetimeDB leaderboard view
+  const realPlayers: LeaderboardEntry[] = leaderboardRows.map((row: Record<string, unknown>) => {
+    const ident = row.identity as { toHexString(): string } | undefined;
+    const hex = ident?.toHexString();
+    return {
+      name: (row.name as string) || "Anonymous",
+      level: row.level as number,
+      playerClass: (row.characterClass as { tag: string })?.tag ?? "Unclassed",
+      value: row.level as number,
+      isPlayer: hex === myHex,
+      guildName: hex ? guildNameByPlayer.get(hex) : undefined,
+      online: row.online as boolean | undefined,
+    };
+  });
 
   // Only add NPCs if we have fewer than 10 real players
   const npcEntries: LeaderboardEntry[] =
@@ -65,15 +89,21 @@ export function Leaderboard() {
 
   const levelBoard = [...realPlayers, ...npcEntries].sort((a, b) => b.value - a.value);
 
-  // Stat board — use real player stat data if available
+  // Stat board
   const statBoard = [
-    ...leaderboardRows.map((row: any) => ({
-      name: row.name || "Anonymous",
-      level: row.level,
-      playerClass: row.characterClass?.tag ?? "Unclassed",
-      value: Math.round((row[STAT_KEYS[statTab]] ?? 0) * 10) / 10,
-      isPlayer: row.identity?.toHexString() === myHex,
-    })),
+    ...leaderboardRows.map((row: Record<string, unknown>) => {
+      const ident = row.identity as { toHexString(): string } | undefined;
+      const hex = ident?.toHexString();
+      return {
+        name: (row.name as string) || "Anonymous",
+        level: row.level as number,
+        playerClass: (row.characterClass as { tag: string })?.tag ?? "Unclassed",
+        value: Math.round(((row[STAT_KEYS[statTab]] as number) ?? 0) * 10) / 10,
+        isPlayer: hex === myHex,
+        guildName: hex ? guildNameByPlayer.get(hex) : undefined,
+        online: row.online as boolean | undefined,
+      };
+    }),
     ...(realPlayers.length < 10
       ? NPC_PLAYERS.map((npc) => ({
           name: npc.name,
@@ -105,6 +135,13 @@ export function Leaderboard() {
           </CardContent>
         </Card>
       )}
+
+      {/* Online player count */}
+      <div className="flex justify-center">
+        <Badge variant="outline" className="text-[6px] text-green-400">
+          {realPlayers.filter((p) => p.online).length} players online
+        </Badge>
+      </div>
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="w-full">
@@ -168,11 +205,21 @@ function RankList({ entries, label }: { entries: LeaderboardEntry[]; label: stri
                 <span className="retro text-[8px] w-5 text-center text-muted-foreground">
                   {medal ?? `#${rank}`}
                 </span>
-                <img
-                  src={asset(CLASS_SPRITES[entry.playerClass as keyof typeof CLASS_SPRITES])}
-                  alt={entry.playerClass}
-                  className="pixelated w-5 h-5"
-                />
+                <div className="relative">
+                  <img
+                    src={asset(CLASS_SPRITES[entry.playerClass as keyof typeof CLASS_SPRITES])}
+                    alt={entry.playerClass}
+                    className="pixelated w-5 h-5"
+                  />
+                  {entry.online !== undefined && (
+                    <span
+                      className={cn(
+                        "absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 rounded-full",
+                        entry.online ? "bg-green-500" : "bg-muted-foreground/40",
+                      )}
+                    />
+                  )}
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
                     <span

@@ -144,6 +144,24 @@ export const EquipmentItem = __t.object("EquipmentItem", {
 });
 export type EquipmentItem = __Infer<typeof EquipmentItem>;
 
+export const Friendship = __t.object("Friendship", {
+  id: __t.u64(),
+  senderId: __t.identity(),
+  receiverId: __t.identity(),
+  get status() {
+    return FriendshipStatus;
+  },
+  createdAt: __t.timestamp(),
+});
+export type Friendship = __Infer<typeof Friendship>;
+
+// The tagged union or sum type for the algebraic type `FriendshipStatus`.
+export const FriendshipStatus = __t.enum("FriendshipStatus", {
+  Pending: __t.unit(),
+  Accepted: __t.unit(),
+});
+export type FriendshipStatus = __Infer<typeof FriendshipStatus>;
+
 export const Guild = __t.object("Guild", {
   id: __t.u64(),
   name: __t.string(),
@@ -235,6 +253,9 @@ export type MyCombatLog = __Infer<typeof MyCombatLog>;
 
 export const MyEquipment = __t.object("MyEquipment", {});
 export type MyEquipment = __Infer<typeof MyEquipment>;
+
+export const MyFriends = __t.object("MyFriends", {});
+export type MyFriends = __Infer<typeof MyFriends>;
 
 export const MyGuild = __t.object("MyGuild", {});
 export type MyGuild = __Infer<typeof MyGuild>;

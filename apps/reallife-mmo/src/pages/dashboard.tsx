@@ -144,6 +144,13 @@ export function Dashboard() {
         <Button onClick={() => navigate("/guild")} variant="outline" className="text-[8px]">
           Guild
         </Button>
+        <Button
+          onClick={() => navigate("/friends")}
+          variant="outline"
+          className="text-[8px] col-span-2"
+        >
+          Friends
+        </Button>
       </div>
 
       {/* Quest summary */}

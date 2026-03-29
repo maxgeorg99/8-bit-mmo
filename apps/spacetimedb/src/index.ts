@@ -44,6 +44,14 @@ export {
 // Chat (biome + whisper)
 export { send_biome_message, send_whisper } from "./reducers/chat";
 
+// Friends
+export {
+  send_friend_request,
+  accept_friend_request,
+  reject_friend_request,
+  remove_friend,
+} from "./reducers/friendship";
+
 // Raids
 export { start_raid, raid_cast_spell, abandon_raid } from "./reducers/raid";
 export { contribute_to_raid } from "./reducers/contributeToRaid";
@@ -75,6 +83,7 @@ export { biome_players } from "./views/biomePlayers";
 export { leaderboard } from "./views/leaderboard";
 export { browse_guilds } from "./views/browseGuilds";
 export { my_activity_logs } from "./views/myActivityLogs";
+export { my_friends } from "./views/myFriends";
 export { my_pve_combat } from "./views/myPveCombat";
 export { my_pve_combat_log } from "./views/myPveCombatLog";
 export { biome_mobs } from "./views/biomeMobs";

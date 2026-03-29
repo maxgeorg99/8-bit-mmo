@@ -5,15 +5,15 @@
 
 ## Current Phase
 
-- **phase:** 4.1
-- **name:** SpacetimeDB Server Module
+- **phase:** 4.3
+- **name:** Shared World Features
 - **status:** in_progress
 
 ## Step Progress
 
 - [x] Step 1: Implementation (working agent)
-- [x] Step 2: Code review + test writing (review agent)
-- [x] Step 3: Playwright verification (evaluation agent)
+- [ ] Step 2: Code review + test writing (review agent)
+- [ ] Step 3: Playwright verification (evaluation agent)
 
 ## Completed Phases
 
@@ -25,7 +25,28 @@
 | 2.1   | Title System                   | done      |
 | 3.1   | Guild System                   | done      |
 | 3.2   | Raid Boss Fights               | done      |
+| 4.1   | SpacetimeDB Server Module      | done      |
+| 4.2   | Client Migration               | done      |
 
 ## Log
 
-<!-- Each iteration appends a log entry here -->
+### Iteration 1 — 2026-03-29
+
+- Phase: 4.1 — SpacetimeDB Server Module
+- Steps completed: Implementation, Code Review + Tests (132 new, 166 total), Playwright Verification
+- Issues: Pages using SpacetimeDB hooks show loading state without running server (expected — client migration partial)
+
+### Iteration 2 — 2026-03-29
+
+- Phase: 4.2 — Client Migration
+- Steps completed: Already implemented prior to harness setup (manually done)
+- Issues: none
+
+### Iteration 3 — 2026-03-29
+
+- Phase: 4.3 — Shared World Features
+- Steps completed: Implementation
+- Features: Real players in city scenes (already working from 4.2 biome_players view), guild member online status (already working from 4.2), leaderboard with real SpacetimeDB data + guild names + online indicators, friend system (send/accept/reject/remove, friend list with online status, stat comparison, PvP challenge from friend list)
+- Server changes: friendship table, send_friend_request/accept_friend_request/reject_friend_request/remove_friend reducers, my_friends view
+- Client changes: /friends page, useFriends hook, updated leaderboard with guild name resolution + online indicators, Friends button on dashboard
+- Issues: none

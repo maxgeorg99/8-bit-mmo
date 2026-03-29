@@ -9,6 +9,7 @@ import { CLASS_SPRITES, CLASS_COLORS, type StatName } from "@/lib/types";
 import { asset, cn } from "@/lib/utils";
 
 interface LeaderboardEntry {
+  id: string;
   name: string;
   level: number;
   playerClass: string;
@@ -63,6 +64,7 @@ export function Leaderboard() {
   const realPlayers: LeaderboardEntry[] = leaderboardRows.map((row) => {
     const hex = row.identity?.toHexString();
     return {
+      id: hex ?? `player-${row.name}`,
       name: row.name || "Anonymous",
       level: row.level,
       playerClass: (row.characterClass as { tag: string })?.tag ?? "Unclassed",
@@ -73,10 +75,14 @@ export function Leaderboard() {
     };
   });
 
-  // Only add NPCs if we have fewer than 10 real players
+  // Collect real player names to deduplicate against NPCs
+  const realPlayerNames = new Set(realPlayers.map((p) => p.name.toLowerCase()));
+
+  // Only add NPCs if we have fewer than 10 real players, excluding NPCs whose name matches a real player
   const npcEntries: LeaderboardEntry[] =
     realPlayers.length < 10
-      ? NPC_PLAYERS.map((npc) => ({
+      ? NPC_PLAYERS.filter((npc) => !realPlayerNames.has(npc.name.toLowerCase())).map((npc) => ({
+          id: `npc-${npc.name}`,
           name: npc.name,
           level: npc.level,
           playerClass: npc.playerClass,
@@ -94,6 +100,7 @@ export function Leaderboard() {
       const hex = row.identity?.toHexString();
       const statValue = row[STAT_KEYS[statTab] as keyof typeof row] as number;
       return {
+        id: hex ?? `player-${row.name}`,
         name: row.name || "Anonymous",
         level: row.level,
         playerClass: (row.characterClass as { tag: string })?.tag ?? "Unclassed",
@@ -104,7 +111,8 @@ export function Leaderboard() {
       };
     }),
     ...(realPlayers.length < 10
-      ? NPC_PLAYERS.map((npc) => ({
+      ? NPC_PLAYERS.filter((npc) => !realPlayerNames.has(npc.name.toLowerCase())).map((npc) => ({
+          id: `npc-${npc.name}`,
           name: npc.name,
           level: npc.level,
           playerClass: npc.playerClass,
@@ -114,6 +122,8 @@ export function Leaderboard() {
         }))
       : []),
   ].sort((a, b) => b.value - a.value);
+
+  const onlineCount = realPlayers.filter((p) => p.online).length;
 
   return (
     <div className="space-y-4">
@@ -138,7 +148,7 @@ export function Leaderboard() {
       {/* Online player count */}
       <div className="flex justify-center">
         <Badge variant="outline" className="text-[6px] text-green-400">
-          {realPlayers.filter((p) => p.online).length} players online
+          {onlineCount} {onlineCount === 1 ? "player" : "players"} online
         </Badge>
       </div>
 
@@ -194,7 +204,7 @@ function RankList({ entries, label }: { entries: LeaderboardEntry[]; label: stri
             const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : null;
             return (
               <div
-                key={entry.name}
+                key={entry.id}
                 className={cn(
                   "flex items-center gap-2 py-1 px-2",
                   entry.isPlayer && "bg-primary/10 border border-primary/30",

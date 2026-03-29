@@ -11,16 +11,9 @@
 
 ## Step Progress
 
-- [ ] Step 1: Implementation (working agent)
+- [x] Step 1: Implementation (working agent) — B1, B2, B3 fixed
 - [ ] Step 2: Code review + test writing (review agent)
 - [ ] Step 3: Playwright verification (evaluation agent)
-
-## Bug Fix Queue
-
-| ID  | Severity | Page        | Description                                                                                                                                                                                                     |
-| --- | -------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| B1  | Medium   | Leaderboard | Duplicate player entry: real player appears twice (as "TestHero" and "TestHero (You)"), causing React duplicate key errors. Deduplicate NPC + real player list by name/identity and use unique ID as React key. |
-| B2  | Low      | Leaderboard | Grammar: "1 players online" should be "1 player online" (singular form when count is 1).                                                                                                                        |
 
 ## Completed Phases
 

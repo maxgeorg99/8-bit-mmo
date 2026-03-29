@@ -8,15 +8,18 @@ import { useMyPlayer } from "@/hooks/useStdbPlayer";
 export function LevelUpOverlay() {
   const { player } = useMyPlayer();
   const level = player?.level ?? 0;
+  const hasPlayer = player !== null && player !== undefined;
   const [show, setShow] = useState(false);
   const [displayLevel, setDisplayLevel] = useState(level);
-  const prevLevelRef = useRef(level);
-  const initialLoadRef = useRef(true);
+  // null means "not yet initialized with real player data"
+  const prevLevelRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Skip the first data load — don't animate when SpacetimeDB delivers initial state
-    if (initialLoadRef.current) {
-      initialLoadRef.current = false;
+    // Don't do anything until we have real player data from SpacetimeDB
+    if (!hasPlayer) return;
+
+    // First time we see real player data — store level without animating
+    if (prevLevelRef.current === null) {
       prevLevelRef.current = level;
       return;
     }
@@ -29,7 +32,7 @@ export function LevelUpOverlay() {
       return () => clearTimeout(timer);
     }
     prevLevelRef.current = level;
-  }, [level]);
+  }, [level, hasPlayer]);
 
   if (!show) return null;
 

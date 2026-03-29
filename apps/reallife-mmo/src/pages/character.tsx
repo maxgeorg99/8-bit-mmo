@@ -147,7 +147,9 @@ export function Character() {
               return (
                 <div key={a.class} className="space-y-1">
                   <div className="flex justify-between">
-                    <span className={cn("retro text-[8px]", CLASS_COLORS[a.class])}>{a.class}</span>
+                    <span className={cn("retro text-[8px]", CLASS_COLORS[a.class])}>
+                      {t(`classes.${a.class}`)}
+                    </span>
                     <span className="retro text-[7px] text-muted-foreground">
                       {a.score.toFixed(1)}
                     </span>

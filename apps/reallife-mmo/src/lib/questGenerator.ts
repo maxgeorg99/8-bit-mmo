@@ -1,37 +1,48 @@
 import type { ActivityType, Quest, QuestType } from "./types";
-import { ACTIVITY_LABELS, ACTIVITY_TYPES } from "./types";
+import { ACTIVITY_TYPES } from "./types";
 
 let questCounter = 0;
 
+/**
+ * Quest title/description templates.
+ * These use i18n keys that are resolved at render time via t().
+ * The titleKey and descKey reference keys under "questTemplates.*" in locale files.
+ */
 const DAILY_TEMPLATES: Array<{
-  titleFn: (activity: string) => string;
-  descFn: (min: number) => string;
+  titleKey: string;
+  descKey: string;
   targetMin: number;
   xpReward: number;
+  /** Whether the title template needs the activity name interpolated */
+  needsActivity: boolean;
 }> = [
   {
-    titleFn: (a) => `${a} Session`,
-    descFn: (min) => `Complete ${min} minutes of activity`,
+    titleKey: "questTemplates.session",
+    descKey: "questTemplates.sessionDesc",
     targetMin: 30,
     xpReward: 25,
+    needsActivity: true,
   },
   {
-    titleFn: (a) => `Extended ${a}`,
-    descFn: (min) => `Push yourself with a ${min}-minute session`,
+    titleKey: "questTemplates.extended",
+    descKey: "questTemplates.extendedDesc",
     targetMin: 60,
     xpReward: 50,
+    needsActivity: true,
   },
   {
-    titleFn: () => "Morning Ritual",
-    descFn: () => "Log any activity before noon",
+    titleKey: "questTemplates.morningRitual",
+    descKey: "questTemplates.morningRitualDesc",
     targetMin: 15,
     xpReward: 15,
+    needsActivity: false,
   },
   {
-    titleFn: (a) => `Quick ${a}`,
-    descFn: (min) => `A short ${min}-minute burst to stay on track`,
+    titleKey: "questTemplates.quick",
+    descKey: "questTemplates.quickDesc",
     targetMin: 15,
     xpReward: 10,
+    needsActivity: true,
   },
 ];
 
@@ -54,12 +65,18 @@ export function generateDailyQuests(count = 3): Quest[] {
     usedTypes.add(actType);
 
     const template = randomItem(DAILY_TEMPLATES);
-    const label = ACTIVITY_LABELS[actType];
+
+    // Store the translation key and interpolation params as the title/description.
+    // Format: "i18n:key:param1=val1:param2=val2" — resolved by QuestCard at render time.
+    const titleParams = template.needsActivity
+      ? `i18n:${template.titleKey}:activityType=${actType}`
+      : `i18n:${template.titleKey}`;
+    const descParams = `i18n:${template.descKey}:min=${template.targetMin}`;
 
     quests.push({
       id: `quest-${++questCounter}`,
-      title: template.titleFn(label),
-      description: template.descFn(template.targetMin),
+      title: titleParams,
+      description: descParams,
       type: "daily" as QuestType,
       activityType: actType,
       targetMin: template.targetMin,

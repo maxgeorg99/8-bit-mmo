@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { BIOME_META, type BiomeId, ALL_BIOMES } from "@/lib/biomeThemes";
 import { asset } from "@/lib/utils";
 
@@ -138,6 +139,7 @@ export function WorldMapSVG({
   selectedBiome,
   onRegionClick,
 }: WorldMapSVGProps) {
+  const { t } = useTranslation();
   const isUnlocked = (id: BiomeId) => id === "plains" || unlockedBiomes.includes(id);
 
   const W = 1000;
@@ -220,7 +222,7 @@ export function WorldMapSVG({
                 paintOrder="stroke"
                 className="pointer-events-none select-none"
               >
-                {meta.name.toUpperCase()}
+                {t(`biomes.${biomeId}`).toUpperCase()}
               </text>
 
               {/* Lock icon */}

@@ -1,6 +1,7 @@
 import type * as React from "react";
 
 import { type VariantProps, cva } from "class-variance-authority";
+import { useTranslation } from "react-i18next";
 
 import { cn } from "@/lib/utils";
 
@@ -120,6 +121,7 @@ export function CharacterSheet({
   showEquipment = true,
   ...props
 }: CharacterSheetProps) {
+  const { t } = useTranslation();
   const attributes = primaryAttributes || defaultPrimaryAttributes;
 
   const healthPercentage = health ? Math.round((health.current / health.max) * 100) : 0;
@@ -167,7 +169,7 @@ export function CharacterSheet({
             {showHealth && health && (
               <div className="space-y-1">
                 <div className="flex sm:flex-row flex-col justify-between items-center">
-                  <span className="text-sm font-medium text-red-500">Health</span>
+                  <span className="text-sm font-medium text-red-500">{t("common2.health")}</span>
                   <span className="text-xs text-muted-foreground retro">
                     {health.current}/{health.max}
                   </span>
@@ -179,7 +181,7 @@ export function CharacterSheet({
             {showMana && mana && (
               <div className="space-y-1">
                 <div className="flex sm:flex-row flex-col justify-between items-center">
-                  <span className="text-sm font-medium text-blue-500">Mana</span>
+                  <span className="text-sm font-medium text-blue-500">{t("common2.mana")}</span>
                   <span className="text-xs text-muted-foreground retro">
                     {mana.current}/{mana.max}
                   </span>
@@ -191,7 +193,9 @@ export function CharacterSheet({
             {showExperience && experience && (
               <div className="space-y-1">
                 <div className="flex sm:flex-row flex-col justify-between items-center">
-                  <span className="text-sm font-medium text-yellow-500">Experience</span>
+                  <span className="text-sm font-medium text-yellow-500">
+                    {t("common2.experience")}
+                  </span>
                   <span className="text-xs text-muted-foreground retro">
                     {experience.current}/{experience.max} XP
                   </span>

@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { Badge } from "@/components/ui/8bit/badge";
 import type { ActivityLog } from "@/lib/types";
 import { ACTIVITY_ICONS, ACTIVITY_INPUT } from "@/lib/types";
@@ -21,20 +22,29 @@ function useTimeAgo() {
   };
 }
 
-function formatLogValue(log: ActivityLog): string {
+function formatLogValue(log: ActivityLog, t: TFunction): string {
   const config = ACTIVITY_INPUT[log.type];
   const raw = log.rawValue ?? log.durationMin; // backwards compat for old logs
   switch (config.mode) {
     case "meal":
-      return ["", "Snack", "Light meal", "Full meal"][raw] ?? `${raw} meal(s)`;
+      return (
+        ["", t("activityInput.snack"), t("activityInput.lightMeal"), t("activityInput.fullMeal")][
+          raw
+        ] ?? `${raw}`
+      );
     case "glasses":
-      return `${raw} ${raw === 1 ? "glass" : "glasses"} of water`;
+      return t("activityInput.glassesOfWater", { count: raw });
     case "sleep":
-      return `${raw}h sleep`;
+      return t("activityInput.hoursOfSleep", { hours: raw });
     case "duration":
     default: {
-      const desc = `${raw}min`;
-      return config.hasIntensity ? `${desc} · Intensity ${log.intensity}/10` : desc;
+      if (config.hasIntensity) {
+        return t("activityInput.durationWithIntensity", {
+          min: raw,
+          intensity: log.intensity,
+        });
+      }
+      return t("activityInput.minDuration", { min: raw });
     }
   }
 }
@@ -64,7 +74,7 @@ export function RecentActivity({ logs, limit = 5 }: RecentActivityProps) {
             <div className="space-y-1">
               <div className="retro text-[9px]">{t(`activityTypes.${log.type}`)}</div>
               {log.note && <div className="retro text-[8px] text-foreground/80">{log.note}</div>}
-              <div className="retro text-[7px] text-muted-foreground">{formatLogValue(log)}</div>
+              <div className="retro text-[7px] text-muted-foreground">{formatLogValue(log, t)}</div>
             </div>
           </div>
           <div className="flex flex-col items-end gap-1.5 shrink-0">

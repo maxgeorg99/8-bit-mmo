@@ -58,8 +58,8 @@ export type InputMode = "duration" | "meal" | "glasses" | "sleep";
 
 export interface ActivityInputConfig {
   mode: InputMode;
-  /** Label shown above the input */
-  label: string;
+  /** i18n key for the label shown above the input (resolved at render time via t()) */
+  labelKey: string;
   /** Unit shown after the value */
   unit: string;
   /** Preset quick-pick values */
@@ -77,7 +77,7 @@ export interface ActivityInputConfig {
 export const ACTIVITY_INPUT: Record<ActivityType, ActivityInputConfig> = {
   StrengthTraining: {
     mode: "duration",
-    label: "Duration",
+    labelKey: "activityInput.duration",
     unit: "min",
     presets: [
       { value: 30, label: "30m" },
@@ -93,7 +93,7 @@ export const ACTIVITY_INPUT: Record<ActivityType, ActivityInputConfig> = {
   },
   Cardio: {
     mode: "duration",
-    label: "Duration",
+    labelKey: "activityInput.duration",
     unit: "min",
     presets: [
       { value: 15, label: "15m" },
@@ -109,7 +109,7 @@ export const ACTIVITY_INPUT: Record<ActivityType, ActivityInputConfig> = {
   },
   Hiit: {
     mode: "duration",
-    label: "Duration",
+    labelKey: "activityInput.duration",
     unit: "min",
     presets: [
       { value: 15, label: "15m" },
@@ -125,7 +125,7 @@ export const ACTIVITY_INPUT: Record<ActivityType, ActivityInputConfig> = {
   },
   MindLearning: {
     mode: "duration",
-    label: "Duration",
+    labelKey: "activityInput.duration",
     unit: "min",
     presets: [
       { value: 15, label: "15m" },
@@ -141,7 +141,7 @@ export const ACTIVITY_INPUT: Record<ActivityType, ActivityInputConfig> = {
   },
   Nutrition: {
     mode: "meal",
-    label: "Meal quality",
+    labelKey: "activityInput.mealQuality",
     unit: "meal",
     presets: [
       { value: 1, label: "Snack" },
@@ -156,7 +156,7 @@ export const ACTIVITY_INPUT: Record<ActivityType, ActivityInputConfig> = {
   },
   Hydration: {
     mode: "glasses",
-    label: "Water intake",
+    labelKey: "activityInput.waterIntake",
     unit: "glasses",
     presets: [
       { value: 1, label: "1" },
@@ -172,7 +172,7 @@ export const ACTIVITY_INPUT: Record<ActivityType, ActivityInputConfig> = {
   },
   Sleep: {
     mode: "sleep",
-    label: "Sleep duration",
+    labelKey: "activityInput.sleepDuration",
     unit: "hours",
     presets: [
       { value: 6, label: "6h" },
@@ -188,7 +188,7 @@ export const ACTIVITY_INPUT: Record<ActivityType, ActivityInputConfig> = {
   },
   Mindfulness: {
     mode: "duration",
-    label: "Duration",
+    labelKey: "activityInput.duration",
     unit: "min",
     presets: [
       { value: 5, label: "5m" },
@@ -204,7 +204,7 @@ export const ACTIVITY_INPUT: Record<ActivityType, ActivityInputConfig> = {
   },
   Creativity: {
     mode: "duration",
-    label: "Duration",
+    labelKey: "activityInput.duration",
     unit: "min",
     presets: [
       { value: 15, label: "15m" },
@@ -220,7 +220,7 @@ export const ACTIVITY_INPUT: Record<ActivityType, ActivityInputConfig> = {
   },
   Social: {
     mode: "duration",
-    label: "Duration",
+    labelKey: "activityInput.duration",
     unit: "min",
     presets: [
       { value: 30, label: "30m" },

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/8bit/avatar";
@@ -61,6 +62,7 @@ export default function PlayerProfileCard({
   customStats = [],
   ...props
 }: PlayerProfileCardProps) {
+  const { t } = useTranslation();
   const healthPercentage = stats?.health
     ? Math.round((stats.health.current / stats.health.max) * 100)
     : 0;
@@ -107,7 +109,7 @@ export default function PlayerProfileCard({
         {showHealth && stats?.health && (
           <div className="space-y-1">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">Health</span>
+              <span className="text-sm font-medium">{t("common2.health")}</span>
               <span className="text-[9px] sm:text-xs text-muted-foreground retro">
                 {stats.health.current}/{stats.health.max}
               </span>
@@ -120,7 +122,7 @@ export default function PlayerProfileCard({
         {showMana && stats?.mana && (
           <div className="space-y-1">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">Mana</span>
+              <span className="text-sm font-medium">{t("common2.mana")}</span>
               <span className="text-[9px] sm:text-xs text-muted-foreground retro">
                 {stats.mana.current}/{stats.mana.max}
               </span>
@@ -133,7 +135,7 @@ export default function PlayerProfileCard({
         {showExperience && stats?.experience && (
           <div className="space-y-1">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">Experience</span>
+              <span className="text-sm font-medium">{t("common2.experience")}</span>
               <span className="text-[9px] sm:text-xs text-muted-foreground retro">
                 {stats.experience.current}/{stats.experience.max} XP
               </span>

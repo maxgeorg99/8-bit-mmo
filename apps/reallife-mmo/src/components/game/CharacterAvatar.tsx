@@ -5,7 +5,6 @@ import {
   CLASS_COLORS,
   CLASS_SPRITES,
   TIER_GLOW,
-  TIER_LABELS,
   getCharacterTier,
   RARITY_BORDER,
   RARITY_COLORS,
@@ -73,7 +72,7 @@ export function CharacterAvatar({
             ],
         )}
       >
-        {TIER_LABELS[tier]}
+        {t(`tierLabels.${tier}`)}
       </Badge>
 
       {/* Avatar with tier frame */}
@@ -93,10 +92,12 @@ export function CharacterAvatar({
       {/* Name + class + title */}
       <div className="text-center">
         <div className="retro text-[11px]">{name || t("home.unnamedHero")}</div>
-        <div className={cn("retro text-[9px]", CLASS_COLORS[playerClass])}>{playerClass}</div>
+        <div className={cn("retro text-[9px]", CLASS_COLORS[playerClass])}>
+          {t(`classes.${playerClass}`)}
+        </div>
         {title && (
           <div className="retro text-[7px] text-amber-400/80 mt-0.5">
-            {title.icon} {title.name}
+            {title.icon} {t(`titles.${activeTitle}`)}
           </div>
         )}
       </div>

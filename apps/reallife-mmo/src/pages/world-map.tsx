@@ -42,7 +42,7 @@ export function WorldMap() {
         <h1 className="retro text-sm text-foreground">{t("worldMap.title")}</h1>
         <div className="flex items-center gap-2">
           <span className="text-sm">{BIOME_META[currentBiome].icon}</span>
-          <span className="retro text-[8px] text-primary">{BIOME_META[currentBiome].name}</span>
+          <span className="retro text-[8px] text-primary">{t(`biomes.${currentBiome}`)}</span>
         </div>
       </div>
 
@@ -77,7 +77,7 @@ export function WorldMap() {
         <Card className="mt-3">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs">
-              {t("worldMap.travelTo", { name: BIOME_META[selectedBiome].name })}
+              {t("worldMap.travelTo", { name: t(`biomes.${selectedBiome}`) })}
             </CardTitle>
           </CardHeader>
           <CardContent>

@@ -100,7 +100,7 @@ export function Dashboard() {
       </div>
       <PlayerProfileCard
         playerName={player.name || t("dashboard.unnamedHero")}
-        playerClass={player.playerClass}
+        playerClass={t(`classes.${player.playerClass}`)}
         level={player.level}
         stats={{
           health: { current: player.hp, max: player.maxHp },
@@ -112,7 +112,7 @@ export function Dashboard() {
       {player.activeTitle && TITLE_MAP.get(player.activeTitle) && (
         <div className="flex justify-center -mt-3">
           <span className="retro text-[8px] text-amber-400/80">
-            {TITLE_MAP.get(player.activeTitle)!.icon} {TITLE_MAP.get(player.activeTitle)!.name}
+            {TITLE_MAP.get(player.activeTitle)!.icon} {t(`titles.${player.activeTitle}`)}
           </span>
         </div>
       )}

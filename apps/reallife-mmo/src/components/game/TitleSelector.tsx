@@ -98,7 +98,7 @@ export function TitleSelector({ unlockedTitles, activeTitle, onSelect }: TitleSe
                                       : "text-muted-foreground",
                                 )}
                               >
-                                {title.name}
+                                {t(`titles.${title.id}`)}
                               </span>
                               {isActive && (
                                 <Badge variant="secondary" className="text-[5px] px-1 py-0">
@@ -107,7 +107,7 @@ export function TitleSelector({ unlockedTitles, activeTitle, onSelect }: TitleSe
                               )}
                             </div>
                             <span className="retro text-[6px] text-muted-foreground">
-                              {title.description}
+                              {t(`titles.${title.id}_desc`)}
                             </span>
                           </div>
                         </button>

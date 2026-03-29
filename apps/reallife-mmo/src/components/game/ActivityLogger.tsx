@@ -60,9 +60,13 @@ export function ActivityLogger({ streakDays, defaultActivityType, onLog }: Activ
       case "sleep":
         return val % 1 === 0 ? `${val}h` : `${val}h`;
       case "meal":
-        return ["", "Snack", "Light meal", "Full meal"][val] ?? `${val}`;
+        return (
+          ["", t("activityInput.snack"), t("activityInput.lightMeal"), t("activityInput.fullMeal")][
+            val
+          ] ?? `${val}`
+        );
       case "glasses":
-        return `${val} ${val === 1 ? "glass" : "glasses"}`;
+        return t("activityInput.glass", { count: val });
       case "duration":
       default:
         return val >= 60
@@ -99,7 +103,7 @@ export function ActivityLogger({ streakDays, defaultActivityType, onLog }: Activ
         {/* Value input — adapts per activity type */}
         <div className="space-y-4">
           <label className="retro text-[10px] text-muted-foreground block pb-1">
-            {config.label}: <span className="text-foreground">{formatValue(rawValue)}</span>
+            {t(config.labelKey)}: <span className="text-foreground">{formatValue(rawValue)}</span>
           </label>
 
           {/* Quick presets */}

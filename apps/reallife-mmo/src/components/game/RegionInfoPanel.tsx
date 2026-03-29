@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/8bit/button";
 import { Badge } from "@/components/ui/8bit/badge";
 import { Progress } from "@/components/ui/8bit/progress";
@@ -19,6 +20,7 @@ export function RegionInfoPanel({
   onTravel,
   onClose,
 }: RegionInfoPanelProps) {
+  const { t } = useTranslation();
   const meta = BIOME_META[biomeId];
   const progress = useBiomeProgress(biomeId);
   const progressPercent =
@@ -31,19 +33,21 @@ export function RegionInfoPanel({
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <span className="text-lg">{meta.icon}</span>
-            <h3 className="retro text-[12px] text-primary">{meta.name}</h3>
+            <h3 className="retro text-[12px] text-primary">{t(`biomes.${biomeId}`)}</h3>
           </div>
-          <p className="retro text-[7px] text-muted-foreground italic mt-1">"{meta.description}"</p>
+          <p className="retro text-[7px] text-muted-foreground italic mt-1">
+            "{t(`biomes.${biomeId}Desc`)}"
+          </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {isUnlocked && !isCurrent && (
             <Button onClick={onTravel} size="sm" className="text-[8px]">
-              Travel
+              {t("common.travel")}
             </Button>
           )}
           {isCurrent && (
             <Badge variant="outline" className="text-[7px]">
-              You are here
+              {t("worldMap.youAreHere")}
             </Badge>
           )}
           <button
@@ -58,7 +62,7 @@ export function RegionInfoPanel({
 
       {/* Raid boss */}
       <div className="flex items-center gap-2">
-        <span className="retro text-[7px] text-muted-foreground">Raid Boss:</span>
+        <span className="retro text-[7px] text-muted-foreground">{t("worldMap.raidBoss")}</span>
         <span className="retro text-[8px] text-foreground">{meta.raidBoss}</span>
       </div>
 
@@ -66,7 +70,7 @@ export function RegionInfoPanel({
       {!isUnlocked && (
         <div className="space-y-1.5">
           <div className="flex justify-between retro text-[7px] text-muted-foreground">
-            <span>{meta.unlockHint}</span>
+            <span>{t(`biomes.${biomeId}Unlock`)}</span>
             <span>
               {progress.current}/{progress.required}
             </span>

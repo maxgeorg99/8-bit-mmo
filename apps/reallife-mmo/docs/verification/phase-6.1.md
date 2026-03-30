@@ -1,93 +1,170 @@
-# Phase 6.1 Verification Report — Localization (i18n)
+# Phase 6.1 Verification Report — Localization (i18n) Bug Fixes B1-B8
 
-> Verified: 2026-03-29
+> Verified: 2026-03-30
 > Tester: Playwright automated evaluation
-> App URL: http://localhost:5174/8-bit-mmo/
+> App URL: http://localhost:5173/8-bit-mmo/
 
 ---
 
 ## Summary
 
-Phase 6.1 localization is **largely functional** with a solid i18n foundation. The i18next setup with 7 languages, localStorage persistence, and language selector work correctly. The majority of UI chrome (navigation, page titles, buttons, labels) is translated. However, several categories of hardcoded English strings remain, preventing a full pass.
+Bug fixes B1-B8 are **mostly resolved**. 6 of 8 bugs are fully fixed, 1 is partially fixed, and 1 remains unfixed due to an architectural gap (quest data comes from SpacetimeDB with hardcoded English, not from the client-side quest generator that was patched). The i18n infrastructure is solid and the vast majority of UI text is properly translated across all tested languages (German, Japanese, English).
 
 ---
 
-## Test Results
+## Bug Fix Verification
 
-### Passing
+### B1: Hardcoded "Health" and "Experience" in character-sheet component
 
-- [x] Home page loads without errors
-- [x] Language selector is visible and accessible (shadcn Select component on home page)
-- [x] Switching to German changes all main UI text (verified: title, subtitle, class names, buttons, feature descriptions)
-- [x] Switching to Japanese changes UI text to Japanese characters (verified: full CJK rendering)
-- [x] Switching back to English reverts all text correctly
-- [x] Language preference persists across page reload (localStorage-backed)
-- [x] All 7 languages present in selector: en, de, es, fr, pt, ja, zh
-- [x] Dashboard labels are translated (buttons, sections, recent activity, nav)
-- [x] Character page: Attributes heading, Titles section, Chest, streak/activity counts translated
-- [x] Character page: HP/XP labels use localized abbreviations (LP/EP in German)
-- [x] Quest page: page title, subtitle, "New Goal" button, section headers translated
-- [x] Guild page: fully translated (Guild Hall, create guild, available guilds, empty state)
-- [x] Activity logger: page title, activity types, intensity labels, note field, preview gains translated
-- [x] Navigation labels translated in all languages (Held/Log/Quests/Karte/Gilde)
-- [x] Dynamic values with interpolation work: Lv.{{level}}, {{amount}}g, {{count}}/9 regions
-- [x] No console errors or blank screens
-- [x] Mobile viewport (375px) renders correctly with translated text
-- [x] i18n setup uses proper architecture: i18next + react-i18next, language detection (localStorage > browser > fallback)
+**Status: FIXED**
 
-### Failing
+- Dashboard shows "Leben" (Health) and "Erfahrung" (Experience) in German
+- Character page shows "LP" (Lebenspunkte) and "EP" (Erfahrungspunkte) in German
+- Japanese shows "HP" and "EXP"
+- English roundtrip correctly reverts to "Health" and "Experience"
 
-- [ ] **Hardcoded "Health" and "Experience" in character-sheet component** — The shared `CharacterSheet8bit` component (`src/components/ui/8bit/blocks/character-sheet.tsx` lines 170, 194) renders hardcoded English labels instead of using `$t()`. These appear on the Dashboard.
-- [ ] **Hardcoded "Unclassed" class name** — The class name "Unclassed" is used as a raw string throughout the codebase (`classEngine.ts`, `useStdbPlayer.ts`, multiple pages) without i18n translation.
-- [ ] **Quest names and descriptions are hardcoded English** — Quest titles ("Mindfulness Session", "Morning Ritual", "Social Session") and descriptions ("Complete 30 minutes of activity", "Log any activity before noon") come from `questGenerator.ts` with hardcoded English strings.
-- [ ] **Quest type badge "DAILY" is hardcoded** — `QuestCard.tsx` line 31 uses `quest.type.toUpperCase()` instead of a translated string.
-- [ ] **Biome names are not translated** — World map shows English biome names: "VERDANT PLAINS", "ICE CAVERN", "LAVA CORE", "PIXEL FOREST", etc. These come from biome definitions without i18n.
-- [ ] **"Duration" label hardcoded in activity input configs** — `src/lib/types.ts` has `label: "Duration"` hardcoded in multiple activity type input configurations (~7 occurrences) instead of using translation keys.
-- [ ] **Activity input format strings hardcoded** — `ActivityLogger.tsx` formatValue function has hardcoded "Snack", "Light meal", "Full meal", "glass"/"glasses" strings.
-- [ ] **Title names not translated** — Title "Novice" and other title names in `src/lib/types.ts` are hardcoded English strings.
+### B2: Hardcoded "Unclassed" class name
 
-### Warnings
+**Status: FIXED**
 
-- The `character-sheet.tsx` component is in `src/components/ui/8bit/blocks/` which may be considered a shared UI component — it needs i18n awareness or accept translated labels as props.
-- Quest data is generated server-side or in `questGenerator.ts` — translating quest content may require a different approach (translation keys in quest definitions rather than literal strings).
-- Biome names are deeply embedded in game data structures — a lookup table approach (biome ID to translated name) would be needed.
-- Player class names (Warrior, Mage, Rogue, etc.) appear translated in some contexts (home page class showcase) but not when derived from game state (dashboard "Unclassed").
+- Dashboard shows "Klassenlos" in German
+- Character page shows "Klassenlos" in German
+- Japanese shows "未分類"
+- English roundtrip correctly reverts to "Unclassed"
+- Minor: The `<img>` alt text still reads "TestHeld - Unclassed" regardless of language (accessibility-only, not user-visible)
+
+### B3: Quest names and descriptions are hardcoded English
+
+**Status: NOT FIXED**
+
+- Quest names remain in English across all languages: "Extended Mindfulness", "Quick Social", "Extended Nutrition"
+- Quest descriptions remain in English: "Push yourself with a 60-minute session", "A short 15-minute burst to stay on track"
+- **Root cause**: The `questGenerator.ts` was updated to use `i18n:key:param` format strings, and `QuestCard.tsx` has `resolveQuestString()` to parse them. However, the quests actually come from **SpacetimeDB** (`useTable(tables.my_quests)`), not from the client-side quest generator. The server stores plain English quest titles and descriptions. The client-side `resolveQuestString()` check (`str.startsWith("i18n:")`) returns the raw string because server data doesn't have the `i18n:` prefix.
+- **Additionally**: The dashboard (`dashboard.tsx` line 180) renders `q.title` directly without calling `resolveQuestString()` at all.
+- **Fix needed**: Either (a) have the SpacetimeDB server store quest template keys instead of resolved strings, or (b) add a lookup/mapping layer on the client that matches server quest data to translation keys.
+
+### B4: Quest type badge "DAILY" is hardcoded
+
+**Status: FIXED**
+
+- German shows "TAGLICH" (Daily badge translated)
+- Japanese shows "デイリー"
+- Uses `t('questTypes.${quest.type}')` correctly
+
+### B5: Biome names are not translated on World Map
+
+**Status: FIXED**
+
+- All 9 biome names translated in German: "GRUNE EBENEN", "EISHOHLE", "LAVAKERN", "PIXELWALD", "KERKERFACKEL", "ZWERGENTRESOR", "ALTE RUNEN", "DRACHENHORT", "RAUMSTATION"
+- Page title "Weltkarte" and region counter "1/9 Regionen entdeckt" also translated
+
+### B6: "Duration" label hardcoded in activity input configs
+
+**Status: FIXED**
+
+- German shows "Dauer: 45m" for duration-based activities
+- "Mahlzeitqualitat: Volle Mahlzeit" for Nutrition
+- "Wasseraufnahme: 2 Glaser" for Hydration
+- All activity input label keys use `t(config.labelKey)` pattern correctly
+
+### B7: Activity input format strings hardcoded ("Snack", "Light meal", etc.)
+
+**Status: PARTIALLY FIXED**
+
+- The `formatValue()` function in `ActivityLogger.tsx` correctly uses `t("activityInput.snack")`, `t("activityInput.lightMeal")`, `t("activityInput.fullMeal")`, and `t("activityInput.glass")` for the **label display text**
+- Hydration: "2 Glaser" correctly translated
+- The label "Mahlzeitqualitat: Volle Mahlzeit" correctly shows translated value
+- **Still broken**: Preset **buttons** for Nutrition render `p.label` directly from `types.ts` config, which contains hardcoded English strings: `"Snack"`, `"Light"`, `"Full meal"` (lines 147-149 of `types.ts`)
+- **Fix needed**: Change preset labels to i18n keys and resolve them with `t()` at render time in `ActivityLogger.tsx` line 119
+
+### B8: Title names not translated
+
+**Status: FIXED**
+
+- "Neuling" (Novice) displayed in German on character page
+- All 19 real-world achievement titles translated: "Erster Schritt", "Eiserner Wille", "Jahrhundert", "Marathon-Finisher", "Halbmarathon unter 2h", "Eisenpumper", "Strasenkrieger", "Zen-Meister", "Meister der Technik", "Bucherwurm", "Fruhaufsteher", "Nachteule", "Gesellschaftsmensch", "Hobbykoch", "Ausgeruht", "Kreative Seele", "Engagiert", "Unaufhaltsam", "Die Tausend"
+- Title descriptions also translated
+- Japanese shows "初心者" (Novice)
+
+---
+
+## Cross-Language Tests
+
+### German (de)
+
+- All navigation labels translated: Held, Log, Quests, Karte, Gilde
+- All page titles translated
+- Class names, activity types, stat labels all in German
+- Language detection from browser locale works correctly
+
+### Japanese (ja)
+
+- Full CJK rendering works: 英雄, 記録, クエスト, マップ, ギルド
+- Character page fully translated with Japanese characters
+- Title/achievement names in Japanese
+
+### English (en) Roundtrip
+
+- Switching back to English correctly reverts all text
+- No stale translations or mixed-language content
+- Language persistence via localStorage("language") works
+
+---
+
+## Test Results Summary
+
+| Bug | Description                           | Status          |
+| --- | ------------------------------------- | --------------- |
+| B1  | "Health"/"Experience" labels          | FIXED           |
+| B2  | "Unclassed" class name                | FIXED           |
+| B3  | Quest names/descriptions              | NOT FIXED       |
+| B4  | Quest type badge "DAILY"              | FIXED           |
+| B5  | Biome names on World Map              | FIXED           |
+| B6  | "Duration" label in activity inputs   | FIXED           |
+| B7  | Activity input values ("Snack", etc.) | PARTIALLY FIXED |
+| B8  | Title names ("Novice", etc.)          | FIXED           |
+
+**Score: 6/8 fully fixed, 1 partial, 1 unfixed**
+
+---
+
+## Remaining Issues
+
+### Critical
+
+- [ ] **B3: Quest titles/descriptions from SpacetimeDB are not translated** — Server stores plain English strings; client-side `resolveQuestString()` only works for `i18n:`-prefixed strings. Dashboard also bypasses resolution entirely.
+
+### Minor
+
+- [ ] **B7: Nutrition preset buttons still English** — `types.ts` lines 147-149 have hardcoded `"Snack"`, `"Light"`, `"Full meal"` preset labels. Needs i18n keys resolved at render time.
+- [ ] **`<img>` alt text "Unclassed"** — Character avatar alt text is not translated (accessibility-only issue).
 
 ---
 
 ## Screenshots
 
-| #   | Description                        | File                                     |
-| --- | ---------------------------------- | ---------------------------------------- |
-| 1   | Home page — German (auto-detected) | `screenshots/01-home-en.png`             |
-| 2   | Home page — English (switched)     | `screenshots/02-home-en-switched.png`    |
-| 3   | Home page — Japanese               | `screenshots/03-home-ja.png`             |
-| 4   | Dashboard — German                 | `screenshots/04-dashboard-de.png`        |
-| 5   | Character page — German (top)      | `screenshots/05-character-de.png`        |
-| 6   | Character page — German (bottom)   | `screenshots/06-character-de-bottom.png` |
-| 7   | Quests page — German               | `screenshots/07-quests-de.png`           |
-| 8   | World Map — German                 | `screenshots/08-worldmap-de.png`         |
-| 9   | Guild page — German                | `screenshots/09-guild-de.png`            |
-| 10  | Mobile dashboard (375px) — German  | `screenshots/10-mobile-dashboard-de.png` |
-| 11  | Activity logger — German           | `screenshots/11-activity-de.png`         |
-
----
-
-## Hardcoded Strings Inventory
-
-| Location                                                | String(s)                                                    | Fix approach                                                         |
-| ------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------- |
-| `components/ui/8bit/blocks/character-sheet.tsx:170,194` | "Health", "Experience"                                       | Use `$t("common.hp")` / `$t("common.xp")` or accept as props         |
-| `lib/types.ts` (activity configs)                       | "Duration", "Meal quality", "Water intake", "Sleep duration" | Use translation keys, resolve at render time                         |
-| `lib/classEngine.ts`, `hooks/useStdbPlayer.ts`          | "Unclassed"                                                  | Add `classes.Unclassed` to locale files, translate at display        |
-| `lib/questGenerator.ts`                                 | Quest titles & descriptions                                  | Use translation keys as quest identifiers                            |
-| `components/game/QuestCard.tsx:31`                      | `quest.type.toUpperCase()` ("DAILY")                         | Use `$t("quests.typeDaily")`                                         |
-| `lib/biomeThemes.ts` / world map                        | Biome names                                                  | Add `biomes.*` keys to locale files                                  |
-| `components/game/ActivityLogger.tsx:63-65`              | "Snack", "Light meal", "Full meal", "glass(es)"              | Use `$t("activityInput.snack")` etc. (keys already exist in en.json) |
-| `lib/types.ts:396`                                      | Title "Novice" and other title names                         | Add title name keys to locale files                                  |
+| #   | Description                                   | File                                       |
+| --- | --------------------------------------------- | ------------------------------------------ |
+| 1   | Home page — German                            | `screenshots/01-home-de.png`               |
+| 2   | Dashboard — German (B1, B2 verified)          | `screenshots/02-dashboard-de.png`          |
+| 3   | Quests page — German (B3 failing, B4 passing) | `screenshots/03-quests-de.png`             |
+| 4   | World Map — German (B5 verified)              | `screenshots/04-worldmap-de.png`           |
+| 5   | Activity Logger — German (B6 verified)        | `screenshots/05-activity-de.png`           |
+| 6   | Activity Nutrition — German (B7 partial)      | `screenshots/06-activity-nutrition-de.png` |
+| 7   | Character page — German (B2, B8 verified)     | `screenshots/07-character-de.png`          |
+| 8   | Character titles — German (B8 verified)       | `screenshots/08-character-titles-de.png`   |
+| 9   | Character page — Japanese                     | `screenshots/09-character-ja.png`          |
+| 10  | Quests page — Japanese (B3 failing)           | `screenshots/10-quests-ja.png`             |
+| 11  | Quests page — English roundtrip               | `screenshots/11-quests-en.png`             |
+| 12  | Dashboard — English roundtrip                 | `screenshots/12-dashboard-en.png`          |
 
 ---
 
 ## Verdict
 
-**PARTIAL PASS** — The i18n infrastructure is solid and the majority of UI strings are properly translated across all 7 languages. The remaining hardcoded strings are concentrated in game data definitions (quest content, biome names, class names, titles) and one shared UI component. These are not architectural blockers but need a follow-up pass to achieve full localization coverage.
+**PARTIAL PASS** — 6 of 8 bug fixes are fully verified and working. The remaining issues are:
+
+1. B3 (quest titles/descriptions) requires server-side changes or a client-side mapping layer since quests come from SpacetimeDB with hardcoded English.
+2. B7 (nutrition preset buttons) needs a small fix to use i18n keys instead of hardcoded labels in the presets config.
+
+The i18n infrastructure is solid. The fixes that were within reach of the client-side code are well-implemented. The B3 gap is architectural — it requires either changing the SpacetimeDB quest schema or adding a translation mapping layer for server-generated quest data.

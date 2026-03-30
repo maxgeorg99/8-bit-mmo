@@ -5,15 +5,21 @@
 
 ## Current Phase
 
-- **phase:** 4.3
-- **name:** Shared World Features
+- **phase:** 6.1
+- **name:** Localization (i18n)
 - **status:** in_progress
 
 ## Step Progress
 
-- [x] Step 1: Implementation (working agent) — B1, B2, B3 fixed
-- [ ] Step 2: Code review + test writing (review agent)
-- [ ] Step 3: Playwright verification (evaluation agent)
+- [x] Step 1: Implementation (working agent) — B10 fixed
+- [x] Step 2: Code review + test writing (review agent)
+- [x] Step 3: Playwright verification (evaluation agent)
+
+## Bug Fix Queue
+
+Remaining bugs:
+
+- **B10** (user-reported): Shop data not translated — merchant names ("Old Barley"), merchant greetings ("Welcome, traveler! Stock up before the road ahead."), equipment/item names ("Oakwood Staff", "Traveler's Tunic", "Ranger's Cap"), stat descriptions ("+1 INT +1 WIS"), and shop UI labels ("Buy", "Sell") are all hardcoded English. Need key-based i18n lookup for all shop items, merchants, and equipment names across all 7 locales.
 
 ## Completed Phases
 
@@ -27,6 +33,7 @@
 | 3.2   | Raid Boss Fights               | done      |
 | 4.1   | SpacetimeDB Server Module      | done      |
 | 4.2   | Client Migration               | done      |
+| 4.3   | Shared World Features          | done      |
 
 ## Log
 
@@ -46,18 +53,32 @@
 
 - Phase: 4.3 — Shared World Features
 - Steps completed: Implementation
-- Features: Real players in city scenes (already working from 4.2 biome_players view), guild member online status (already working from 4.2), leaderboard with real SpacetimeDB data + guild names + online indicators, friend system (send/accept/reject/remove, friend list with online status, stat comparison, PvP challenge from friend list)
-- Server changes: friendship table, send_friend_request/accept_friend_request/reject_friend_request/remove_friend reducers, my_friends view
-- Client changes: /friends page, useFriends hook, updated leaderboard with guild name resolution + online indicators, Friends button on dashboard
+- Features: Real players in city scenes, guild member online status, leaderboard, friend system
 - Issues: none
 
 ### Iteration 3b — 2026-03-29
 
 - Phase: 4.3 — Shared World Features (Playwright Verification)
-- Steps completed: Playwright verification run
-- Result: 17/17 functional checks pass, 2 bugs found
-- Bug B1 (Medium): Leaderboard duplicate player entry + React key collision
-- Bug B2 (Low): Leaderboard "1 players online" grammar
-- Verification report: `apps/reallife-mmo/docs/verification/phase-4.3.md`
-- Screenshots saved to: `apps/reallife-mmo/docs/verification/screenshots/`
-- Steps 1-3 unchecked pending bug fixes
+- Result: 17/17 pass, 2 bugs found → fixed in 3c
+
+### Iteration 3c — 2026-03-29
+
+- Phase: 4.3 — Shared World Features (Bug Fixes)
+- Result: All bugs resolved, phase complete
+
+### Iteration 4 — 2026-03-30
+
+- Phase: 6.1 — Localization (i18n)
+- Steps completed: Implementation, Code Review + Tests (54 new, 297 total), Playwright Verification
+- Issues: 8 categories of hardcoded strings found (B1-B8)
+
+### Iteration 4b — 2026-03-30
+
+- Phase: 6.1 — Localization (Bug Fix Iteration 1)
+- Steps completed: Bug fixes (B1-B8), Code Review + Tests (391 total), Playwright Verification
+- Result: 6/8 fixed, B3 not fixed, B7 partial, B9 (locations) user-reported
+
+### Iteration 4c — 2026-03-30
+
+- Phase: 6.1 — Localization (Bug Fix Iteration 2)
+- Steps completed: (starting)

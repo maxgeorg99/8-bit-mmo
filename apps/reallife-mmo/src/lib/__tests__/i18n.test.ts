@@ -184,6 +184,11 @@ describe("i18n top-level namespace coverage", () => {
     "biomes",
     "titles",
     "tierLabels",
+    // Phase 6.1 B10 bug fix namespaces
+    "stats",
+    "merchants",
+    "shop",
+    "equipment",
   ];
 
   for (const ns of expectedNamespaces) {
@@ -749,6 +754,212 @@ describe("resolveQuestString — English pattern matching (server strings)", () 
     const result = resolveQuestString("Quick Creativity", t);
     expect(result).toContain("questTemplates.quick");
     expect(result).toContain("activityTypes.Creativity");
+  });
+});
+
+// ── Phase 6.1 Bug Fix B10 Coverage ──────────────────────────
+
+describe("B10: equipment translation keys in all locales", () => {
+  const equipmentIds = [
+    // Shop items (3 per biome × 9 biomes = 27)
+    "shop-plains-staff",
+    "shop-plains-tunic",
+    "shop-plains-cap",
+    "shop-tundra-axe",
+    "shop-tundra-cloak",
+    "shop-tundra-charm",
+    "shop-volcano-blade",
+    "shop-volcano-plate",
+    "shop-volcano-crown",
+    "shop-forest-bow",
+    "shop-forest-robe",
+    "shop-forest-circlet",
+    "shop-dungeon-dagger",
+    "shop-dungeon-mail",
+    "shop-dungeon-lantern",
+    "shop-desert-scimitar",
+    "shop-desert-wrap",
+    "shop-desert-turban",
+    "shop-spire-tome",
+    "shop-spire-robe",
+    "shop-spire-monocle",
+    "shop-ruins-sword",
+    "shop-ruins-armor",
+    "shop-ruins-skull",
+    "shop-celestial-blade",
+    "shop-celestial-robe",
+    "shop-celestial-halo",
+    // Reward/starter items
+    "starter-sword",
+    "leather-armor",
+    "iron-helm",
+    "focus-amulet",
+    "steel-blade",
+    "chainmail",
+    "crown-of-wisdom",
+    "epic-class-weapon",
+    "first-ten",
+    "grinder-50",
+    "legendary-100",
+  ];
+
+  for (const itemId of equipmentIds) {
+    it(`has equipment.${itemId}.name in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const equipment = (locale as Record<string, Record<string, Record<string, string>>>)
+          .equipment;
+        expect(equipment, `${code} missing equipment namespace`).toBeDefined();
+        expect(equipment[itemId], `${code} missing equipment.${itemId}`).toBeDefined();
+        expect(equipment[itemId].name, `${code} missing equipment.${itemId}.name`).toBeDefined();
+        expect(
+          equipment[itemId].name.length,
+          `${code} equipment.${itemId}.name is empty`,
+        ).toBeGreaterThan(0);
+      }
+    });
+  }
+
+  it("non-English locales actually translate equipment names (not all identical to English)", () => {
+    const enEquipment = (en as unknown as Record<string, Record<string, Record<string, string>>>)
+      .equipment;
+    for (const code of LOCALE_CODES.filter((c) => c !== "en")) {
+      const localeEquipment = (
+        LOCALES[code] as Record<string, Record<string, Record<string, string>>>
+      ).equipment;
+      const translated = equipmentIds.filter(
+        (id) => localeEquipment[id]?.name !== enEquipment[id]?.name,
+      );
+      expect(
+        translated.length,
+        `${code} has no translated equipment names — all identical to English`,
+      ).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe("B10: merchant translation keys in all locales", () => {
+  const biomeIds = [
+    "plains",
+    "tundra",
+    "volcano",
+    "forest",
+    "dungeon",
+    "desert",
+    "spire",
+    "ruins",
+    "celestial",
+  ];
+
+  for (const biome of biomeIds) {
+    it(`has merchants.${biome}.name and .greeting in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const merchants = (locale as Record<string, Record<string, Record<string, string>>>)
+          .merchants;
+        expect(merchants, `${code} missing merchants namespace`).toBeDefined();
+        expect(merchants[biome], `${code} missing merchants.${biome}`).toBeDefined();
+        expect(merchants[biome].name, `${code} missing merchants.${biome}.name`).toBeDefined();
+        expect(
+          merchants[biome].name.length,
+          `${code} merchants.${biome}.name is empty`,
+        ).toBeGreaterThan(0);
+        expect(
+          merchants[biome].greeting,
+          `${code} missing merchants.${biome}.greeting`,
+        ).toBeDefined();
+        expect(
+          merchants[biome].greeting.length,
+          `${code} merchants.${biome}.greeting is empty`,
+        ).toBeGreaterThan(0);
+      }
+    });
+  }
+
+  it("non-English locales translate merchant greetings", () => {
+    const enMerchants = (en as unknown as Record<string, Record<string, Record<string, string>>>)
+      .merchants;
+    for (const code of LOCALE_CODES.filter((c) => c !== "en")) {
+      const localeMerchants = (
+        LOCALES[code] as Record<string, Record<string, Record<string, string>>>
+      ).merchants;
+      const translated = biomeIds.filter(
+        (id) => localeMerchants[id]?.greeting !== enMerchants[id]?.greeting,
+      );
+      expect(
+        translated.length,
+        `${code} has no translated merchant greetings — all identical to English`,
+      ).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe("B10: shop UI keys in all locales", () => {
+  const shopKeys = ["buyTab", "sellTab", "sellPrice", "owned", "noItemsToSell"];
+
+  for (const key of shopKeys) {
+    it(`has shop.${key} in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const shop = (locale as Record<string, Record<string, string>>).shop;
+        expect(shop, `${code} missing shop namespace`).toBeDefined();
+        expect(shop[key], `${code} missing shop.${key}`).toBeDefined();
+        expect(shop[key].length, `${code} shop.${key} is empty`).toBeGreaterThan(0);
+      }
+    });
+  }
+
+  it("shop.sellPrice contains {{price}} interpolation in all locales", () => {
+    for (const [code, locale] of Object.entries(LOCALES)) {
+      const shop = (locale as Record<string, Record<string, string>>).shop;
+      expect(shop.sellPrice, `${code} shop.sellPrice missing {{price}}`).toContain("{{price}}");
+    }
+  });
+
+  it("non-English locales translate shop labels", () => {
+    const enShop = (en as unknown as Record<string, Record<string, string>>).shop;
+    for (const code of LOCALE_CODES.filter((c) => c !== "en")) {
+      const localeShop = (LOCALES[code] as Record<string, Record<string, string>>).shop;
+      const translated = shopKeys.filter((key) => localeShop[key] !== enShop[key]);
+      expect(
+        translated.length,
+        `${code} has no translated shop labels — all identical to English`,
+      ).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe("B10: stat abbreviation keys in all locales", () => {
+  const statKeys = ["STR", "AGI", "INT", "CON", "WIS", "CHA", "MP"];
+
+  for (const key of statKeys) {
+    it(`has stats.${key} in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const stats = (locale as Record<string, Record<string, string>>).stats;
+        expect(stats, `${code} missing stats namespace`).toBeDefined();
+        expect(stats[key], `${code} missing stats.${key}`).toBeDefined();
+        expect(stats[key].length, `${code} stats.${key} is empty`).toBeGreaterThan(0);
+      }
+    });
+  }
+
+  it("has stats.statBonus template with {{value}} and {{stat}} in all locales", () => {
+    for (const [code, locale] of Object.entries(LOCALES)) {
+      const stats = (locale as Record<string, Record<string, string>>).stats;
+      expect(stats.statBonus, `${code} missing stats.statBonus`).toBeDefined();
+      expect(stats.statBonus, `${code} stats.statBonus missing {{value}}`).toContain("{{value}}");
+      expect(stats.statBonus, `${code} stats.statBonus missing {{stat}}`).toContain("{{stat}}");
+    }
+  });
+
+  it("non-English locales translate stat abbreviations (at least some differ)", () => {
+    const enStats = (en as unknown as Record<string, Record<string, string>>).stats;
+    for (const code of LOCALE_CODES.filter((c) => c !== "en")) {
+      const localeStats = (LOCALES[code] as Record<string, Record<string, string>>).stats;
+      const translated = statKeys.filter((key) => localeStats[key] !== enStats[key]);
+      // Japanese/Chinese translate all; European locales translate at least some (e.g. AGI→GES in German)
+      expect(
+        translated.length,
+        `${code} has identical stat abbreviations to English — expected at least some translations`,
+      ).toBeGreaterThan(0);
+    }
   });
 });
 

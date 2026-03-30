@@ -251,7 +251,7 @@ function RankList({ entries, label }: { entries: LeaderboardEntry[]; label: stri
                         CLASS_COLORS[entry.playerClass as keyof typeof CLASS_COLORS],
                       )}
                     >
-                      {entry.playerClass}
+                      {t(`classes.${entry.playerClass}`)}
                     </span>
                     {entry.guildName && (
                       <span className="retro text-[5px] text-muted-foreground">

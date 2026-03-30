@@ -127,7 +127,8 @@ export function FriendsPage() {
                         <span className="retro text-[8px] text-foreground">{r.name}</span>
                         <div className="flex items-center gap-1">
                           <span className={cn("retro text-[6px]", CLASS_COLORS[r.playerClass])}>
-                            Lv.{r.level} {r.playerClass}
+                            {t("common.levelAbbr", { level: r.level })}{" "}
+                            {t(`classes.${r.playerClass}`)}
                           </span>
                         </div>
                       </div>
@@ -248,17 +249,18 @@ function FriendCard({
               <span className="retro text-[8px] text-foreground truncate">{friend.name}</span>
               {friend.online && (
                 <Badge variant="outline" className="text-[4px] text-green-400 py-0">
-                  Online
+                  {t("common.online")}
                 </Badge>
               )}
             </div>
             <div className="flex items-center gap-2">
               <span className={cn("retro text-[6px]", CLASS_COLORS[friend.playerClass])}>
-                Lv.{friend.level} {friend.playerClass}
+                {t("common.levelAbbr", { level: friend.level })}{" "}
+                {t(`classes.${friend.playerClass}`)}
               </span>
               {biomeMeta && (
                 <span className="retro text-[5px] text-muted-foreground">
-                  {biomeMeta.icon} {biomeMeta.name}
+                  {biomeMeta.icon} {t(`biomes.${friend.currentBiome}`)}
                 </span>
               )}
             </div>
@@ -330,10 +332,10 @@ function StatCompareDialog({
             />
             <span className="retro text-[7px] text-primary block">{player.name}</span>
             <span className={cn("retro text-[5px]", CLASS_COLORS[player.playerClass])}>
-              Lv.{player.level}
+              {t("common.levelAbbr", { level: player.level })}
             </span>
           </div>
-          <span className="retro text-[10px] text-muted-foreground">VS</span>
+          <span className="retro text-[10px] text-muted-foreground">{t("common.vs")}</span>
           <div className="text-center">
             <img
               src={asset(CLASS_SPRITES[friend.playerClass])}
@@ -342,7 +344,7 @@ function StatCompareDialog({
             />
             <span className="retro text-[7px] text-foreground block">{friend.name}</span>
             <span className={cn("retro text-[5px]", CLASS_COLORS[friend.playerClass])}>
-              Lv.{friend.level}
+              {t("common.levelAbbr", { level: friend.level })}
             </span>
           </div>
         </div>

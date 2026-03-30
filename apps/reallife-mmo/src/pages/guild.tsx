@@ -315,7 +315,7 @@ function GuildView({ guild }: { guild: any }) {
                       {t(`guild.roles.${m.role}`, { defaultValue: m.role })}
                     </span>
                     <span className="retro text-[6px] text-muted-foreground">
-                      Lv.{m.level} {m.playerClass}
+                      {t("common.levelAbbr", { level: m.level })} {t(`classes.${m.playerClass}`)}
                     </span>
                   </div>
                 </div>

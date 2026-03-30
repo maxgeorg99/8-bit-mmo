@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -46,6 +47,7 @@ interface PlayerInspectProps {
 const STATS_ORDER: StatName[] = ["STR", "AGI", "INT", "CON", "WIS", "CHA", "MP"];
 
 export function PlayerInspect({ open, onOpenChange, player }: PlayerInspectProps) {
+  const { t } = useTranslation();
   if (!player) return null;
 
   const maxStat = Math.max(...STATS_ORDER.map((s) => player.stats[s]), 1);
@@ -67,7 +69,8 @@ export function PlayerInspect({ open, onOpenChange, player }: PlayerInspectProps
             <div className="retro text-[7px] space-y-1.5 pt-1">
               <div className="flex items-center gap-2">
                 <span className={CLASS_COLORS[player.playerClass]}>
-                  Lv.{player.level} {player.playerClass}
+                  {t("common.levelAbbr", { level: player.level })}{" "}
+                  {t(`classes.${player.playerClass}`)}
                 </span>
               </div>
               {player.guildName && (
@@ -144,7 +147,7 @@ export function PlayerInspect({ open, onOpenChange, player }: PlayerInspectProps
             onOpenChange(false);
           }}
         >
-          Whisper {player.name}
+          {t("playerInspect.whisper", { name: player.name })}
         </Button>
       </DialogContent>
     </Dialog>

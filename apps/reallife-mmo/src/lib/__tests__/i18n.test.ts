@@ -8,6 +8,7 @@
  * - SUPPORTED_LANGUAGES constant covers all expected languages
  */
 import { describe, expect, it } from "vite-plus/test";
+import { resolveQuestString } from "../questI18n";
 
 // ── Import locale JSON directly for structural validation ──────
 import en from "../../i18n/locales/en.json";
@@ -514,41 +515,96 @@ describe("tier labels in all locales", () => {
   }
 });
 
-describe("quest i18n: key encoding and resolution", () => {
-  /**
-   * Replicate resolveQuestString from QuestCard.tsx for testing.
-   * Format: "i18n:key:param1=val1:param2=val2"
-   */
-  function resolveQuestString(
-    str: string,
-    t: (key: string, params?: Record<string, string>) => string,
-  ): string {
-    if (!str.startsWith("i18n:")) return str;
-    const keyAndParams = str.slice(5);
-    const segments = keyAndParams.split(":");
-    const key = segments[0];
-    const params: Record<string, string> = {};
-    for (let i = 1; i < segments.length; i++) {
-      const eqIdx = segments[i].indexOf("=");
-      if (eqIdx > 0) {
-        const paramKey = segments[i].slice(0, eqIdx);
-        const paramVal = segments[i].slice(eqIdx + 1);
-        if (paramKey === "activityType") {
-          params["activity"] = `[translated:${paramVal}]`;
-        } else {
-          params[paramKey] = paramVal;
+describe("B9: location translation keys in all locales", () => {
+  const biomeIds = [
+    "plains",
+    "tundra",
+    "volcano",
+    "forest",
+    "dungeon",
+    "desert",
+    "spire",
+    "ruins",
+    "celestial",
+  ];
+  const locationSuffixes = ["city", "wild", "boss"];
+
+  for (const biome of biomeIds) {
+    for (const suffix of locationSuffixes) {
+      const locId = `${biome}-${suffix}`;
+      it(`has locations.${locId}.name and .description in all locales`, () => {
+        for (const [code, locale] of Object.entries(LOCALES)) {
+          const locations = (locale as Record<string, Record<string, Record<string, string>>>)
+            .locations;
+          expect(locations, `${code} missing locations namespace`).toBeDefined();
+          expect(locations[locId], `${code} missing locations.${locId}`).toBeDefined();
+          expect(locations[locId].name, `${code} missing locations.${locId}.name`).toBeDefined();
+          expect(
+            locations[locId].description,
+            `${code} missing locations.${locId}.description`,
+          ).toBeDefined();
         }
-      }
+      });
     }
-    return t(key, params);
   }
 
-  it("returns raw string when not prefixed with i18n:", () => {
+  it("has locationTypes (city, wilderness, boss_lair) in all locales", () => {
+    const types = ["city", "wilderness", "boss_lair"];
+    for (const [code, locale] of Object.entries(LOCALES)) {
+      const lt = (locale as Record<string, Record<string, string>>).locationTypes;
+      expect(lt, `${code} missing locationTypes namespace`).toBeDefined();
+      for (const type of types) {
+        expect(lt[type], `${code} missing locationTypes.${type}`).toBeDefined();
+      }
+    }
+  });
+
+  it("has locationPicker keys in all locales", () => {
+    const requiredKeys = ["needMoreGuildMembers", "joinGuildToUnlock", "raid"];
+    for (const [code, locale] of Object.entries(LOCALES)) {
+      const lp = (locale as Record<string, Record<string, string>>).locationPicker;
+      expect(lp, `${code} missing locationPicker namespace`).toBeDefined();
+      for (const key of requiredKeys) {
+        expect(lp[key], `${code} missing locationPicker.${key}`).toBeDefined();
+      }
+    }
+  });
+});
+
+describe("B7: nutrition preset i18n keys in all locales", () => {
+  const nutritionPresetKeys = ["snack", "lightMeal", "fullMeal"];
+
+  for (const key of nutritionPresetKeys) {
+    it(`has activityInput.${key} in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const ai = (locale as Record<string, Record<string, string>>).activityInput;
+        expect(ai, `${code} missing activityInput namespace`).toBeDefined();
+        expect(ai[key], `${code} missing activityInput.${key}`).toBeDefined();
+        expect(ai[key].length, `${code} activityInput.${key} is empty`).toBeGreaterThan(0);
+      }
+    });
+  }
+
+  it("non-English locales translate nutrition labels (not identical to English)", () => {
+    const enAI = (en as unknown as Record<string, Record<string, string>>).activityInput;
+    for (const code of LOCALE_CODES.filter((c) => c !== "en")) {
+      const localeAI = (LOCALES[code] as Record<string, Record<string, string>>).activityInput;
+      const translated = nutritionPresetKeys.filter((key) => localeAI[key] !== enAI[key]);
+      expect(
+        translated.length,
+        `${code} has no translated nutrition labels — all identical to English`,
+      ).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe("resolveQuestString — i18n-prefixed strings", () => {
+  it("returns raw string when not prefixed with i18n: and no pattern match", () => {
     const t = (key: string) => key;
     expect(resolveQuestString("Custom quest", t)).toBe("Custom quest");
   });
 
-  it("extracts key from i18n: prefix", () => {
+  it("extracts key from i18n: prefix (no params)", () => {
     let capturedKey = "";
     const t = (key: string) => {
       capturedKey = key;
@@ -558,17 +614,19 @@ describe("quest i18n: key encoding and resolution", () => {
     expect(capturedKey).toBe("questTemplates.morningRitual");
   });
 
-  it("extracts key and params from i18n: prefix with params", () => {
+  it("translates activityType param via activityTypes namespace", () => {
     let capturedKey = "";
     let capturedParams: Record<string, string> = {};
     const t = (key: string, params?: Record<string, string>) => {
       capturedKey = key;
       capturedParams = params ?? {};
+      // Simulate t() returning translated activity name
+      if (key.startsWith("activityTypes.")) return `[translated:${key}]`;
       return key;
     };
     resolveQuestString("i18n:questTemplates.session:activityType=Cardio", t);
     expect(capturedKey).toBe("questTemplates.session");
-    expect(capturedParams.activity).toBe("[translated:Cardio]");
+    expect(capturedParams.activity).toBe("[translated:activityTypes.Cardio]");
   });
 
   it("extracts numeric min param from description key", () => {
@@ -579,6 +637,118 @@ describe("quest i18n: key encoding and resolution", () => {
     };
     resolveQuestString("i18n:questTemplates.sessionDesc:min=30", t);
     expect(capturedParams.min).toBe("30");
+  });
+
+  it("handles multiple params correctly", () => {
+    let capturedParams: Record<string, string> = {};
+    const t = (key: string, params?: Record<string, string>) => {
+      if (key.startsWith("activityTypes.")) return `[t:${key}]`;
+      capturedParams = params ?? {};
+      return key;
+    };
+    resolveQuestString("i18n:questTemplates.extendedDesc:min=45:activityType=Hiit", t);
+    expect(capturedParams.min).toBe("45");
+    expect(capturedParams.activity).toBe("[t:activityTypes.Hiit]");
+  });
+});
+
+describe("resolveQuestString — English pattern matching (server strings)", () => {
+  /** Helper t() that records calls and returns a placeholder */
+  function createMockT() {
+    const calls: Array<{ key: string; params?: Record<string, string> }> = [];
+    const t = (key: string, params?: Record<string, string>) => {
+      calls.push({ key, params });
+      if (key.startsWith("activityTypes.")) return `[${key}]`;
+      if (params) {
+        let result = key;
+        for (const [k, v] of Object.entries(params)) {
+          result += `(${k}=${v})`;
+        }
+        return result;
+      }
+      return key;
+    };
+    return { t, calls };
+  }
+
+  it("matches 'Extended <activity>' title pattern", () => {
+    const { t } = createMockT();
+    const result = resolveQuestString("Extended Cardio", t);
+    expect(result).toContain("questTemplates.extended");
+    expect(result).toContain("activityTypes.Cardio");
+  });
+
+  it("matches 'Quick <activity>' title pattern", () => {
+    const { t } = createMockT();
+    const result = resolveQuestString("Quick Mindfulness", t);
+    expect(result).toContain("questTemplates.quick");
+    expect(result).toContain("activityTypes.Mindfulness");
+  });
+
+  it("matches '<activity> Session' title pattern", () => {
+    const { t } = createMockT();
+    const result = resolveQuestString("Strength Training Session", t);
+    expect(result).toContain("questTemplates.session");
+  });
+
+  it("matches 'Morning Ritual' title pattern", () => {
+    const { t, calls } = createMockT();
+    resolveQuestString("Morning Ritual", t);
+    expect(calls[0].key).toBe("questTemplates.morningRitual");
+  });
+
+  it("matches description pattern: Push yourself with a N-minute session", () => {
+    const { t, calls } = createMockT();
+    resolveQuestString("Push yourself with a 60-minute session", t);
+    expect(calls[0].key).toBe("questTemplates.extendedDesc");
+    expect(calls[0].params?.min).toBe("60");
+  });
+
+  it("matches description pattern: Complete N minutes of activity", () => {
+    const { t, calls } = createMockT();
+    resolveQuestString("Complete 30 minutes of activity", t);
+    expect(calls[0].key).toBe("questTemplates.sessionDesc");
+    expect(calls[0].params?.min).toBe("30");
+  });
+
+  it("matches description pattern: Log any activity before noon", () => {
+    const { t, calls } = createMockT();
+    resolveQuestString("Log any activity before noon", t);
+    expect(calls[0].key).toBe("questTemplates.morningRitualDesc");
+  });
+
+  it("matches description pattern: A short N-minute burst", () => {
+    const { t, calls } = createMockT();
+    resolveQuestString("A short 10-minute burst to stay on track", t);
+    expect(calls[0].key).toBe("questTemplates.quickDesc");
+    expect(calls[0].params?.min).toBe("10");
+  });
+
+  it("falls back to raw string for unrecognized patterns", () => {
+    const { t } = createMockT();
+    const result = resolveQuestString("My custom quest title", t);
+    expect(result).toBe("My custom quest title");
+  });
+
+  it("handles case-insensitive matching for title patterns", () => {
+    const { t } = createMockT();
+    const result = resolveQuestString("extended cardio", t);
+    expect(result).toContain("questTemplates.extended");
+  });
+
+  it("resolves activity names from ENGLISH_ACTIVITY_NAMES map", () => {
+    const { t } = createMockT();
+    // "Healthy Eating" maps to Nutrition via ENGLISH_ACTIVITY_NAMES
+    const result = resolveQuestString("Extended Healthy Eating", t);
+    expect(result).toContain("questTemplates.extended");
+    expect(result).toContain("activityTypes.Nutrition");
+  });
+
+  it("resolves activity names by enum value directly (e.g. 'Creativity')", () => {
+    const { t } = createMockT();
+    const result = resolveQuestString("Quick Creativity", t);
+    expect(result).toContain("questTemplates.quick");
+    expect(result).toContain("activityTypes.Creativity");
   });
 });
 

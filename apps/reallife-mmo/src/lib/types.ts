@@ -144,9 +144,9 @@ export const ACTIVITY_INPUT: Record<ActivityType, ActivityInputConfig> = {
     labelKey: "activityInput.mealQuality",
     unit: "meal",
     presets: [
-      { value: 1, label: "Snack" },
-      { value: 2, label: "Light" },
-      { value: 3, label: "Full meal" },
+      { value: 1, label: "activityInput.snack" },
+      { value: 2, label: "activityInput.lightMeal" },
+      { value: 3, label: "activityInput.fullMeal" },
     ],
     min: 1,
     max: 3,

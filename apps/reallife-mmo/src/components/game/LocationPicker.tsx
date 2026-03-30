@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent } from "@/components/ui/8bit/card";
 import { Badge } from "@/components/ui/8bit/badge";
 import { BIOME_META, type BiomeId } from "@/lib/biomeThemes";
-import { LOCATION_TYPE_LABELS } from "@/lib/types";
 import type { Location } from "@/lib/types";
 import { useTable, useReducer } from "spacetimedb/react";
 import { tables, reducers } from "@/generated";
@@ -14,6 +14,7 @@ interface LocationPickerProps {
 }
 
 export function LocationPicker({ biomeId, onClose }: LocationPickerProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const enterLocation = useReducer(reducers.enterLocation);
   const [guildRows] = useTable(tables.my_guild);
@@ -32,7 +33,7 @@ export function LocationPicker({ biomeId, onClose }: LocationPickerProps) {
     <div className="space-y-3 pt-2">
       <div className="flex items-center justify-between">
         <h3 className="retro text-[10px] text-primary">
-          {meta.icon} {meta.name} — Locations
+          {meta.icon} {t(`biomes.${biomeId}`, meta.name)} — {t("worldMap.locations")}
         </h3>
         <button
           type="button"
@@ -53,12 +54,16 @@ export function LocationPicker({ biomeId, onClose }: LocationPickerProps) {
                 <span className="text-xl">{loc.icon}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="retro text-[9px] text-foreground">{loc.name}</span>
+                    <span className="retro text-[9px] text-foreground">
+                      {t(`locations.${loc.id}.name`, loc.name)}
+                    </span>
                     <Badge variant="outline" className="text-[6px]">
-                      {LOCATION_TYPE_LABELS[loc.type]}
+                      {t(`locationTypes.${loc.type}`)}
                     </Badge>
                   </div>
-                  <p className="retro text-[7px] text-muted-foreground mt-0.5">{loc.description}</p>
+                  <p className="retro text-[7px] text-muted-foreground mt-0.5">
+                    {t(`locations.${loc.id}.description`, loc.description)}
+                  </p>
                 </div>
                 {isBossLair ? (
                   <Button
@@ -68,7 +73,7 @@ export function LocationPicker({ biomeId, onClose }: LocationPickerProps) {
                     disabled={!canRaid}
                     onClick={() => handleEnter(loc)}
                   >
-                    {canRaid ? "Raid" : "Locked"}
+                    {canRaid ? t("locationPicker.raid") : t("common.locked")}
                   </Button>
                 ) : (
                   <Button
@@ -76,7 +81,7 @@ export function LocationPicker({ biomeId, onClose }: LocationPickerProps) {
                     className="text-[7px] shrink-0"
                     onClick={() => handleEnter(loc)}
                   >
-                    Enter
+                    {t("common.enter")}
                   </Button>
                 )}
               </CardContent>
@@ -89,8 +94,8 @@ export function LocationPicker({ biomeId, onClose }: LocationPickerProps) {
       {!canRaid && (
         <p className="retro text-[6px] text-muted-foreground text-center">
           {hasGuild
-            ? `Need ${3 - memberRows.length} more guild member(s) to unlock Boss Lairs`
-            : "Join a guild with 3+ members to unlock Boss Lairs"}
+            ? t("locationPicker.needMoreGuildMembers", { count: 3 - memberRows.length })
+            : t("locationPicker.joinGuildToUnlock")}
         </p>
       )}
     </div>

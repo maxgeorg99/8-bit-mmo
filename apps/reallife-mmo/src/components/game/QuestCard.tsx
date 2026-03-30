@@ -11,36 +11,7 @@ interface QuestCardProps {
   onClaim: (questId: string) => void;
 }
 
-/**
- * Resolve a quest string that may contain an i18n key.
- * Format: "i18n:key:param1=val1:param2=val2"
- * If not prefixed with "i18n:", returns the raw string (custom quests).
- */
-function resolveQuestString(
-  str: string,
-  t: (key: string, params?: Record<string, string>) => string,
-): string {
-  if (!str.startsWith("i18n:")) return str;
-  // Format: "i18n:questTemplates.session:activityType=Cardio"
-  const keyAndParams = str.slice(5); // remove "i18n:"
-  const segments = keyAndParams.split(":");
-  const key = segments[0];
-  const params: Record<string, string> = {};
-  for (let i = 1; i < segments.length; i++) {
-    const eqIdx = segments[i].indexOf("=");
-    if (eqIdx > 0) {
-      const paramKey = segments[i].slice(0, eqIdx);
-      const paramVal = segments[i].slice(eqIdx + 1);
-      // If param is activityType, translate it
-      if (paramKey === "activityType") {
-        params["activity"] = t(`activityTypes.${paramVal}`);
-      } else {
-        params[paramKey] = paramVal;
-      }
-    }
-  }
-  return t(key, params);
-}
+import { resolveQuestString } from "@/lib/questI18n";
 
 export function QuestCard({ quest, onClaim }: QuestCardProps) {
   const { t } = useTranslation();

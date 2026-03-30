@@ -491,6 +491,116 @@
     "guild_champion": "Campeão da Guilda",
     "guild_champion_desc": "Complete 10 raids de guilda"
   },
+  "locations": {
+    "plains-city": {
+      "name": "Verdeval",
+      "description": "Uma vila tranquila onde aventureiros se reabastecem."
+    },
+    "plains-wild": {
+      "name": "Campos Sussurrantes",
+      "description": "Prados suaves com slimes e javalis à espreita."
+    },
+    "plains-boss": {
+      "name": "Bosque do Dorsespinho",
+      "description": "Raízes antigas guardam o covil do Ancião."
+    },
+    "tundra-city": {
+      "name": "Forte Vigiagelo",
+      "description": "Um posto avançado fortificado contra a nevasca sem fim."
+    },
+    "tundra-wild": {
+      "name": "Deserto Glacial",
+      "description": "Lobos de gelo e fadas de geada espreitam as dunas."
+    },
+    "tundra-boss": {
+      "name": "O Trono Congelado",
+      "description": "O Senhor do Gelo espera no inverno eterno."
+    },
+    "volcano-city": {
+      "name": "Forja de Brasas",
+      "description": "Ferreiros temperam armas com calor vulcânico."
+    },
+    "volcano-wild": {
+      "name": "Encostas de Cinzas",
+      "description": "Elementais de fogo e rastejadores de magma vagam."
+    },
+    "volcano-boss": {
+      "name": "Caldeira de Ignisfúria",
+      "description": "O coração do vulcão pulsa de raiva."
+    },
+    "forest-city": {
+      "name": "Musgoval",
+      "description": "Uma vila escondida nas copas das árvores dos druidas."
+    },
+    "forest-wild": {
+      "name": "Matagal Emaranhado",
+      "description": "Vinhas vivas e espíritos da floresta guardam os caminhos."
+    },
+    "forest-boss": {
+      "name": "Coração do Guardião de Raízes",
+      "description": "A árvore antiga se agita no núcleo da floresta."
+    },
+    "dungeon-city": {
+      "name": "Acampamento da Tocha",
+      "description": "Almas corajosas descansam antes de descer mais fundo."
+    },
+    "dungeon-wild": {
+      "name": "Corredores de Sombras",
+      "description": "Morcegos, espectros e armadilhas espreitam em cada passagem."
+    },
+    "dungeon-boss": {
+      "name": "O Cofre do Barão",
+      "description": "As sombras se fundem no próprio Barão."
+    },
+    "desert-city": {
+      "name": "Bazar de Arenito",
+      "description": "Mercadores negociam bens raros sob tendas de lona."
+    },
+    "desert-wild": {
+      "name": "Dunas Escaldantes",
+      "description": "Vermes de areia e bandidos emboscam viajantes."
+    },
+    "desert-boss": {
+      "name": "Arena de Punhopedra",
+      "description": "O Rei Anão desafia todos que entram."
+    },
+    "spire-city": {
+      "name": "Biblioteca dos Ecos",
+      "description": "Prateleiras infinitas de conhecimento arcano."
+    },
+    "spire-wild": {
+      "name": "Labirinto Rúnico",
+      "description": "Livros animados e construtos mágicos guardam segredos."
+    },
+    "spire-boss": {
+      "name": "Estúdio do Arquivista",
+      "description": "A realidade se curva ao redor do guardião de todo o conhecimento."
+    },
+    "ruins-city": {
+      "name": "Refúgio de Ossos",
+      "description": "Construído com os ossos de dragões caídos."
+    },
+    "ruins-wild": {
+      "name": "Catacumbas Amaldiçoadas",
+      "description": "Guerreiros mortos-vivos patrulham salões em ruínas."
+    },
+    "ruins-boss": {
+      "name": "Tumba de Skarveth",
+      "description": "O Imortal se agita em sua prisão dourada."
+    },
+    "celestial-city": {
+      "name": "Santuário Estelar",
+      "description": "Um refúgio flutuante entre as estrelas."
+    },
+    "celestial-wild": {
+      "name": "Fenda Cósmica",
+      "description": "Criaturas do vazio e fantasmas astrais flutuam."
+    },
+    "celestial-boss": {
+      "name": "Domínio do Arquiteto",
+      "description": "O criador de mundos aguarda."
+    }
+  },
   "tierLabels": {
     "novice": "Novato",
     "apprentice": "Aprendiz",

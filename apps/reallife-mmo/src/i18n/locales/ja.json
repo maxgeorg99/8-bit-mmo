@@ -491,6 +491,77 @@
     "guild_champion": "ギルドチャンピオン",
     "guild_champion_desc": "ギルドレイドを10回完了する"
   },
+  "locations": {
+    "plains-city": { "name": "緑谷の村", "description": "冒険者が補給する平和な村。" },
+    "plains-wild": {
+      "name": "ささやきの野",
+      "description": "スライムやイノシシが潜む穏やかな草原。"
+    },
+    "plains-boss": { "name": "ソーンバックの森", "description": "古代の根が長老の巣を守る。" },
+    "tundra-city": {
+      "name": "霜番砦",
+      "description": "終わりなき吹雪に対する要塞化された前哨基地。"
+    },
+    "tundra-wild": {
+      "name": "氷河の荒地",
+      "description": "氷の狼と霜の妖精が吹き溜まりを徘徊する。"
+    },
+    "tundra-boss": { "name": "凍れる玉座", "description": "フロストロードが永遠の冬で待つ。" },
+    "volcano-city": { "name": "灼熱の鍛冶場", "description": "鍛冶師が火山の熱で武器を鍛える。" },
+    "volcano-wild": {
+      "name": "灰の斜面",
+      "description": "火のエレメンタルとマグマクロウラーが徘徊する。"
+    },
+    "volcano-boss": {
+      "name": "イグニスフューリーのカルデラ",
+      "description": "火山の心臓が怒りで脈打つ。"
+    },
+    "forest-city": { "name": "苔の村", "description": "ドルイドの隠れた樹上の村。" },
+    "forest-wild": { "name": "絡まる茂み", "description": "生きたつると森の精霊が道を守る。" },
+    "forest-boss": { "name": "根の番人の心臓", "description": "古代の木が森の核で目覚める。" },
+    "dungeon-city": {
+      "name": "松明の野営地",
+      "description": "勇敢な魂がさらに深く降りる前に休息する。"
+    },
+    "dungeon-wild": {
+      "name": "影の回廊",
+      "description": "コウモリ、レイス、罠がすべての通路に潜む。"
+    },
+    "dungeon-boss": { "name": "男爵の金庫", "description": "影が男爵自身に凝集する。" },
+    "desert-city": {
+      "name": "砂岩のバザール",
+      "description": "商人がテントの下で希少品を取引する。"
+    },
+    "desert-wild": {
+      "name": "灼熱の砂丘",
+      "description": "砂虫と砂漠の盗賊が旅人を待ち伏せする。"
+    },
+    "desert-boss": {
+      "name": "ストーンフィストのアリーナ",
+      "description": "ドワーフ王が入る者すべてに挑む。"
+    },
+    "spire-city": { "name": "反響の図書館", "description": "アーケイン知識の果てしない書架。" },
+    "spire-wild": { "name": "ルーンの迷宮", "description": "動く本と魔法の構造体が秘密を守る。" },
+    "spire-boss": {
+      "name": "アーキビストの書斎",
+      "description": "全知識の番人の周りで現実が歪む。"
+    },
+    "ruins-city": { "name": "骨の安息所", "description": "倒れた竜の骨から建てられた。" },
+    "ruins-wild": {
+      "name": "呪われたカタコンベ",
+      "description": "アンデッド戦士が崩れゆくホールを巡回する。"
+    },
+    "ruins-boss": {
+      "name": "スカーヴェスの墓",
+      "description": "不死者が黄金の牢獄で身じろぎする。"
+    },
+    "celestial-city": { "name": "星降りの聖域", "description": "星の間に浮かぶ安息所。" },
+    "celestial-wild": {
+      "name": "宇宙の裂け目",
+      "description": "虚無の生物とアストラルファントムが漂う。"
+    },
+    "celestial-boss": { "name": "建築者の領域", "description": "世界の創造者が待つ。" }
+  },
   "tierLabels": {
     "novice": "初心者",
     "apprentice": "見習い",

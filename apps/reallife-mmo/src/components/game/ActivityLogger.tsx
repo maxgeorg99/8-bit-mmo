@@ -116,7 +116,7 @@ export function ActivityLogger({ streakDays, defaultActivityType, onLog }: Activ
                 className="text-[7px] px-3 py-1"
                 onClick={() => setRawValue(p.value)}
               >
-                {p.label}
+                {p.label.startsWith("activityInput.") ? t(p.label) : p.label}
               </Button>
             ))}
           </div>

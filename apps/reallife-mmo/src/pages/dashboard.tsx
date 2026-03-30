@@ -19,6 +19,7 @@ import {
   type Quest,
 } from "@/lib/types";
 import { TITLE_MAP } from "@/lib/titles";
+import { resolveQuestString } from "@/lib/questI18n";
 import { asset, cn } from "@/lib/utils";
 
 /** Convert SpacetimeDB quest row to local Quest type */
@@ -177,7 +178,7 @@ export function Dashboard() {
                   return (
                     <div key={q.id} className="flex items-center gap-3">
                       <div className="flex-1">
-                        <div className="retro text-[7px]">{q.title}</div>
+                        <div className="retro text-[7px]">{resolveQuestString(q.title, t)}</div>
                         <Progress
                           value={pct}
                           variant="retro"

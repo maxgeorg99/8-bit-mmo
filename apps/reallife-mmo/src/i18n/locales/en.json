@@ -491,6 +491,110 @@
     "guild_champion": "Guild Champion",
     "guild_champion_desc": "Complete 10 guild raids"
   },
+  "locations": {
+    "plains-city": {
+      "name": "Greenhollow",
+      "description": "A peaceful village where adventurers resupply."
+    },
+    "plains-wild": {
+      "name": "Whispering Fields",
+      "description": "Gentle meadows with lurking slimes and boars."
+    },
+    "plains-boss": {
+      "name": "Thornback's Grove",
+      "description": "Ancient roots guard the Elder's den."
+    },
+    "tundra-city": {
+      "name": "Frostwatch Keep",
+      "description": "A fortified outpost against the endless blizzard."
+    },
+    "tundra-wild": {
+      "name": "Glacial Wastes",
+      "description": "Ice wolves and frost sprites prowl the drifts."
+    },
+    "tundra-boss": {
+      "name": "The Frozen Throne",
+      "description": "The Frostlord waits in eternal winter."
+    },
+    "volcano-city": {
+      "name": "Ember Forge",
+      "description": "Blacksmiths temper weapons in volcanic heat."
+    },
+    "volcano-wild": {
+      "name": "Cinder Slopes",
+      "description": "Fire elementals and magma crawlers roam."
+    },
+    "volcano-boss": {
+      "name": "Ignisfury's Caldera",
+      "description": "The heart of the volcano pulses with rage."
+    },
+    "forest-city": { "name": "Mossgrove", "description": "A hidden treetop village of druids." },
+    "forest-wild": {
+      "name": "Tangled Thicket",
+      "description": "Living vines and forest sprites guard the paths."
+    },
+    "forest-boss": {
+      "name": "Rootwarden's Heart",
+      "description": "The ancient tree stirs at the forest core."
+    },
+    "dungeon-city": {
+      "name": "Torchlight Camp",
+      "description": "Brave souls rest before descending deeper."
+    },
+    "dungeon-wild": {
+      "name": "Shadow Corridors",
+      "description": "Bats, wraiths, and traps lurk in every passage."
+    },
+    "dungeon-boss": {
+      "name": "The Baron's Vault",
+      "description": "Shadows coalesce into the Baron himself."
+    },
+    "desert-city": {
+      "name": "Sandstone Bazaar",
+      "description": "Merchants trade rare goods under canvas tents."
+    },
+    "desert-wild": {
+      "name": "Scorching Dunes",
+      "description": "Sand worms and desert bandits ambush travelers."
+    },
+    "desert-boss": {
+      "name": "Stonefist's Arena",
+      "description": "The Dwarf King challenges all who enter."
+    },
+    "spire-city": {
+      "name": "Library of Echoes",
+      "description": "Endless shelves of arcane knowledge."
+    },
+    "spire-wild": {
+      "name": "Runic Labyrinth",
+      "description": "Animated books and spell constructs guard secrets."
+    },
+    "spire-boss": {
+      "name": "The Archivist's Study",
+      "description": "Reality bends around the keeper of all knowledge."
+    },
+    "ruins-city": { "name": "Bonehaven", "description": "Built from the bones of fallen dragons." },
+    "ruins-wild": {
+      "name": "Cursed Catacombs",
+      "description": "Undead warriors patrol crumbling halls."
+    },
+    "ruins-boss": {
+      "name": "Skarveth's Tomb",
+      "description": "The Undying stirs in his golden prison."
+    },
+    "celestial-city": {
+      "name": "Starfall Sanctum",
+      "description": "A floating haven among the stars."
+    },
+    "celestial-wild": {
+      "name": "Cosmic Rift",
+      "description": "Void creatures and astral phantoms drift."
+    },
+    "celestial-boss": {
+      "name": "The Architect's Domain",
+      "description": "The creator of worlds awaits."
+    }
+  },
   "tierLabels": {
     "novice": "Novice",
     "apprentice": "Apprentice",

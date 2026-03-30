@@ -71,8 +71,12 @@ export function LocationScene({ location, biomeId }: LocationSceneProps) {
   return (
     <div className="space-y-4 text-center py-8">
       <span className="text-4xl">{location.icon}</span>
-      <h2 className="retro text-sm text-foreground">{location.name}</h2>
-      <p className="retro text-[8px] text-muted-foreground italic">"{location.description}"</p>
+      <h2 className="retro text-sm text-foreground">
+        {t(`locations.${location.id}.name`, location.name)}
+      </h2>
+      <p className="retro text-[8px] text-muted-foreground italic">
+        "{t(`locations.${location.id}.description`, location.description)}"
+      </p>
       <p className="retro text-[8px] text-muted-foreground">{t("location.gatherGuild")}</p>
       <Button className="text-[8px]" onClick={() => void navigate(`/raid/${biomeId}`)}>
         {t("location.enterRaid")}
@@ -128,7 +132,9 @@ function CityScene({
       {/* City header */}
       <div className="text-center space-y-1">
         <span className="text-3xl">{location.icon}</span>
-        <h2 className="retro text-sm text-foreground">{location.name}</h2>
+        <h2 className="retro text-sm text-foreground">
+          {t(`locations.${location.id}.name`, location.name)}
+        </h2>
         <p className="retro text-[7px] text-muted-foreground">
           {biomeName} — {t("worldMap.city")}
         </p>
@@ -144,7 +150,7 @@ function CityScene({
       <Card>
         <CardContent className="py-3">
           <p className="retro text-[8px] text-muted-foreground italic text-center">
-            "{location.description}"
+            "{t(`locations.${location.id}.description`, location.description)}"
           </p>
         </CardContent>
       </Card>
@@ -298,7 +304,9 @@ function WildernessScene({
       {/* Wilderness header */}
       <div className="text-center space-y-1">
         <span className="text-3xl">{location.icon}</span>
-        <h2 className="retro text-sm text-foreground">{location.name}</h2>
+        <h2 className="retro text-sm text-foreground">
+          {t(`locations.${location.id}.name`, location.name)}
+        </h2>
         <p className="retro text-[7px] text-muted-foreground">
           {biomeName} — {t("worldMap.wilderness")}
         </p>
@@ -307,7 +315,7 @@ function WildernessScene({
       <Card>
         <CardContent className="py-3">
           <p className="retro text-[8px] text-muted-foreground italic text-center">
-            "{location.description}"
+            "{t(`locations.${location.id}.description`, location.description)}"
           </p>
         </CardContent>
       </Card>

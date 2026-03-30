@@ -491,6 +491,116 @@
     "guild_champion": "Gildenmeister",
     "guild_champion_desc": "10 Gildenraids abschließen"
   },
+  "locations": {
+    "plains-city": {
+      "name": "Grüntal",
+      "description": "Ein friedliches Dorf, in dem Abenteurer sich versorgen."
+    },
+    "plains-wild": {
+      "name": "Flüsterfelder",
+      "description": "Sanfte Wiesen mit lauernden Schleimen und Ebern."
+    },
+    "plains-boss": {
+      "name": "Dornrückens Hain",
+      "description": "Uralte Wurzeln bewachen die Höhle des Ältesten."
+    },
+    "tundra-city": {
+      "name": "Frostwacht",
+      "description": "Ein befestigter Außenposten gegen den endlosen Schneesturm."
+    },
+    "tundra-wild": {
+      "name": "Gletscheröde",
+      "description": "Eiswölfe und Frostgeister durchstreifen die Verwehungen."
+    },
+    "tundra-boss": {
+      "name": "Der Frostthron",
+      "description": "Der Frostlord wartet im ewigen Winter."
+    },
+    "volcano-city": {
+      "name": "Glutschmiede",
+      "description": "Schmiede härten Waffen in vulkanischer Hitze."
+    },
+    "volcano-wild": {
+      "name": "Aschenhänge",
+      "description": "Feuerelementare und Magmakriecher streifen umher."
+    },
+    "volcano-boss": {
+      "name": "Ignisfurys Kaldera",
+      "description": "Das Herz des Vulkans pulsiert vor Wut."
+    },
+    "forest-city": {
+      "name": "Mooshain",
+      "description": "Ein verstecktes Baumkronendorf der Druiden."
+    },
+    "forest-wild": {
+      "name": "Verworrenes Dickicht",
+      "description": "Lebende Ranken und Waldgeister bewachen die Pfade."
+    },
+    "forest-boss": {
+      "name": "Wurzelwächters Herz",
+      "description": "Der uralte Baum regt sich im Waldkern."
+    },
+    "dungeon-city": {
+      "name": "Fackellichtlager",
+      "description": "Tapfere Seelen rasten, bevor sie tiefer hinabsteigen."
+    },
+    "dungeon-wild": {
+      "name": "Schattenkorridore",
+      "description": "Fledermäuse, Geister und Fallen lauern in jedem Gang."
+    },
+    "dungeon-boss": {
+      "name": "Des Barons Tresor",
+      "description": "Schatten verdichten sich zum Baron selbst."
+    },
+    "desert-city": {
+      "name": "Sandsteinbasar",
+      "description": "Händler tauschen seltene Waren unter Zelten."
+    },
+    "desert-wild": {
+      "name": "Sengende Dünen",
+      "description": "Sandwürmer und Wüstenbanditen überfallen Reisende."
+    },
+    "desert-boss": {
+      "name": "Steinfausts Arena",
+      "description": "Der Zwergenkönig fordert alle heraus, die eintreten."
+    },
+    "spire-city": {
+      "name": "Bibliothek der Echos",
+      "description": "Endlose Regale voller arkanen Wissens."
+    },
+    "spire-wild": {
+      "name": "Runenlabyrinth",
+      "description": "Belebte Bücher und Zauberkonstrukte bewachen Geheimnisse."
+    },
+    "spire-boss": {
+      "name": "Des Archivars Studierzimmer",
+      "description": "Die Realität verbiegt sich um den Hüter allen Wissens."
+    },
+    "ruins-city": {
+      "name": "Knochenhort",
+      "description": "Erbaut aus den Knochen gefallener Drachen."
+    },
+    "ruins-wild": {
+      "name": "Verfluchte Katakomben",
+      "description": "Untote Krieger patrouillieren in zerfallenden Hallen."
+    },
+    "ruins-boss": {
+      "name": "Skarveths Grabmal",
+      "description": "Der Unsterbliche regt sich in seinem goldenen Gefängnis."
+    },
+    "celestial-city": {
+      "name": "Sternfall-Heiligtum",
+      "description": "Eine schwebende Zuflucht unter den Sternen."
+    },
+    "celestial-wild": {
+      "name": "Kosmischer Riss",
+      "description": "Leerenwesen und Astralphantome treiben umher."
+    },
+    "celestial-boss": {
+      "name": "Des Architekten Reich",
+      "description": "Der Schöpfer der Welten wartet."
+    }
+  },
   "tierLabels": {
     "novice": "Neuling",
     "apprentice": "Lehrling",

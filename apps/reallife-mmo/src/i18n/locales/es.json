@@ -491,6 +491,116 @@
     "guild_champion": "Campeón del Gremio",
     "guild_champion_desc": "Completa 10 raids de gremio"
   },
+  "locations": {
+    "plains-city": {
+      "name": "Hondonada Verde",
+      "description": "Un pueblo tranquilo donde los aventureros se reabastecen."
+    },
+    "plains-wild": {
+      "name": "Campos Susurrantes",
+      "description": "Praderas suaves con babosas y jabalíes al acecho."
+    },
+    "plains-boss": {
+      "name": "Arboleda de Dorsespina",
+      "description": "Raíces antiguas custodian la guarida del Anciano."
+    },
+    "tundra-city": {
+      "name": "Fuerte Vigíahielo",
+      "description": "Un puesto fortificado contra la ventisca interminable."
+    },
+    "tundra-wild": {
+      "name": "Páramo Glacial",
+      "description": "Lobos de hielo y hadas de escarcha acechan las dunas."
+    },
+    "tundra-boss": {
+      "name": "El Trono Helado",
+      "description": "El Señor del Hielo espera en el invierno eterno."
+    },
+    "volcano-city": {
+      "name": "Fragua de Brasas",
+      "description": "Los herreros templan armas con calor volcánico."
+    },
+    "volcano-wild": {
+      "name": "Laderas de Ceniza",
+      "description": "Elementales de fuego y reptadores de magma vagan."
+    },
+    "volcano-boss": {
+      "name": "Caldera de Ignisfuria",
+      "description": "El corazón del volcán pulsa de rabia."
+    },
+    "forest-city": {
+      "name": "Musgovilla",
+      "description": "Una aldea oculta en las copas de los árboles de los druidas."
+    },
+    "forest-wild": {
+      "name": "Espesura Enredada",
+      "description": "Enredaderas vivas y hadas del bosque custodian los senderos."
+    },
+    "forest-boss": {
+      "name": "Corazón del Guardián de Raíces",
+      "description": "El árbol ancestral se agita en el núcleo del bosque."
+    },
+    "dungeon-city": {
+      "name": "Campamento de la Antorcha",
+      "description": "Almas valientes descansan antes de descender más."
+    },
+    "dungeon-wild": {
+      "name": "Corredores de Sombras",
+      "description": "Murciélagos, espectros y trampas acechan en cada pasaje."
+    },
+    "dungeon-boss": {
+      "name": "La Bóveda del Barón",
+      "description": "Las sombras se fusionan en el Barón mismo."
+    },
+    "desert-city": {
+      "name": "Bazar de Arenisca",
+      "description": "Mercaderes comercian bienes raros bajo toldos de lona."
+    },
+    "desert-wild": {
+      "name": "Dunas Abrasadoras",
+      "description": "Gusanos de arena y bandidos emboscan viajeros."
+    },
+    "desert-boss": {
+      "name": "Arena de Puñopiedra",
+      "description": "El Rey Enano desafía a todos los que entran."
+    },
+    "spire-city": {
+      "name": "Biblioteca de los Ecos",
+      "description": "Estantes infinitos de conocimiento arcano."
+    },
+    "spire-wild": {
+      "name": "Laberinto Rúnico",
+      "description": "Libros animados y constructos mágicos guardan secretos."
+    },
+    "spire-boss": {
+      "name": "Estudio del Archivista",
+      "description": "La realidad se dobla alrededor del guardián de todo el conocimiento."
+    },
+    "ruins-city": {
+      "name": "Refugio de Huesos",
+      "description": "Construido con los huesos de dragones caídos."
+    },
+    "ruins-wild": {
+      "name": "Catacumbas Malditas",
+      "description": "Guerreros no-muertos patrullan salones en ruinas."
+    },
+    "ruins-boss": {
+      "name": "Tumba de Skarveth",
+      "description": "El Inmortal se agita en su prisión dorada."
+    },
+    "celestial-city": {
+      "name": "Santuario Estelar",
+      "description": "Un refugio flotante entre las estrellas."
+    },
+    "celestial-wild": {
+      "name": "Grieta Cósmica",
+      "description": "Criaturas del vacío y fantasmas astrales flotan."
+    },
+    "celestial-boss": {
+      "name": "Dominio del Arquitecto",
+      "description": "El creador de mundos aguarda."
+    }
+  },
   "tierLabels": {
     "novice": "Novato",
     "apprentice": "Aprendiz",

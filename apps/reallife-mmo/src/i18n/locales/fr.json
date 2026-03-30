@@ -491,6 +491,116 @@
     "guild_champion": "Champion de Guilde",
     "guild_champion_desc": "Complète 10 raids de guilde"
   },
+  "locations": {
+    "plains-city": {
+      "name": "Vertcreux",
+      "description": "Un village paisible où les aventuriers se ravitaillent."
+    },
+    "plains-wild": {
+      "name": "Champs Murmurants",
+      "description": "Prairies douces avec des slimes et des sangliers."
+    },
+    "plains-boss": {
+      "name": "Bosquet d'Épinedos",
+      "description": "Des racines anciennes gardent le repaire de l'Ancien."
+    },
+    "tundra-city": {
+      "name": "Fort Givreguet",
+      "description": "Un avant-poste fortifié contre le blizzard sans fin."
+    },
+    "tundra-wild": {
+      "name": "Landes Glaciaires",
+      "description": "Des loups de glace et des lutins de givre rôdent."
+    },
+    "tundra-boss": {
+      "name": "Le Trône Gelé",
+      "description": "Le Seigneur du Gel attend dans l'hiver éternel."
+    },
+    "volcano-city": {
+      "name": "Forge de Braises",
+      "description": "Les forgerons trempent les armes dans la chaleur volcanique."
+    },
+    "volcano-wild": {
+      "name": "Pentes de Cendres",
+      "description": "Des élémentaires de feu et des rampants de magma errent."
+    },
+    "volcano-boss": {
+      "name": "Caldeira d'Ignisfurie",
+      "description": "Le cœur du volcan pulse de rage."
+    },
+    "forest-city": {
+      "name": "Mousseval",
+      "description": "Un village caché dans les cimes des arbres des druides."
+    },
+    "forest-wild": {
+      "name": "Fourrés Enchevêtrés",
+      "description": "Des lianes vivantes et des esprits de la forêt gardent les chemins."
+    },
+    "forest-boss": {
+      "name": "Cœur du Gardien-Racine",
+      "description": "L'arbre ancien s'éveille au cœur de la forêt."
+    },
+    "dungeon-city": {
+      "name": "Camp de la Torche",
+      "description": "Les âmes courageuses se reposent avant de descendre plus profond."
+    },
+    "dungeon-wild": {
+      "name": "Corridors d'Ombres",
+      "description": "Chauves-souris, spectres et pièges guettent dans chaque passage."
+    },
+    "dungeon-boss": {
+      "name": "Le Coffre du Baron",
+      "description": "Les ombres se rassemblent pour former le Baron lui-même."
+    },
+    "desert-city": {
+      "name": "Bazar de Grès",
+      "description": "Les marchands échangent des biens rares sous des tentes de toile."
+    },
+    "desert-wild": {
+      "name": "Dunes Brûlantes",
+      "description": "Des vers des sables et des bandits du désert tendent des embuscades."
+    },
+    "desert-boss": {
+      "name": "Arène de Poingdepierre",
+      "description": "Le Roi Nain défie tous ceux qui entrent."
+    },
+    "spire-city": {
+      "name": "Bibliothèque des Échos",
+      "description": "Des étagères infinies de savoir arcanique."
+    },
+    "spire-wild": {
+      "name": "Labyrinthe Runique",
+      "description": "Des livres animés et des constructs magiques gardent les secrets."
+    },
+    "spire-boss": {
+      "name": "Bureau de l'Archiviste",
+      "description": "La réalité se plie autour du gardien de tout le savoir."
+    },
+    "ruins-city": {
+      "name": "Havre d'Ossements",
+      "description": "Construit avec les os de dragons déchus."
+    },
+    "ruins-wild": {
+      "name": "Catacombes Maudites",
+      "description": "Des guerriers morts-vivants patrouillent dans des salles en ruines."
+    },
+    "ruins-boss": {
+      "name": "Tombeau de Skarveth",
+      "description": "L'Immortel s'agite dans sa prison dorée."
+    },
+    "celestial-city": {
+      "name": "Sanctuaire Stellaire",
+      "description": "Un havre flottant parmi les étoiles."
+    },
+    "celestial-wild": {
+      "name": "Faille Cosmique",
+      "description": "Des créatures du vide et des fantômes astraux dérivent."
+    },
+    "celestial-boss": {
+      "name": "Domaine de l'Architecte",
+      "description": "Le créateur des mondes attend."
+    }
+  },
   "tierLabels": {
     "novice": "Novice",
     "apprentice": "Apprenti",

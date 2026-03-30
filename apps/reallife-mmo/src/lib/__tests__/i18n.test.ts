@@ -141,6 +141,15 @@ describe("i18n interpolation placeholders", () => {
     expect(en.quests.createGoalButton).toContain("{{xp}}");
     expect(en.activityInput.durationWithIntensity).toContain("{{min}}");
     expect(en.activityInput.durationWithIntensity).toContain("{{intensity}}");
+    // Phase 6.1 bug fix interpolation keys
+    expect(en.activityInput.glass_one).toContain("{{count}}");
+    expect(en.activityInput.glass_other).toContain("{{count}}");
+    expect(en.activityInput.glassesOfWater).toContain("{{count}}");
+    expect(en.activityInput.hoursOfSleep).toContain("{{hours}}");
+    expect(en.activityInput.minDuration).toContain("{{min}}");
+    expect(en.questTemplates.session).toContain("{{activity}}");
+    expect(en.questTemplates.sessionDesc).toContain("{{min}}");
+    expect(en.playerInspect.whisper).toContain("{{name}}");
   });
 });
 
@@ -166,6 +175,14 @@ describe("i18n top-level namespace coverage", () => {
     "chat",
     "levelUp",
     "settings",
+    // Phase 6.1 bug fix namespaces
+    "classes",
+    "common2",
+    "questTypes",
+    "questTemplates",
+    "biomes",
+    "titles",
+    "tierLabels",
   ];
 
   for (const ns of expectedNamespaces) {
@@ -267,6 +284,301 @@ describe("language persistence", () => {
     changeLanguagePersist("de", storage);
     changeLanguagePersist("ja", storage);
     expect(storage.get("language")).toBe("ja");
+  });
+});
+
+// ── Phase 6.1 Bug Fix Coverage ───────────────────────────────
+
+describe("B1/B2: class names translated in all locales", () => {
+  const expectedClasses = [
+    "Warrior",
+    "Mage",
+    "Rogue",
+    "Paladin",
+    "Druid",
+    "Ranger",
+    "Bard",
+    "Scholar",
+    "Unclassed",
+  ];
+
+  for (const cls of expectedClasses) {
+    it(`has classes.${cls} in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const classes = (locale as Record<string, Record<string, string>>).classes;
+        expect(classes, `${code} missing classes namespace`).toBeDefined();
+        expect(classes[cls], `${code} missing classes.${cls}`).toBeDefined();
+        expect(classes[cls].length, `${code} classes.${cls} is empty`).toBeGreaterThan(0);
+      }
+    });
+  }
+
+  it("non-English locales actually translate class names (not just English)", () => {
+    for (const code of LOCALE_CODES.filter((c) => c !== "en")) {
+      const locale = LOCALES[code] as Record<string, Record<string, string>>;
+      // At least some classes should differ from English
+      const enClasses = (en as unknown as Record<string, Record<string, string>>).classes;
+      const translated = Object.keys(enClasses).filter(
+        (cls) => locale.classes[cls] !== enClasses[cls],
+      );
+      expect(
+        translated.length,
+        `${code} has no translated class names — all identical to English`,
+      ).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe("B1: health/experience/mana labels (common2)", () => {
+  const requiredKeys = ["health", "experience", "mana"];
+
+  for (const key of requiredKeys) {
+    it(`has common2.${key} in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const common2 = (locale as Record<string, Record<string, string>>).common2;
+        expect(common2, `${code} missing common2 namespace`).toBeDefined();
+        expect(common2[key], `${code} missing common2.${key}`).toBeDefined();
+      }
+    });
+  }
+});
+
+describe("B3: quest template keys in all locales", () => {
+  const requiredTemplateKeys = [
+    "session",
+    "extended",
+    "morningRitual",
+    "quick",
+    "sessionDesc",
+    "extendedDesc",
+    "morningRitualDesc",
+    "quickDesc",
+  ];
+
+  for (const key of requiredTemplateKeys) {
+    it(`has questTemplates.${key} in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const qt = (locale as Record<string, Record<string, string>>).questTemplates;
+        expect(qt, `${code} missing questTemplates namespace`).toBeDefined();
+        expect(qt[key], `${code} missing questTemplates.${key}`).toBeDefined();
+      }
+    });
+  }
+
+  it("activity-interpolated templates contain {{activity}} placeholder", () => {
+    const activityTemplates = ["session", "extended", "quick"];
+    for (const key of activityTemplates) {
+      expect(en.questTemplates[key as keyof typeof en.questTemplates]).toContain("{{activity}}");
+    }
+  });
+
+  it("description templates with min contain {{min}} placeholder", () => {
+    const minTemplates = ["sessionDesc", "extendedDesc", "quickDesc"];
+    for (const key of minTemplates) {
+      expect(en.questTemplates[key as keyof typeof en.questTemplates]).toContain("{{min}}");
+    }
+  });
+});
+
+describe("B4: quest type keys in all locales", () => {
+  const requiredTypes = ["daily", "weekly", "custom"];
+
+  for (const key of requiredTypes) {
+    it(`has questTypes.${key} in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const qt = (locale as Record<string, Record<string, string>>).questTypes;
+        expect(qt, `${code} missing questTypes namespace`).toBeDefined();
+        expect(qt[key], `${code} missing questTypes.${key}`).toBeDefined();
+      }
+    });
+  }
+});
+
+describe("B5: biome names, descriptions, and unlock hints in all locales", () => {
+  const biomeIds = [
+    "plains",
+    "tundra",
+    "volcano",
+    "forest",
+    "dungeon",
+    "desert",
+    "spire",
+    "ruins",
+    "celestial",
+  ];
+
+  for (const biome of biomeIds) {
+    it(`has biomes.${biome} (name) in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const biomes = (locale as Record<string, Record<string, string>>).biomes;
+        expect(biomes[biome], `${code} missing biomes.${biome}`).toBeDefined();
+      }
+    });
+
+    it(`has biomes.${biome}Desc in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const biomes = (locale as Record<string, Record<string, string>>).biomes;
+        expect(biomes[`${biome}Desc`], `${code} missing biomes.${biome}Desc`).toBeDefined();
+      }
+    });
+
+    it(`has biomes.${biome}Unlock in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const biomes = (locale as Record<string, Record<string, string>>).biomes;
+        expect(biomes[`${biome}Unlock`], `${code} missing biomes.${biome}Unlock`).toBeDefined();
+      }
+    });
+  }
+});
+
+describe("B6: activity input label keys reference valid i18n keys", () => {
+  // The ACTIVITY_INPUT configs use labelKey like "activityInput.duration"
+  const requiredLabelKeys = [
+    "activityInput.duration",
+    "activityInput.mealQuality",
+    "activityInput.waterIntake",
+    "activityInput.sleepDuration",
+  ];
+
+  for (const key of requiredLabelKeys) {
+    it(`${key} exists in en locale`, () => {
+      const [ns, subkey] = key.split(".");
+      expect((en as unknown as Record<string, Record<string, string>>)[ns][subkey]).toBeDefined();
+    });
+  }
+});
+
+describe("B7: activity input format values in all locales", () => {
+  const requiredKeys = [
+    "snack",
+    "lightMeal",
+    "fullMeal",
+    "glass_one",
+    "glass_other",
+    "glassesOfWater",
+    "hoursOfSleep",
+    "minDuration",
+    "durationWithIntensity",
+  ];
+
+  for (const key of requiredKeys) {
+    it(`has activityInput.${key} in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const ai = (locale as Record<string, Record<string, string>>).activityInput;
+        expect(ai, `${code} missing activityInput namespace`).toBeDefined();
+        expect(ai[key], `${code} missing activityInput.${key}`).toBeDefined();
+      }
+    });
+  }
+});
+
+describe("B8: title names and descriptions in all locales", () => {
+  // Spot-check a representative set of titles
+  const sampleTitles = [
+    "first_step",
+    "iron_will",
+    "century",
+    "marathon_finisher",
+    "zen_master",
+    "world_explorer",
+    "dragonslayer",
+    "gladiator",
+    "guild_champion",
+    "dedicated",
+    "class_master",
+  ];
+
+  for (const titleId of sampleTitles) {
+    it(`has titles.${titleId} and titles.${titleId}_desc in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const titles = (locale as Record<string, Record<string, string>>).titles;
+        expect(titles, `${code} missing titles namespace`).toBeDefined();
+        expect(titles[titleId], `${code} missing titles.${titleId}`).toBeDefined();
+        expect(titles[`${titleId}_desc`], `${code} missing titles.${titleId}_desc`).toBeDefined();
+      }
+    });
+  }
+});
+
+describe("tier labels in all locales", () => {
+  const tiers = ["novice", "apprentice", "adept", "veteran", "master", "legend"];
+
+  for (const tier of tiers) {
+    it(`has tierLabels.${tier} in all locales`, () => {
+      for (const [code, locale] of Object.entries(LOCALES)) {
+        const tl = (locale as Record<string, Record<string, string>>).tierLabels;
+        expect(tl, `${code} missing tierLabels namespace`).toBeDefined();
+        expect(tl[tier], `${code} missing tierLabels.${tier}`).toBeDefined();
+      }
+    });
+  }
+});
+
+describe("quest i18n: key encoding and resolution", () => {
+  /**
+   * Replicate resolveQuestString from QuestCard.tsx for testing.
+   * Format: "i18n:key:param1=val1:param2=val2"
+   */
+  function resolveQuestString(
+    str: string,
+    t: (key: string, params?: Record<string, string>) => string,
+  ): string {
+    if (!str.startsWith("i18n:")) return str;
+    const keyAndParams = str.slice(5);
+    const segments = keyAndParams.split(":");
+    const key = segments[0];
+    const params: Record<string, string> = {};
+    for (let i = 1; i < segments.length; i++) {
+      const eqIdx = segments[i].indexOf("=");
+      if (eqIdx > 0) {
+        const paramKey = segments[i].slice(0, eqIdx);
+        const paramVal = segments[i].slice(eqIdx + 1);
+        if (paramKey === "activityType") {
+          params["activity"] = `[translated:${paramVal}]`;
+        } else {
+          params[paramKey] = paramVal;
+        }
+      }
+    }
+    return t(key, params);
+  }
+
+  it("returns raw string when not prefixed with i18n:", () => {
+    const t = (key: string) => key;
+    expect(resolveQuestString("Custom quest", t)).toBe("Custom quest");
+  });
+
+  it("extracts key from i18n: prefix", () => {
+    let capturedKey = "";
+    const t = (key: string) => {
+      capturedKey = key;
+      return key;
+    };
+    resolveQuestString("i18n:questTemplates.morningRitual", t);
+    expect(capturedKey).toBe("questTemplates.morningRitual");
+  });
+
+  it("extracts key and params from i18n: prefix with params", () => {
+    let capturedKey = "";
+    let capturedParams: Record<string, string> = {};
+    const t = (key: string, params?: Record<string, string>) => {
+      capturedKey = key;
+      capturedParams = params ?? {};
+      return key;
+    };
+    resolveQuestString("i18n:questTemplates.session:activityType=Cardio", t);
+    expect(capturedKey).toBe("questTemplates.session");
+    expect(capturedParams.activity).toBe("[translated:Cardio]");
+  });
+
+  it("extracts numeric min param from description key", () => {
+    let capturedParams: Record<string, string> = {};
+    const t = (_key: string, params?: Record<string, string>) => {
+      capturedParams = params ?? {};
+      return "";
+    };
+    resolveQuestString("i18n:questTemplates.sessionDesc:min=30", t);
+    expect(capturedParams.min).toBe("30");
   });
 });
 

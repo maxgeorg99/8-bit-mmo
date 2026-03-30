@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/8bit/button";
 import { Card, CardContent } from "@/components/ui/8bit/card";
 import {
@@ -17,6 +18,12 @@ import { BIOME_SHOPS, BIOME_MERCHANTS, SELL_PRICES } from "@/lib/shopItems";
 import type { BiomeId } from "@/lib/biomeThemes";
 import { RARITY_COLORS, RARITY_BORDER, SLOT_ICONS } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import {
+  getEquipmentName,
+  formatStatBonuses,
+  getMerchantName,
+  getMerchantGreeting,
+} from "@/lib/i18nEquipment";
 
 interface ShopDialogProps {
   open: boolean;
@@ -25,6 +32,7 @@ interface ShopDialogProps {
 }
 
 export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
+  const { t } = useTranslation();
   const { player } = useMyPlayer();
   const buyItem = useReducer(reducers.buyItem);
   const sellItem = useReducer(reducers.sellItem);
@@ -61,10 +69,10 @@ export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
         <DialogHeader>
           <DialogTitle className="text-xs flex items-center gap-2">
             <span className="text-lg">{merchant.sprite}</span>
-            {merchant.name}
+            {getMerchantName(t, biomeId)}
           </DialogTitle>
           <DialogDescription className="retro text-[7px] italic">
-            "{merchant.greeting}"
+            "{getMerchantGreeting(t, biomeId)}"
           </DialogDescription>
         </DialogHeader>
 
@@ -77,10 +85,10 @@ export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList className="w-full">
             <TabsTrigger value="buy" className="flex-1 text-[8px]">
-              Buy
+              {t("shop.buyTab")}
             </TabsTrigger>
             <TabsTrigger value="sell" className="flex-1 text-[8px]">
-              Sell
+              {t("shop.sellTab")}
             </TabsTrigger>
           </TabsList>
 
@@ -99,21 +107,21 @@ export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
                         <span
                           className={cn("retro text-[8px] truncate", RARITY_COLORS[item.rarity])}
                         >
-                          {item.name}
+                          {getEquipmentName(t, item.id, item.name)}
                         </span>
                         <Badge variant="outline" className="text-[5px] shrink-0">
-                          Lv.{item.levelReq}
+                          {t("common.levelAbbr", { level: item.levelReq })}
                         </Badge>
                       </div>
                       <div className="retro text-[6px] text-muted-foreground">
-                        {Object.entries(item.statBonus)
-                          .map(([s, v]) => `+${v} ${s}`)
-                          .join("  ")}
+                        {formatStatBonuses(t, item.statBonus)}
                       </div>
                     </div>
                     <div className="shrink-0 text-right">
                       {owned ? (
-                        <span className="retro text-[7px] text-muted-foreground">Owned</span>
+                        <span className="retro text-[7px] text-muted-foreground">
+                          {t("shop.owned")}
+                        </span>
                       ) : (
                         <Button
                           size="sm"
@@ -136,7 +144,9 @@ export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
                             })
                           }
                         >
-                          {!meetsLevel ? `Lv.${item.levelReq}` : `${cost}g`}
+                          {!meetsLevel
+                            ? t("common.levelAbbr", { level: item.levelReq })
+                            : t("common.goldAmount", { amount: cost })}
                         </Button>
                       )}
                     </div>
@@ -149,7 +159,7 @@ export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
           <TabsContent value="sell" className="space-y-2 mt-2">
             {sellableItems.length === 0 ? (
               <p className="retro text-[7px] text-muted-foreground text-center py-4">
-                No items to sell. Equipped items must be unequipped first.
+                {t("shop.noItemsToSell")}
               </p>
             ) : (
               sellableItems.map((item) => {
@@ -162,12 +172,10 @@ export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
                         <span
                           className={cn("retro text-[8px] truncate", RARITY_COLORS[item.rarity])}
                         >
-                          {item.name}
+                          {getEquipmentName(t, item.id, item.name)}
                         </span>
                         <div className="retro text-[6px] text-muted-foreground">
-                          {Object.entries(item.statBonus)
-                            .map(([s, v]) => `+${v} ${s}`)
-                            .join("  ")}
+                          {formatStatBonuses(t, item.statBonus)}
                         </div>
                       </div>
                       <Button
@@ -176,7 +184,7 @@ export function ShopDialog({ open, onOpenChange, biomeId }: ShopDialogProps) {
                         className={cn("text-[6px] px-2 shrink-0", RARITY_BORDER[item.rarity])}
                         onClick={() => void sellItem({ itemId: item.id })}
                       >
-                        Sell {price}g
+                        {t("shop.sellPrice", { price })}
                       </Button>
                     </CardContent>
                   </Card>

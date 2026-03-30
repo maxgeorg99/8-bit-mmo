@@ -595,6 +595,101 @@
       "description": "The creator of worlds awaits."
     }
   },
+  "stats": {
+    "STR": "STR",
+    "AGI": "AGI",
+    "INT": "INT",
+    "CON": "CON",
+    "WIS": "WIS",
+    "CHA": "CHA",
+    "MP": "MP",
+    "statBonus": "+{{value}} {{stat}}"
+  },
+  "merchants": {
+    "plains": {
+      "name": "Old Barley",
+      "greeting": "Welcome, traveler! Stock up before the road ahead."
+    },
+    "tundra": {
+      "name": "Frostbeard",
+      "greeting": "Brrr! Warm yer bones and check me wares!"
+    },
+    "volcano": {
+      "name": "Smeltara",
+      "greeting": "Forged in fire! Only the finest for warriors like you."
+    },
+    "forest": {
+      "name": "Willowwhisper",
+      "greeting": "The forest provides. Take what you need, friend."
+    },
+    "dungeon": {
+      "name": "Grim",
+      "greeting": "Psst... need gear for the dark ahead?"
+    },
+    "desert": {
+      "name": "Hazeel",
+      "greeting": "The finest goods from across the dunes!"
+    },
+    "spire": {
+      "name": "Arcanist Vex",
+      "greeting": "Knowledge has a price. As does power."
+    },
+    "ruins": {
+      "name": "Rattlejaw",
+      "greeting": "Heh heh... the dead need no gold. But you do."
+    },
+    "celestial": {
+      "name": "Stellara",
+      "greeting": "You have journeyed far. These items are worthy of you."
+    }
+  },
+  "shop": {
+    "buyTab": "Buy",
+    "sellTab": "Sell",
+    "sellPrice": "Sell {{price}}g",
+    "owned": "Owned",
+    "noItemsToSell": "No items to sell. Equipped items must be unequipped first."
+  },
+  "equipment": {
+    "shop-plains-staff": { "name": "Oakwood Staff" },
+    "shop-plains-tunic": { "name": "Traveler's Tunic" },
+    "shop-plains-cap": { "name": "Ranger's Cap" },
+    "shop-tundra-axe": { "name": "Frost-Edged Axe" },
+    "shop-tundra-cloak": { "name": "Blizzard Cloak" },
+    "shop-tundra-charm": { "name": "Warmth Charm" },
+    "shop-volcano-blade": { "name": "Molten Blade" },
+    "shop-volcano-plate": { "name": "Volcanic Plate" },
+    "shop-volcano-crown": { "name": "Cinder Crown" },
+    "shop-forest-bow": { "name": "Yew Longbow" },
+    "shop-forest-robe": { "name": "Druid's Robe" },
+    "shop-forest-circlet": { "name": "Leaf Circlet" },
+    "shop-dungeon-dagger": { "name": "Shadow Dagger" },
+    "shop-dungeon-mail": { "name": "Nightwalker Mail" },
+    "shop-dungeon-lantern": { "name": "Soulfire Lantern" },
+    "shop-desert-scimitar": { "name": "Sandsteel Scimitar" },
+    "shop-desert-wrap": { "name": "Desert Wraps" },
+    "shop-desert-turban": { "name": "Sun-Blessed Turban" },
+    "shop-spire-tome": { "name": "Arcane Grimoire" },
+    "shop-spire-robe": { "name": "Scholar's Vestments" },
+    "shop-spire-monocle": { "name": "Runic Monocle" },
+    "shop-ruins-sword": { "name": "Bonecleaver" },
+    "shop-ruins-armor": { "name": "Dragonbone Plate" },
+    "shop-ruins-skull": { "name": "Skull of Insight" },
+    "shop-celestial-blade": { "name": "Starforged Blade" },
+    "shop-celestial-robe": { "name": "Astral Vestments" },
+    "shop-celestial-halo": { "name": "Celestial Halo" },
+    "starter-sword": { "name": "Wooden Sword" },
+    "leather-armor": { "name": "Leather Vest" },
+    "iron-helm": { "name": "Iron Helm" },
+    "focus-amulet": { "name": "Amulet of Focus" },
+    "steel-blade": { "name": "Steel Blade" },
+    "chainmail": { "name": "Chainmail" },
+    "crown-of-wisdom": { "name": "Crown of Wisdom" },
+    "epic-class-weapon": { "name": "Battle Axe of Valor" },
+    "first-ten": { "name": "Ring of Dedication" },
+    "grinder-50": { "name": "Cloak of the Grinder" },
+    "legendary-100": { "name": "Legendary Blade of the Century" }
+  },
   "tierLabels": {
     "novice": "Novice",
     "apprentice": "Apprentice",

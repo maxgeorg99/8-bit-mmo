@@ -7,6 +7,7 @@ import HealthBar from "@/components/ui/8bit/health-bar";
 import { BIOME_META, type BiomeId } from "@/lib/biomeThemes";
 import { BIOME_MOBS } from "@/lib/mobs";
 import { BIOME_MERCHANTS } from "@/lib/shopItems";
+import { getMerchantName } from "@/lib/i18nEquipment";
 import { NPC_PLAYERS, type NpcPlayer } from "@/lib/npcPlayers";
 import { CLASS_SPRITES } from "@/lib/types";
 import type { Location } from "@/lib/types";
@@ -183,7 +184,9 @@ function CityScene({
               onClick={() => setShopOpen(true)}
             >
               <span className="text-2xl block">{merchant.sprite}</span>
-              <div className="retro text-[5px] text-amber-400 mt-0.5">{merchant.name}</div>
+              <div className="retro text-[5px] text-amber-400 mt-0.5">
+                {getMerchantName(t, biomeId)}
+              </div>
             </button>
 
             {/* Other players — real SpacetimeDB players + NPC fallbacks */}
@@ -253,7 +256,7 @@ function CityScene({
             <div className="text-center space-y-2">
               <span className="text-2xl block">{merchant.sprite}</span>
               <p className="retro text-[7px] text-muted-foreground">
-                {t("location.sellsBiomeGear", { name: merchant.name })}
+                {t("location.sellsBiomeGear", { name: getMerchantName(t, biomeId) })}
               </p>
               <Button
                 size="sm"

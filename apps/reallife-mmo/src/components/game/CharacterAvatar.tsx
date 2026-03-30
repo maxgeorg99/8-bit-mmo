@@ -12,6 +12,7 @@ import {
 } from "@/lib/types";
 import { TITLE_MAP } from "@/lib/titles";
 import { cn, asset } from "@/lib/utils";
+import { getEquipmentName } from "@/lib/i18nEquipment";
 
 interface CharacterAvatarProps {
   playerClass: PlayerClass;
@@ -119,7 +120,7 @@ export function CharacterAvatar({
                 <span
                   className={cn("retro text-[5px] mt-1 leading-tight", RARITY_COLORS[item.rarity])}
                 >
-                  {item.name}
+                  {getEquipmentName(t, item.id, item.name)}
                 </span>
               ) : (
                 <span className="retro text-[5px] text-muted-foreground/50 mt-1">

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/8bit/button";
 import type { EquipSlot, EquipmentItem } from "@/lib/types";
 import { RARITY_BORDER, RARITY_COLORS, SLOT_ICONS } from "@/lib/types";
 import { cn, asset } from "@/lib/utils";
+import { getEquipmentName, formatStatBonuses } from "@/lib/i18nEquipment";
 
 interface ChestPanelProps {
   items: EquipmentItem[];
@@ -73,12 +74,10 @@ export function ChestPanel({ items, equipped, playerLevel, onEquip, onUnequip }:
                 <span className="text-sm shrink-0">{SLOT_ICONS[item.slot]}</span>
                 <div className="min-w-0">
                   <div className={cn("retro text-[8px] truncate", RARITY_COLORS[item.rarity])}>
-                    {item.name}
+                    {getEquipmentName(t, item.id, item.name)}
                   </div>
                   <div className="retro text-[6px] text-muted-foreground">
-                    {Object.entries(item.statBonus)
-                      .map(([s, v]) => `+${v} ${s}`)
-                      .join("  ")}
+                    {formatStatBonuses(t, item.statBonus)}
                   </div>
                   <div className="retro text-[5px] text-muted-foreground/60">{item.source}</div>
                 </div>

@@ -562,6 +562,101 @@
     },
     "celestial-boss": { "name": "建築者の領域", "description": "世界の創造者が待つ。" }
   },
+  "stats": {
+    "STR": "筋力",
+    "AGI": "敏捷",
+    "INT": "知力",
+    "CON": "体力",
+    "WIS": "精神",
+    "CHA": "魅力",
+    "MP": "MP",
+    "statBonus": "+{{value}} {{stat}}"
+  },
+  "merchants": {
+    "plains": {
+      "name": "老バーリー",
+      "greeting": "ようこそ旅人よ！先の道に備えて補給を。"
+    },
+    "tundra": {
+      "name": "フロストビアード",
+      "greeting": "ブルル！体を温めてワシの品を見てくれ！"
+    },
+    "volcano": {
+      "name": "スメルタラ",
+      "greeting": "炎で鍛えし品！お前のような戦士にふさわしい。"
+    },
+    "forest": {
+      "name": "ウィローウィスパー",
+      "greeting": "森は恵みを与える。必要なものを持っていけ、友よ。"
+    },
+    "dungeon": {
+      "name": "グリム",
+      "greeting": "シッ...闇に向かう装備が必要か？"
+    },
+    "desert": {
+      "name": "ハジール",
+      "greeting": "砂丘の向こうからの最高の品！"
+    },
+    "spire": {
+      "name": "秘術師ヴェックス",
+      "greeting": "知識には代価がある。力にもな。"
+    },
+    "ruins": {
+      "name": "ガタガタ顎",
+      "greeting": "ヘヘヘ...死者に金は要らん。だがお前には必要だ。"
+    },
+    "celestial": {
+      "name": "ステラーラ",
+      "greeting": "遠くまで旅をしたな。これらのアイテムはお前にふさわしい。"
+    }
+  },
+  "shop": {
+    "buyTab": "購入",
+    "sellTab": "売却",
+    "sellPrice": "売却 {{price}}g",
+    "owned": "所持済",
+    "noItemsToSell": "売れるアイテムがありません。装備中のアイテムは先に外してください。"
+  },
+  "equipment": {
+    "shop-plains-staff": { "name": "オーク材の杖" },
+    "shop-plains-tunic": { "name": "旅人のチュニック" },
+    "shop-plains-cap": { "name": "レンジャーの帽子" },
+    "shop-tundra-axe": { "name": "凍刃の斧" },
+    "shop-tundra-cloak": { "name": "吹雪のマント" },
+    "shop-tundra-charm": { "name": "温もりのお守り" },
+    "shop-volcano-blade": { "name": "溶岩の刃" },
+    "shop-volcano-plate": { "name": "火山のプレート" },
+    "shop-volcano-crown": { "name": "灰燼の冠" },
+    "shop-forest-bow": { "name": "イチイの長弓" },
+    "shop-forest-robe": { "name": "ドルイドのローブ" },
+    "shop-forest-circlet": { "name": "葉のサークレット" },
+    "shop-dungeon-dagger": { "name": "影のダガー" },
+    "shop-dungeon-mail": { "name": "夜行者の鎖帷子" },
+    "shop-dungeon-lantern": { "name": "魂火のランタン" },
+    "shop-desert-scimitar": { "name": "砂鋼のシミター" },
+    "shop-desert-wrap": { "name": "砂漠の布巻き" },
+    "shop-desert-turban": { "name": "太陽祝福のターバン" },
+    "shop-spire-tome": { "name": "秘術の魔導書" },
+    "shop-spire-robe": { "name": "学者の法衣" },
+    "shop-spire-monocle": { "name": "ルーンの片眼鏡" },
+    "shop-ruins-sword": { "name": "骨断ち" },
+    "shop-ruins-armor": { "name": "竜骨の鎧" },
+    "shop-ruins-skull": { "name": "洞察の髑髏" },
+    "shop-celestial-blade": { "name": "星鍛えの剣" },
+    "shop-celestial-robe": { "name": "星界の法衣" },
+    "shop-celestial-halo": { "name": "天上の光輪" },
+    "starter-sword": { "name": "木の剣" },
+    "leather-armor": { "name": "革のベスト" },
+    "iron-helm": { "name": "鉄兜" },
+    "focus-amulet": { "name": "集中のアミュレット" },
+    "steel-blade": { "name": "鋼の剣" },
+    "chainmail": { "name": "鎖帷子" },
+    "crown-of-wisdom": { "name": "智慧の冠" },
+    "epic-class-weapon": { "name": "勇猛の戦斧" },
+    "first-ten": { "name": "献身の指輪" },
+    "grinder-50": { "name": "研鑽者のマント" },
+    "legendary-100": { "name": "世紀の伝説の剣" }
+  },
   "tierLabels": {
     "novice": "初心者",
     "apprentice": "見習い",

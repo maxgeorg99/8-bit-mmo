@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
+import { useTranslation } from "react-i18next";
 import { useReducer } from "spacetimedb/react";
 import { reducers } from "@/generated";
 import { Button } from "@/components/ui/8bit/button";
@@ -14,8 +15,10 @@ import { BIOME_META, type BiomeId } from "@/lib/biomeThemes";
 import { CLASS_SPRITES } from "@/lib/types";
 import { RARITY_COLORS } from "@/lib/types";
 import { asset, cn } from "@/lib/utils";
+import { getEquipmentName } from "@/lib/i18nEquipment";
 
 export function PveCombat() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { biomeId } = useParams<{ biomeId: string }>();
   const { player } = useMyPlayer();
@@ -104,14 +107,16 @@ export function PveCombat() {
                 phase === "victory" ? "text-primary" : "text-destructive",
               )}
             >
-              {phase === "victory" ? "Victory!" : "Defeat!"}
+              {phase === "victory" ? t("combat.victory") : t("combat.defeat")}
             </CardTitle>
           </CardHeader>
           <CardContent className="text-center space-y-4">
             {phase === "victory" ? (
               <>
                 <div className="text-4xl">🏆</div>
-                <p className="retro text-[9px] text-foreground">You defeated {mob?.name}!</p>
+                <p className="retro text-[9px] text-foreground">
+                  {t("combat.youDefeated", { name: mob?.name })}
+                </p>
                 <div className="flex justify-center gap-4">
                   <Badge className="text-[8px]">+{xpEarned} XP</Badge>
                   {lootDrops.length > 0 &&
@@ -121,12 +126,12 @@ export function PveCombat() {
                         variant="outline"
                         className={cn("text-[8px]", RARITY_COLORS[item.rarity])}
                       >
-                        {item.name}
+                        {getEquipmentName(t, item.id, item.name)}
                       </Badge>
                     ))}
                   {lootDrops.length === 0 && (
                     <Badge variant="outline" className="text-[8px] text-muted-foreground">
-                      No loot this time
+                      {t("combat.noLoot")}
                     </Badge>
                   )}
                 </div>
@@ -135,7 +140,7 @@ export function PveCombat() {
               <>
                 <div className="text-4xl">💀</div>
                 <p className="retro text-[9px] text-muted-foreground">
-                  {mob?.name} was too strong. Rest at a city to recover.
+                  {t("combat.tooStrong", { name: mob?.name })}
                 </p>
               </>
             )}
@@ -143,11 +148,11 @@ export function PveCombat() {
           <CardFooter className="flex gap-3 justify-center">
             {phase === "victory" && (
               <Button onClick={handleFightAgain} className="text-[8px]">
-                Fight Again
+                {t("combat.fightAgain")}
               </Button>
             )}
             <Button variant="outline" onClick={handleReturn} className="text-[8px]">
-              Return to Map
+              {t("combat.returnToMap")}
             </Button>
           </CardFooter>
         </Card>
@@ -164,7 +169,7 @@ export function PveCombat() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <Button variant="ghost" onClick={handleReturn} className="text-[8px]">
-          &lt; Flee
+          {t("combat.flee")}
         </Button>
         <Badge variant="outline" className="text-[7px]">
           {BIOME_META[biome].icon} {BIOME_META[biome].name}
@@ -178,7 +183,8 @@ export function PveCombat() {
           className={cn("flex flex-col items-center gap-2 flex-1", isPlayerTurn && "animate-pulse")}
         >
           <Badge variant={isPlayerTurn ? "default" : "secondary"} className="text-[8px]">
-            {player?.name || "Hero"} (You)
+            {player?.name || t("dashboard.unnamedHero")}
+            {t("combat.youSuffix")}
           </Badge>
           <img
             src={asset(CLASS_SPRITES[player?.playerClass ?? "Unclassed"])}

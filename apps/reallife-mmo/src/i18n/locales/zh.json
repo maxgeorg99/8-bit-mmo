@@ -520,6 +520,101 @@
     "celestial-wild": { "name": "宇宙裂隙", "description": "虚空生物和星界幽灵漂浮其中。" },
     "celestial-boss": { "name": "建筑师的领域", "description": "世界的创造者在此等候。" }
   },
+  "stats": {
+    "STR": "力量",
+    "AGI": "敏捷",
+    "INT": "智力",
+    "CON": "体质",
+    "WIS": "感知",
+    "CHA": "魅力",
+    "MP": "法力",
+    "statBonus": "+{{value}} {{stat}}"
+  },
+  "merchants": {
+    "plains": {
+      "name": "老巴利",
+      "greeting": "欢迎，旅行者！上路之前先补给一下吧。"
+    },
+    "tundra": {
+      "name": "冰须",
+      "greeting": "嗖嗖！暖暖身子看看我的货吧！"
+    },
+    "volcano": {
+      "name": "熔铸拉",
+      "greeting": "烈火铸就！只有最好的给像你这样的战士。"
+    },
+    "forest": {
+      "name": "柳语",
+      "greeting": "森林赐予。拿你需要的吧，朋友。"
+    },
+    "dungeon": {
+      "name": "阴森",
+      "greeting": "嘘...前方的黑暗需要装备吗？"
+    },
+    "desert": {
+      "name": "哈兹尔",
+      "greeting": "来自沙丘彼端的上等货！"
+    },
+    "spire": {
+      "name": "秘术师维克斯",
+      "greeting": "知识有其代价。力量亦然。"
+    },
+    "ruins": {
+      "name": "碎颚",
+      "greeting": "嘿嘿...死人不需要金子。但你需要。"
+    },
+    "celestial": {
+      "name": "星辉拉",
+      "greeting": "你走了很远的路。这些物品配得上你。"
+    }
+  },
+  "shop": {
+    "buyTab": "购买",
+    "sellTab": "出售",
+    "sellPrice": "出售 {{price}}g",
+    "owned": "已拥有",
+    "noItemsToSell": "没有可出售的物品。已装备的物品需先卸下。"
+  },
+  "equipment": {
+    "shop-plains-staff": { "name": "橡木法杖" },
+    "shop-plains-tunic": { "name": "旅人束衣" },
+    "shop-plains-cap": { "name": "游侠帽" },
+    "shop-tundra-axe": { "name": "霜刃战斧" },
+    "shop-tundra-cloak": { "name": "暴风雪斗篷" },
+    "shop-tundra-charm": { "name": "温暖护符" },
+    "shop-volcano-blade": { "name": "熔岩之刃" },
+    "shop-volcano-plate": { "name": "火山板甲" },
+    "shop-volcano-crown": { "name": "灰烬之冠" },
+    "shop-forest-bow": { "name": "紫杉长弓" },
+    "shop-forest-robe": { "name": "德鲁伊法袍" },
+    "shop-forest-circlet": { "name": "翠叶冠饰" },
+    "shop-dungeon-dagger": { "name": "暗影匕首" },
+    "shop-dungeon-mail": { "name": "夜行者锁甲" },
+    "shop-dungeon-lantern": { "name": "魂火灯笼" },
+    "shop-desert-scimitar": { "name": "沙钢弯刀" },
+    "shop-desert-wrap": { "name": "沙漠裹布" },
+    "shop-desert-turban": { "name": "日祝头巾" },
+    "shop-spire-tome": { "name": "奥术魔典" },
+    "shop-spire-robe": { "name": "学者法衣" },
+    "shop-spire-monocle": { "name": "符文单片镜" },
+    "shop-ruins-sword": { "name": "碎骨者" },
+    "shop-ruins-armor": { "name": "龙骨板甲" },
+    "shop-ruins-skull": { "name": "洞察之颅" },
+    "shop-celestial-blade": { "name": "星锻之刃" },
+    "shop-celestial-robe": { "name": "星界法衣" },
+    "shop-celestial-halo": { "name": "天界光环" },
+    "starter-sword": { "name": "木剑" },
+    "leather-armor": { "name": "皮甲背心" },
+    "iron-helm": { "name": "铁盔" },
+    "focus-amulet": { "name": "专注护符" },
+    "steel-blade": { "name": "钢剑" },
+    "chainmail": { "name": "锁子甲" },
+    "crown-of-wisdom": { "name": "智慧之冠" },
+    "epic-class-weapon": { "name": "英勇战斧" },
+    "first-ten": { "name": "奉献之戒" },
+    "grinder-50": { "name": "磨砺者之袍" },
+    "legendary-100": { "name": "世纪传说之刃" }
+  },
   "tierLabels": {
     "novice": "新手",
     "apprentice": "学徒",

@@ -601,6 +601,101 @@
       "description": "El creador de mundos aguarda."
     }
   },
+  "stats": {
+    "STR": "FUE",
+    "AGI": "AGI",
+    "INT": "INT",
+    "CON": "CON",
+    "WIS": "SAB",
+    "CHA": "CAR",
+    "MP": "PM",
+    "statBonus": "+{{value}} {{stat}}"
+  },
+  "merchants": {
+    "plains": {
+      "name": "Viejo Barley",
+      "greeting": "¡Bienvenido, viajero! Abastécete antes del camino."
+    },
+    "tundra": {
+      "name": "Barbahielo",
+      "greeting": "¡Brrr! ¡Calienta tus huesos y revisa mis mercancías!"
+    },
+    "volcano": {
+      "name": "Funditara",
+      "greeting": "¡Forjado en fuego! Solo lo mejor para guerreros como tú."
+    },
+    "forest": {
+      "name": "Saucesusurro",
+      "greeting": "El bosque provee. Toma lo que necesites, amigo."
+    },
+    "dungeon": {
+      "name": "Grim",
+      "greeting": "Psst... ¿necesitas equipo para la oscuridad?"
+    },
+    "desert": {
+      "name": "Hazeel",
+      "greeting": "¡Los mejores productos de las dunas!"
+    },
+    "spire": {
+      "name": "Arcanista Vex",
+      "greeting": "El conocimiento tiene un precio. Y el poder también."
+    },
+    "ruins": {
+      "name": "Mandíbula",
+      "greeting": "Je je... los muertos no necesitan oro. Pero tú sí."
+    },
+    "celestial": {
+      "name": "Stellara",
+      "greeting": "Has viajado lejos. Estos objetos son dignos de ti."
+    }
+  },
+  "shop": {
+    "buyTab": "Comprar",
+    "sellTab": "Vender",
+    "sellPrice": "Vender {{price}}g",
+    "owned": "Poseído",
+    "noItemsToSell": "Sin objetos para vender. Los equipados deben desequiparse primero."
+  },
+  "equipment": {
+    "shop-plains-staff": { "name": "Bastón de Roble" },
+    "shop-plains-tunic": { "name": "Túnica del Viajero" },
+    "shop-plains-cap": { "name": "Gorra del Guardabosques" },
+    "shop-tundra-axe": { "name": "Hacha Filo de Escarcha" },
+    "shop-tundra-cloak": { "name": "Capa de Ventisca" },
+    "shop-tundra-charm": { "name": "Amuleto de Calor" },
+    "shop-volcano-blade": { "name": "Hoja Fundida" },
+    "shop-volcano-plate": { "name": "Placa Volcánica" },
+    "shop-volcano-crown": { "name": "Corona de Ceniza" },
+    "shop-forest-bow": { "name": "Arco Largo de Tejo" },
+    "shop-forest-robe": { "name": "Túnica del Druida" },
+    "shop-forest-circlet": { "name": "Diadema de Hojas" },
+    "shop-dungeon-dagger": { "name": "Daga de Sombras" },
+    "shop-dungeon-mail": { "name": "Malla del Caminante Nocturno" },
+    "shop-dungeon-lantern": { "name": "Linterna de Almafuego" },
+    "shop-desert-scimitar": { "name": "Cimitarra de Arenaacero" },
+    "shop-desert-wrap": { "name": "Vendas del Desierto" },
+    "shop-desert-turban": { "name": "Turbante Bendecido por el Sol" },
+    "shop-spire-tome": { "name": "Grimorio Arcano" },
+    "shop-spire-robe": { "name": "Vestiduras del Erudito" },
+    "shop-spire-monocle": { "name": "Monóculo Rúnico" },
+    "shop-ruins-sword": { "name": "Cortahuesos" },
+    "shop-ruins-armor": { "name": "Placa de Huesodragón" },
+    "shop-ruins-skull": { "name": "Cráneo de Percepción" },
+    "shop-celestial-blade": { "name": "Hoja Forjaestrella" },
+    "shop-celestial-robe": { "name": "Vestiduras Astrales" },
+    "shop-celestial-halo": { "name": "Halo Celestial" },
+    "starter-sword": { "name": "Espada de Madera" },
+    "leather-armor": { "name": "Chaleco de Cuero" },
+    "iron-helm": { "name": "Yelmo de Hierro" },
+    "focus-amulet": { "name": "Amuleto de Enfoque" },
+    "steel-blade": { "name": "Hoja de Acero" },
+    "chainmail": { "name": "Cota de Malla" },
+    "crown-of-wisdom": { "name": "Corona de Sabiduría" },
+    "epic-class-weapon": { "name": "Hacha de Batalla del Valor" },
+    "first-ten": { "name": "Anillo de Dedicación" },
+    "grinder-50": { "name": "Capa del Perseverante" },
+    "legendary-100": { "name": "Hoja Legendaria del Siglo" }
+  },
   "tierLabels": {
     "novice": "Novato",
     "apprentice": "Aprendiz",

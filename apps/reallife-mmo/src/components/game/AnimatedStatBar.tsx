@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Progress } from "@/components/ui/8bit/progress";
 import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 import type { StatName } from "@/lib/types";
@@ -12,13 +13,14 @@ interface AnimatedStatBarProps {
 }
 
 export function AnimatedStatBar({ stat, value, maxValue = 100, bonus }: AnimatedStatBarProps) {
+  const { t } = useTranslation();
   const { value: animValue, isAnimating } = useAnimatedValue(value);
   const percent = Math.min(Math.round((animValue / maxValue) * 100), 100);
 
   return (
     <div className="space-y-1">
       <div className="flex justify-between retro text-[8px] text-muted-foreground">
-        <span>{stat}</span>
+        <span>{t(`stats.${stat}`, { defaultValue: stat })}</span>
         <span className={cn(isAnimating && "text-yellow-400 animate-pulse")}>
           {bonus && bonus > 0 && <span className="text-green-400 mr-1">(+{bonus})</span>}
           {animValue.toFixed(1)}

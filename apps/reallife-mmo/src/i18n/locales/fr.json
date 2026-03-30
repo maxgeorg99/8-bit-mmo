@@ -601,6 +601,101 @@
       "description": "Le créateur des mondes attend."
     }
   },
+  "stats": {
+    "STR": "FOR",
+    "AGI": "AGI",
+    "INT": "INT",
+    "CON": "CON",
+    "WIS": "SAG",
+    "CHA": "CHA",
+    "MP": "PM",
+    "statBonus": "+{{value}} {{stat}}"
+  },
+  "merchants": {
+    "plains": {
+      "name": "Vieux Barley",
+      "greeting": "Bienvenue, voyageur ! Fais le plein avant de reprendre la route."
+    },
+    "tundra": {
+      "name": "Barbegivre",
+      "greeting": "Brrr ! Réchauffe tes os et regarde mes marchandises !"
+    },
+    "volcano": {
+      "name": "Fondara",
+      "greeting": "Forgé dans le feu ! Que le meilleur pour des guerriers comme toi."
+    },
+    "forest": {
+      "name": "Saulemurmure",
+      "greeting": "La forêt fournit. Prends ce dont tu as besoin, ami."
+    },
+    "dungeon": {
+      "name": "Sinistre",
+      "greeting": "Psst... besoin d'équipement pour l'obscurité ?"
+    },
+    "desert": {
+      "name": "Hazeel",
+      "greeting": "Les plus beaux articles des dunes !"
+    },
+    "spire": {
+      "name": "Arcaniste Vex",
+      "greeting": "Le savoir a un prix. Le pouvoir aussi."
+    },
+    "ruins": {
+      "name": "Claquemâchoire",
+      "greeting": "Hé hé... les morts n'ont pas besoin d'or. Mais toi si."
+    },
+    "celestial": {
+      "name": "Stellara",
+      "greeting": "Tu as voyagé loin. Ces objets sont dignes de toi."
+    }
+  },
+  "shop": {
+    "buyTab": "Acheter",
+    "sellTab": "Vendre",
+    "sellPrice": "Vendre {{price}}g",
+    "owned": "Possédé",
+    "noItemsToSell": "Aucun objet à vendre. Les objets équipés doivent être retirés d'abord."
+  },
+  "equipment": {
+    "shop-plains-staff": { "name": "Bâton de Chêne" },
+    "shop-plains-tunic": { "name": "Tunique du Voyageur" },
+    "shop-plains-cap": { "name": "Casquette du Rôdeur" },
+    "shop-tundra-axe": { "name": "Hache Tranchegel" },
+    "shop-tundra-cloak": { "name": "Cape de Blizzard" },
+    "shop-tundra-charm": { "name": "Charme de Chaleur" },
+    "shop-volcano-blade": { "name": "Lame Fondue" },
+    "shop-volcano-plate": { "name": "Cuirasse Volcanique" },
+    "shop-volcano-crown": { "name": "Couronne de Braise" },
+    "shop-forest-bow": { "name": "Arc Long d'If" },
+    "shop-forest-robe": { "name": "Robe du Druide" },
+    "shop-forest-circlet": { "name": "Diadème de Feuilles" },
+    "shop-dungeon-dagger": { "name": "Dague d'Ombre" },
+    "shop-dungeon-mail": { "name": "Maille du Marcheur Nocturne" },
+    "shop-dungeon-lantern": { "name": "Lanterne d'Âmefeu" },
+    "shop-desert-scimitar": { "name": "Cimeterre de Sableacier" },
+    "shop-desert-wrap": { "name": "Bandelettes du Désert" },
+    "shop-desert-turban": { "name": "Turban Béni du Soleil" },
+    "shop-spire-tome": { "name": "Grimoire Arcanique" },
+    "shop-spire-robe": { "name": "Habits de l'Érudit" },
+    "shop-spire-monocle": { "name": "Monocle Runique" },
+    "shop-ruins-sword": { "name": "Fendos" },
+    "shop-ruins-armor": { "name": "Cuirasse d'Os de Dragon" },
+    "shop-ruins-skull": { "name": "Crâne de Perspicacité" },
+    "shop-celestial-blade": { "name": "Lame Forgétoile" },
+    "shop-celestial-robe": { "name": "Habits Astraux" },
+    "shop-celestial-halo": { "name": "Halo Céleste" },
+    "starter-sword": { "name": "Épée en Bois" },
+    "leather-armor": { "name": "Gilet de Cuir" },
+    "iron-helm": { "name": "Heaume de Fer" },
+    "focus-amulet": { "name": "Amulette de Concentration" },
+    "steel-blade": { "name": "Lame d'Acier" },
+    "chainmail": { "name": "Cotte de Mailles" },
+    "crown-of-wisdom": { "name": "Couronne de Sagesse" },
+    "epic-class-weapon": { "name": "Hache de Bataille de la Bravoure" },
+    "first-ten": { "name": "Anneau de Dévotion" },
+    "grinder-50": { "name": "Cape de l'Infatigable" },
+    "legendary-100": { "name": "Lame Légendaire du Siècle" }
+  },
   "tierLabels": {
     "novice": "Novice",
     "apprentice": "Apprenti",

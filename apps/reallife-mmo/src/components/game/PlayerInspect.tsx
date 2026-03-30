@@ -22,6 +22,7 @@ import {
 import { asset, cn } from "@/lib/utils";
 import { Button } from "@/components/ui/8bit/button";
 import { openChat } from "./ChatPanel";
+import { formatStatBonuses } from "@/lib/i18nEquipment";
 
 /** Shape that both NpcPlayer and stdbPlayerToInspectable() produce */
 export interface InspectablePlayer {
@@ -127,9 +128,7 @@ export function PlayerInspect({ open, onOpenChange, player }: PlayerInspectProps
                       {item.name}
                     </span>
                     <span className="retro text-[5px] text-muted-foreground ml-auto">
-                      {Object.entries(item.statBonus)
-                        .map(([s, v]) => `+${v} ${s}`)
-                        .join(" ")}
+                      {formatStatBonuses(t, item.statBonus, " ")}
                     </span>
                   </div>
                 );

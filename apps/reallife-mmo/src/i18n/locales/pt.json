@@ -601,6 +601,101 @@
       "description": "O criador de mundos aguarda."
     }
   },
+  "stats": {
+    "STR": "FOR",
+    "AGI": "AGI",
+    "INT": "INT",
+    "CON": "CON",
+    "WIS": "SAB",
+    "CHA": "CAR",
+    "MP": "PM",
+    "statBonus": "+{{value}} {{stat}}"
+  },
+  "merchants": {
+    "plains": {
+      "name": "Velho Barley",
+      "greeting": "Bem-vindo, viajante! Abasteça-se antes de seguir viagem."
+    },
+    "tundra": {
+      "name": "Barbagelo",
+      "greeting": "Brrr! Aqueça seus ossos e confira minhas mercadorias!"
+    },
+    "volcano": {
+      "name": "Fundidora",
+      "greeting": "Forjado no fogo! Só o melhor para guerreiros como você."
+    },
+    "forest": {
+      "name": "Salgueirosussurro",
+      "greeting": "A floresta provê. Leve o que precisar, amigo."
+    },
+    "dungeon": {
+      "name": "Sombrio",
+      "greeting": "Psst... precisa de equipamento para a escuridão?"
+    },
+    "desert": {
+      "name": "Hazeel",
+      "greeting": "Os melhores produtos das dunas!"
+    },
+    "spire": {
+      "name": "Arcanista Vex",
+      "greeting": "Conhecimento tem um preço. Poder também."
+    },
+    "ruins": {
+      "name": "Quebramandíbula",
+      "greeting": "Heh heh... os mortos não precisam de ouro. Mas você sim."
+    },
+    "celestial": {
+      "name": "Stellara",
+      "greeting": "Você viajou longe. Estes itens são dignos de você."
+    }
+  },
+  "shop": {
+    "buyTab": "Comprar",
+    "sellTab": "Vender",
+    "sellPrice": "Vender {{price}}g",
+    "owned": "Possuído",
+    "noItemsToSell": "Sem itens para vender. Itens equipados devem ser removidos primeiro."
+  },
+  "equipment": {
+    "shop-plains-staff": { "name": "Cajado de Carvalho" },
+    "shop-plains-tunic": { "name": "Túnica do Viajante" },
+    "shop-plains-cap": { "name": "Gorro do Patrulheiro" },
+    "shop-tundra-axe": { "name": "Machado Fiogelo" },
+    "shop-tundra-cloak": { "name": "Manto de Nevasca" },
+    "shop-tundra-charm": { "name": "Amuleto de Calor" },
+    "shop-volcano-blade": { "name": "Lâmina Derretida" },
+    "shop-volcano-plate": { "name": "Placa Vulcânica" },
+    "shop-volcano-crown": { "name": "Coroa de Cinzas" },
+    "shop-forest-bow": { "name": "Arco Longo de Teixo" },
+    "shop-forest-robe": { "name": "Manto do Druida" },
+    "shop-forest-circlet": { "name": "Diadema de Folhas" },
+    "shop-dungeon-dagger": { "name": "Adaga das Sombras" },
+    "shop-dungeon-mail": { "name": "Malha do Caminhante Noturno" },
+    "shop-dungeon-lantern": { "name": "Lanterna de Almafogo" },
+    "shop-desert-scimitar": { "name": "Cimitarra de Arenaço" },
+    "shop-desert-wrap": { "name": "Faixas do Deserto" },
+    "shop-desert-turban": { "name": "Turbante Abençoado pelo Sol" },
+    "shop-spire-tome": { "name": "Grimório Arcano" },
+    "shop-spire-robe": { "name": "Vestimentas do Erudito" },
+    "shop-spire-monocle": { "name": "Monóculo Rúnico" },
+    "shop-ruins-sword": { "name": "Cortaossos" },
+    "shop-ruins-armor": { "name": "Placa de Ossodragão" },
+    "shop-ruins-skull": { "name": "Crânio da Perspicácia" },
+    "shop-celestial-blade": { "name": "Lâmina Forjaestrela" },
+    "shop-celestial-robe": { "name": "Vestimentas Astrais" },
+    "shop-celestial-halo": { "name": "Halo Celestial" },
+    "starter-sword": { "name": "Espada de Madeira" },
+    "leather-armor": { "name": "Colete de Couro" },
+    "iron-helm": { "name": "Elmo de Ferro" },
+    "focus-amulet": { "name": "Amuleto de Foco" },
+    "steel-blade": { "name": "Lâmina de Aço" },
+    "chainmail": { "name": "Cota de Malha" },
+    "crown-of-wisdom": { "name": "Coroa da Sabedoria" },
+    "epic-class-weapon": { "name": "Machado de Batalha da Bravura" },
+    "first-ten": { "name": "Anel da Dedicação" },
+    "grinder-50": { "name": "Manto do Incansável" },
+    "legendary-100": { "name": "Lâmina Lendária do Século" }
+  },
   "tierLabels": {
     "novice": "Novato",
     "apprentice": "Aprendiz",

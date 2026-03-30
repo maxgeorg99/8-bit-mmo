@@ -601,6 +601,101 @@
       "description": "Der Schöpfer der Welten wartet."
     }
   },
+  "stats": {
+    "STR": "STR",
+    "AGI": "GES",
+    "INT": "INT",
+    "CON": "KON",
+    "WIS": "WEI",
+    "CHA": "CHA",
+    "MP": "MP",
+    "statBonus": "+{{value}} {{stat}}"
+  },
+  "merchants": {
+    "plains": {
+      "name": "Alter Barley",
+      "greeting": "Willkommen, Reisender! Decke dich ein, bevor es weitergeht."
+    },
+    "tundra": {
+      "name": "Frostbart",
+      "greeting": "Brrr! Wärm dich auf und schau dir meine Waren an!"
+    },
+    "volcano": {
+      "name": "Schmeltara",
+      "greeting": "Im Feuer geschmiedet! Nur das Beste für Krieger wie dich."
+    },
+    "forest": {
+      "name": "Weidenflüster",
+      "greeting": "Der Wald gibt. Nimm, was du brauchst, Freund."
+    },
+    "dungeon": {
+      "name": "Grimm",
+      "greeting": "Psst... brauchst du Ausrüstung für die Dunkelheit?"
+    },
+    "desert": {
+      "name": "Hazeel",
+      "greeting": "Die feinsten Waren aus den Dünen!"
+    },
+    "spire": {
+      "name": "Arkanist Vex",
+      "greeting": "Wissen hat seinen Preis. Macht ebenso."
+    },
+    "ruins": {
+      "name": "Klappermaul",
+      "greeting": "Heh heh... die Toten brauchen kein Gold. Aber du schon."
+    },
+    "celestial": {
+      "name": "Stellara",
+      "greeting": "Du bist weit gereist. Diese Gegenstände sind deiner würdig."
+    }
+  },
+  "shop": {
+    "buyTab": "Kaufen",
+    "sellTab": "Verkaufen",
+    "sellPrice": "Verkaufen {{price}}g",
+    "owned": "Besitzt",
+    "noItemsToSell": "Keine Gegenstände zum Verkaufen. Ausgerüstete müssen zuerst abgelegt werden."
+  },
+  "equipment": {
+    "shop-plains-staff": { "name": "Eichenstab" },
+    "shop-plains-tunic": { "name": "Reisetunika" },
+    "shop-plains-cap": { "name": "Waldläuferkappe" },
+    "shop-tundra-axe": { "name": "Frostschneide-Axt" },
+    "shop-tundra-cloak": { "name": "Schneesturmumhang" },
+    "shop-tundra-charm": { "name": "Wärmeamulett" },
+    "shop-volcano-blade": { "name": "Glutklinge" },
+    "shop-volcano-plate": { "name": "Vulkanplatte" },
+    "shop-volcano-crown": { "name": "Aschenkrone" },
+    "shop-forest-bow": { "name": "Eibenlangbogen" },
+    "shop-forest-robe": { "name": "Druidenrobe" },
+    "shop-forest-circlet": { "name": "Blattreif" },
+    "shop-dungeon-dagger": { "name": "Schattendolch" },
+    "shop-dungeon-mail": { "name": "Nachtwandler-Kettenhemd" },
+    "shop-dungeon-lantern": { "name": "Seelenfeuerlaterne" },
+    "shop-desert-scimitar": { "name": "Sandstahl-Krummsäbel" },
+    "shop-desert-wrap": { "name": "Wüstentücher" },
+    "shop-desert-turban": { "name": "Sonnengesegneter Turban" },
+    "shop-spire-tome": { "name": "Arkanes Grimoire" },
+    "shop-spire-robe": { "name": "Gelehrtengewand" },
+    "shop-spire-monocle": { "name": "Runenmonokel" },
+    "shop-ruins-sword": { "name": "Knochenspalter" },
+    "shop-ruins-armor": { "name": "Drachenknochenplatte" },
+    "shop-ruins-skull": { "name": "Schädel der Einsicht" },
+    "shop-celestial-blade": { "name": "Sterngeschmiedete Klinge" },
+    "shop-celestial-robe": { "name": "Astralgewand" },
+    "shop-celestial-halo": { "name": "Himmlischer Heiligenschein" },
+    "starter-sword": { "name": "Holzschwert" },
+    "leather-armor": { "name": "Lederweste" },
+    "iron-helm": { "name": "Eisenhelm" },
+    "focus-amulet": { "name": "Amulett der Konzentration" },
+    "steel-blade": { "name": "Stahlklinge" },
+    "chainmail": { "name": "Kettenhemd" },
+    "crown-of-wisdom": { "name": "Krone der Weisheit" },
+    "epic-class-weapon": { "name": "Streitaxt der Tapferkeit" },
+    "first-ten": { "name": "Ring der Hingabe" },
+    "grinder-50": { "name": "Umhang des Unermüdlichen" },
+    "legendary-100": { "name": "Legendäre Klinge des Jahrhunderts" }
+  },
   "tierLabels": {
     "novice": "Neuling",
     "apprentice": "Lehrling",

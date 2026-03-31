@@ -1,4 +1,4 @@
-import { t, SenderError } from "spacetimedb/server";
+import { t, SenderError, Random } from "spacetimedb/server";
 import spacetimedb from "../schema";
 import { Identity } from "spacetimedb";
 
@@ -133,17 +133,17 @@ const BOSSES: Record<string, BossConfig> = {
 
 // ── Combat helpers ──────────────────────────────────────────────
 
-function calculateDamage(base: number): number {
-  const variance = 0.8 + Math.random() * 0.4; // 80% - 120%
+function calculateDamage(random: Random, base: number): number {
+  const variance = 0.8 + random() * 0.4; // 80% - 120%
   return Math.max(1, Math.round(base * variance));
 }
 
-function bossPickAbility(abilities: BossAbility[], mana: number): BossAbility {
+function bossPickAbility(random: Random, abilities: BossAbility[], mana: number): BossAbility {
   if (mana > 30) {
     const aoe = abilities.find((a) => a.isAoe);
-    if (aoe && Math.random() > 0.4) return aoe;
+    if (aoe && random() > 0.4) return aoe;
   }
-  return abilities[Math.floor(Math.random() * abilities.length)]!;
+  return abilities[Math.floor(random() * abilities.length)]!;
 }
 
 // ── Reducers ────────────────────────────────────────────────────
@@ -267,7 +267,7 @@ export const raid_cast_spell = spacetimedb.reducer(
       alive.sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp);
       const target = alive[0];
       if (target) {
-        const heal = Math.max(1, calculateDamage(spellDamage));
+        const heal = Math.max(1, calculateDamage(ctx.random, spellDamage));
         target.hp = Math.min(target.maxHp, target.hp + heal);
         ctx.db.raidLog.insert({
           id: 0n,
@@ -282,7 +282,7 @@ export const raid_cast_spell = spacetimedb.reducer(
         ctx.db.raidCombatant.id.update({ ...target });
       }
     } else {
-      const dmg = calculateDamage(spellDamage);
+      const dmg = calculateDamage(ctx.random, spellDamage);
       newBossHp = Math.max(0, newBossHp - dmg);
       ctx.db.raidLog.insert({
         id: 0n,
@@ -336,13 +336,13 @@ export const raid_cast_spell = spacetimedb.reducer(
     // Boss turn — after full round
     const isNewRound = nextIndex <= raid.currentTurnIndex;
     if (isNewRound) {
-      const ability = bossPickAbility(boss.abilities, newBossMana);
+      const ability = bossPickAbility(ctx.random, boss.abilities, newBossMana);
       newBossMana = Math.max(0, newBossMana - 10);
 
       if (ability.isAoe) {
         for (const c of combatants) {
           if (c.ko) continue;
-          const dmg = calculateDamage(ability.damage);
+          const dmg = calculateDamage(ctx.random, ability.damage);
           c.hp = Math.max(0, c.hp - dmg);
           if (c.hp <= 0) c.ko = true;
           ctx.db.raidLog.insert({
@@ -359,9 +359,9 @@ export const raid_cast_spell = spacetimedb.reducer(
         }
       } else {
         const alive = combatants.filter((c) => !c.ko);
-        const target = alive[Math.floor(Math.random() * alive.length)];
+        const target = alive[Math.floor(ctx.random() * alive.length)];
         if (target) {
-          const dmg = calculateDamage(ability.damage);
+          const dmg = calculateDamage(ctx.random, ability.damage);
           target.hp = Math.max(0, target.hp - dmg);
           if (target.hp <= 0) target.ko = true;
           ctx.db.raidLog.insert({

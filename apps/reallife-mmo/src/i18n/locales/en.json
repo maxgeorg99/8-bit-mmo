@@ -206,7 +206,7 @@
     "title": "World Map",
     "travelTo": "Travel to {{name}}?",
     "travelDescription": "Your world shifts to match. The UI, the colours, everything. You carry your stats — but the boss changes.",
-    "regionsDiscovered": "{{count}}/9 regions discovered",
+    "regionsDiscovered": "{{count}}/{{max}} regions discovered",
     "locations": "Locations",
     "backToMap": "< Map",
     "locationNotFound": "Location not found.",
@@ -292,7 +292,16 @@
     "party": "Party",
     "combatLog": "Combat Log",
     "combatBegins": "Combat begins...",
-    "retreat": "Retreat (Abandon Raid)"
+    "retreat": "Retreat (Abandon Raid)",
+    "hpStatus": "{{current}}/{{max}} HP",
+    "mpStatus": "{{current}}/{{max}} MP",
+    "spellMpCost": "{{cost}}mp",
+    "spells": {
+      "slash": "Slash",
+      "fireball": "Fireball",
+      "heal": "Heal",
+      "arcaneBolt": "Arcane Bolt"
+    }
   },
   "leaderboard": {
     "title": "Leaderboard",
@@ -688,7 +697,107 @@
     "epic-class-weapon": { "name": "Battle Axe of Valor" },
     "first-ten": { "name": "Ring of Dedication" },
     "grinder-50": { "name": "Cloak of the Grinder" },
-    "legendary-100": { "name": "Legendary Blade of the Century" }
+    "legendary-100": { "name": "Legendary Blade of the Century" },
+    "raid-thornback-staff": { "name": "Thornback's Living Staff" },
+    "raid-frostlord-crown": { "name": "Frostlord's Crown" },
+    "raid-ignisfury-plate": { "name": "Ignisfury's Molten Plate" },
+    "raid-rootwarden-robe": { "name": "Rootwarden's Bark Robe" },
+    "raid-baron-dagger": { "name": "Baron's Shadow Dagger" },
+    "raid-stonefist-gauntlets": { "name": "Stonefist's Gauntlets" },
+    "raid-archivist-tome": { "name": "Archivist's Infinite Tome" },
+    "raid-skarveth-armor": { "name": "Skarveth's Deathplate" },
+    "raid-architect-halo": { "name": "Architect's Cosmic Halo" }
+  },
+  "bosses": {
+    "boss-thornback": {
+      "name": "Thornback the Elder",
+      "intro": "The ancient tree shakes the earth as it awakens...",
+      "mechanic": "Nature/thorns — periodic AoE vine damage"
+    },
+    "boss-frostlord": {
+      "name": "The Frostlord",
+      "intro": "The temperature plummets as the Frostlord materializes from the blizzard...",
+      "mechanic": "Ice/freeze — slowing AoE blizzards"
+    },
+    "boss-ignisfury": {
+      "name": "Ignisfury",
+      "intro": "The volcano shakes as Ignisfury rises from the lava...",
+      "mechanic": "Fire/AoE — devastating eruption attacks"
+    },
+    "boss-rootwarden": {
+      "name": "Rootwarden",
+      "intro": "The forest itself awakens as Rootwarden unfurls...",
+      "mechanic": "Heal/regen — boss heals itself periodically"
+    },
+    "boss-shadow-baron": {
+      "name": "Shadow Baron",
+      "intro": "Shadows coalesce into a towering figure of pure darkness...",
+      "mechanic": "Darkness/debuff — AoE life drain"
+    },
+    "boss-stonefist": {
+      "name": "King Stonefist",
+      "intro": "The Dwarf King cracks his stone knuckles and roars...",
+      "mechanic": "Earth/stun — heavy single-target hits"
+    },
+    "boss-archivist": {
+      "name": "The Archivist",
+      "intro": "Books swirl in a vortex as the Archivist takes form...",
+      "mechanic": "Arcane/silence — mental AoE pressure"
+    },
+    "boss-skarveth": {
+      "name": "Skarveth the Undying",
+      "intro": "Bones rattle as the Undying rises from his golden sarcophagus...",
+      "mechanic": "Undead/drain — heals from damage dealt"
+    },
+    "boss-architect": {
+      "name": "The Architect",
+      "intro": "Stars collapse as The Architect manifests from the fabric of reality...",
+      "mechanic": "Cosmic/phase — devastating ultimate attacks"
+    }
+  },
+  "bossAbilities": {
+    "thorn-lash": { "name": "Thorn Lash" },
+    "vine-storm": { "name": "Vine Storm", "effect": "Thorny vines lash all heroes!" },
+    "root-slam": { "name": "Root Slam", "effect": "Massive roots crush a single target!" },
+    "ice-lance": { "name": "Ice Lance" },
+    "blizzard": { "name": "Blizzard", "effect": "A freezing blizzard engulfs the party!" },
+    "frost-nova": { "name": "Frost Nova", "effect": "Shattering ice pierces through armor!" },
+    "flame-breath": { "name": "Flame Breath" },
+    "eruption": { "name": "Eruption", "effect": "Magma erupts beneath the entire party!" },
+    "meteor": { "name": "Meteor Strike", "effect": "A blazing meteor crashes down!" },
+    "branch-whip": { "name": "Branch Whip" },
+    "regrowth": { "name": "Regrowth", "effect": "Rootwarden regenerates health!" },
+    "forest-wrath": {
+      "name": "Forest's Wrath",
+      "effect": "The entire forest strikes at the intruders!"
+    },
+    "shadow-bolt": { "name": "Shadow Bolt" },
+    "darkness": { "name": "Engulfing Darkness", "effect": "Shadows drain the life of all heroes!" },
+    "soul-rend": { "name": "Soul Rend", "effect": "The Baron tears at your very soul!" },
+    "earth-punch": { "name": "Earth Punch" },
+    "sandstorm": { "name": "Sandstorm", "effect": "A blinding sandstorm batters the party!" },
+    "seismic-slam": {
+      "name": "Seismic Slam",
+      "effect": "The ground shatters under Stonefist's power!"
+    },
+    "arcane-beam": { "name": "Arcane Beam" },
+    "knowledge-overload": {
+      "name": "Knowledge Overload",
+      "effect": "Pure knowledge overwhelms your senses!"
+    },
+    "reality-warp": {
+      "name": "Reality Warp",
+      "effect": "Reality itself bends to the Archivist's will!"
+    },
+    "death-touch": { "name": "Death Touch" },
+    "plague-wave": {
+      "name": "Plague Wave",
+      "effect": "A wave of necrotic energy washes over the party!"
+    },
+    "drain-soul": { "name": "Drain Soul", "effect": "Skarveth drains life to heal himself!" },
+    "cosmic-ray": { "name": "Cosmic Ray" },
+    "supernova": { "name": "Supernova", "effect": "A star explodes across all dimensions!" },
+    "unmake": { "name": "Unmake", "effect": "The Architect attempts to erase you from existence!" }
   },
   "tierLabels": {
     "novice": "Novice",

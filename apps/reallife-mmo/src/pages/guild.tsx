@@ -18,6 +18,7 @@ import { useMyPlayer } from "@/hooks/useStdbPlayer";
 import { openChat } from "@/components/game/ChatPanel";
 import { BIOME_META, ALL_BIOMES } from "@/lib/biomeThemes";
 import { RAID_BOSSES } from "@/lib/bossDefinitions";
+import { getBossName } from "@/lib/i18nBoss";
 import { CLASS_SPRITES } from "@/lib/types";
 import { asset, cn } from "@/lib/utils";
 
@@ -396,7 +397,7 @@ function RaidSection({ memberCount }: { memberCount: number }) {
                 <div key={biomeId} className="flex items-center gap-2">
                   <span className="text-lg">{boss.sprite}</span>
                   <div className="flex-1 min-w-0">
-                    <span className="retro text-[7px] text-foreground">{boss.name}</span>
+                    <span className="retro text-[7px] text-foreground">{getBossName(t, boss)}</span>
                     <p className="retro text-[5px] text-muted-foreground">{meta.name}</p>
                   </div>
                   <Button

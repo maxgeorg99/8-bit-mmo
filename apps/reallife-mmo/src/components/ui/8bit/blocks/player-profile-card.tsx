@@ -74,7 +74,7 @@ export default function PlayerProfileCard({
     : 0;
 
   return (
-    <Card className={cn("w-full max-w-md", className)} {...props}>
+    <Card className={cn("w-full max-w-md-y-6", className)} {...props}>
       <CardHeader className="pb-4">
         <div className="flex items-center gap-4">
           <Avatar className="size-16" variant="pixel" font="retro">

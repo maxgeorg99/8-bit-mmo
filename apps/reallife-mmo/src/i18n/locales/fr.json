@@ -206,7 +206,7 @@
     "title": "Carte du monde",
     "travelTo": "Voyager vers {{name}} ?",
     "travelDescription": "Ton monde change entièrement. L'interface, les couleurs, tout. Tu gardes tes stats — mais le boss change.",
-    "regionsDiscovered": "{{count}}/9 régions découvertes",
+    "regionsDiscovered": "{{count}}/{{max}} régions découvertes",
     "locations": "Lieux",
     "backToMap": "< Carte",
     "locationNotFound": "Lieu introuvable.",
@@ -292,7 +292,16 @@
     "party": "Groupe",
     "combatLog": "Journal de combat",
     "combatBegins": "Le combat commence...",
-    "retreat": "Retraite (Abandonner le raid)"
+    "retreat": "Retraite (Abandonner le raid)",
+    "hpStatus": "{{current}}/{{max}} PV",
+    "mpStatus": "{{current}}/{{max}} PM",
+    "spellMpCost": "{{cost}}pm",
+    "spells": {
+      "slash": "Taillade",
+      "fireball": "Boule de feu",
+      "heal": "Soin",
+      "arcaneBolt": "Trait arcanique"
+    }
   },
   "leaderboard": {
     "title": "Classement",
@@ -694,7 +703,122 @@
     "epic-class-weapon": { "name": "Hache de Bataille de la Bravoure" },
     "first-ten": { "name": "Anneau de Dévotion" },
     "grinder-50": { "name": "Cape de l'Infatigable" },
-    "legendary-100": { "name": "Lame Légendaire du Siècle" }
+    "legendary-100": { "name": "Lame Légendaire du Siècle" },
+    "raid-thornback-staff": { "name": "Bâton Vivant d'Épinedorsale" },
+    "raid-frostlord-crown": { "name": "Couronne du Seigneur du Givre" },
+    "raid-ignisfury-plate": { "name": "Cuirasse Fondue d'Ignisfurie" },
+    "raid-rootwarden-robe": { "name": "Robe d'Écorce du Gardien des Racines" },
+    "raid-baron-dagger": { "name": "Dague d'Ombre du Baron" },
+    "raid-stonefist-gauntlets": { "name": "Gantelets de Poing de Pierre" },
+    "raid-archivist-tome": { "name": "Tome Infini de l'Archiviste" },
+    "raid-skarveth-armor": { "name": "Cuirasse Mortelle de Skarveth" },
+    "raid-architect-halo": { "name": "Halo Cosmique de l'Architecte" }
+  },
+  "bosses": {
+    "boss-thornback": {
+      "name": "Épinedorsale l'Ancien",
+      "intro": "L'arbre ancestral fait trembler la terre en s'éveillant...",
+      "mechanic": "Nature/épines — dégâts de zone périodiques par des lianes"
+    },
+    "boss-frostlord": {
+      "name": "Le Seigneur du Givre",
+      "intro": "La température chute quand le Seigneur du Givre se matérialise du blizzard...",
+      "mechanic": "Glace/gel — blizzards de zone ralentissants"
+    },
+    "boss-ignisfury": {
+      "name": "Ignisfurie",
+      "intro": "Le volcan tremble quand Ignisfurie émerge de la lave...",
+      "mechanic": "Feu/zone — attaques d'éruption dévastatrices"
+    },
+    "boss-rootwarden": {
+      "name": "Gardien des Racines",
+      "intro": "La forêt elle-même s'éveille quand le Gardien des Racines se déploie...",
+      "mechanic": "Soin/régénération — le boss se soigne périodiquement"
+    },
+    "boss-shadow-baron": {
+      "name": "Baron des Ombres",
+      "intro": "Les ombres fusionnent en une silhouette imposante de ténèbres pures...",
+      "mechanic": "Ténèbres/affaiblissement — drain de vie de zone"
+    },
+    "boss-stonefist": {
+      "name": "Roi Poing de Pierre",
+      "intro": "Le Roi Nain fait craquer ses poings de pierre et rugit...",
+      "mechanic": "Terre/étourdissement — coups lourds sur cible unique"
+    },
+    "boss-archivist": {
+      "name": "L'Archiviste",
+      "intro": "Les livres tourbillonnent alors que l'Archiviste prend forme...",
+      "mechanic": "Arcane/silence — pression mentale de zone"
+    },
+    "boss-skarveth": {
+      "name": "Skarveth l'Immortel",
+      "intro": "Les os cliquettent tandis que l'Immortel se lève de son sarcophage doré...",
+      "mechanic": "Mort-vivant/drain — se soigne avec les dégâts infligés"
+    },
+    "boss-architect": {
+      "name": "L'Architecte",
+      "intro": "Les étoiles s'effondrent tandis que L'Architecte se manifeste du tissu de la réalité...",
+      "mechanic": "Cosmique/phase — attaques ultimes dévastatrices"
+    }
+  },
+  "bossAbilities": {
+    "thorn-lash": { "name": "Fouet d'Épines" },
+    "vine-storm": {
+      "name": "Tempête de Lianes",
+      "effect": "Des lianes épineuses fouettent tous les héros !"
+    },
+    "root-slam": {
+      "name": "Fracas de Racines",
+      "effect": "D'énormes racines écrasent une cible unique !"
+    },
+    "ice-lance": { "name": "Lance de Glace" },
+    "blizzard": { "name": "Blizzard", "effect": "Un blizzard glacial engloutit le groupe !" },
+    "frost-nova": { "name": "Nova de Givre", "effect": "La glace brisée transperce l'armure !" },
+    "flame-breath": { "name": "Souffle de Flammes" },
+    "eruption": { "name": "Éruption", "effect": "Le magma jaillit sous tout le groupe !" },
+    "meteor": { "name": "Frappe de Météore", "effect": "Un météore ardent s'écrase !" },
+    "branch-whip": { "name": "Fouet de Branche" },
+    "regrowth": { "name": "Repousse", "effect": "Le Gardien des Racines régénère sa santé !" },
+    "forest-wrath": {
+      "name": "Courroux de la Forêt",
+      "effect": "La forêt entière frappe les intrus !"
+    },
+    "shadow-bolt": { "name": "Trait d'Ombre" },
+    "darkness": {
+      "name": "Ténèbres Englouties",
+      "effect": "Les ombres drainent la vie de tous les héros !"
+    },
+    "soul-rend": { "name": "Déchirure d'Âme", "effect": "Le Baron déchire votre âme !" },
+    "earth-punch": { "name": "Poing de Terre" },
+    "sandstorm": {
+      "name": "Tempête de Sable",
+      "effect": "Une tempête de sable aveuglante frappe le groupe !"
+    },
+    "seismic-slam": {
+      "name": "Frappe Sismique",
+      "effect": "Le sol se brise sous la puissance de Poing de Pierre !"
+    },
+    "arcane-beam": { "name": "Rayon Arcanique" },
+    "knowledge-overload": {
+      "name": "Surcharge de Savoir",
+      "effect": "Le savoir pur submerge vos sens !"
+    },
+    "reality-warp": {
+      "name": "Distorsion de Réalité",
+      "effect": "La réalité se plie à la volonté de l'Archiviste !"
+    },
+    "death-touch": { "name": "Toucher Mortel" },
+    "plague-wave": {
+      "name": "Vague de Peste",
+      "effect": "Une vague d'énergie nécrotique submerge le groupe !"
+    },
+    "drain-soul": { "name": "Drain d'Âme", "effect": "Skarveth draine la vie pour se soigner !" },
+    "cosmic-ray": { "name": "Rayon Cosmique" },
+    "supernova": {
+      "name": "Supernova",
+      "effect": "Une étoile explose à travers toutes les dimensions !"
+    },
+    "unmake": { "name": "Défaire", "effect": "L'Architecte tente de vous effacer de l'existence !" }
   },
   "tierLabels": {
     "novice": "Novice",

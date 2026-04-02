@@ -206,7 +206,7 @@
     "title": "Weltkarte",
     "travelTo": "Reisen nach {{name}}?",
     "travelDescription": "Deine Welt passt sich an. Die Oberfläche, die Farben, alles. Du behältst deine Stats — aber der Boss ändert sich.",
-    "regionsDiscovered": "{{count}}/9 Regionen entdeckt",
+    "regionsDiscovered": "{{count}}/{{max}} Regionen entdeckt",
     "locations": "Orte",
     "backToMap": "< Karte",
     "locationNotFound": "Ort nicht gefunden.",
@@ -292,7 +292,16 @@
     "party": "Gruppe",
     "combatLog": "Kampfprotokoll",
     "combatBegins": "Kampf beginnt...",
-    "retreat": "Rückzug (Raid aufgeben)"
+    "retreat": "Rückzug (Raid aufgeben)",
+    "hpStatus": "{{current}}/{{max}} LP",
+    "mpStatus": "{{current}}/{{max}} MP",
+    "spellMpCost": "{{cost}}mp",
+    "spells": {
+      "slash": "Hieb",
+      "fireball": "Feuerball",
+      "heal": "Heilung",
+      "arcaneBolt": "Arkanblitz"
+    }
   },
   "leaderboard": {
     "title": "Bestenliste",
@@ -694,7 +703,119 @@
     "epic-class-weapon": { "name": "Streitaxt der Tapferkeit" },
     "first-ten": { "name": "Ring der Hingabe" },
     "grinder-50": { "name": "Umhang des Unermüdlichen" },
-    "legendary-100": { "name": "Legendäre Klinge des Jahrhunderts" }
+    "legendary-100": { "name": "Legendäre Klinge des Jahrhunderts" },
+    "raid-thornback-staff": { "name": "Dornrückens Lebender Stab" },
+    "raid-frostlord-crown": { "name": "Krone des Frostlords" },
+    "raid-ignisfury-plate": { "name": "Ignisfurys Geschmolzene Platte" },
+    "raid-rootwarden-robe": { "name": "Wurzelwächters Rindenrobe" },
+    "raid-baron-dagger": { "name": "Barons Schattendolch" },
+    "raid-stonefist-gauntlets": { "name": "Steinfausts Panzerhandschuhe" },
+    "raid-archivist-tome": { "name": "Archivars Unendlicher Foliant" },
+    "raid-skarveth-armor": { "name": "Skarveths Todesplatte" },
+    "raid-architect-halo": { "name": "Architekts Kosmischer Heiligenschein" }
+  },
+  "bosses": {
+    "boss-thornback": {
+      "name": "Dornrücken der Alte",
+      "intro": "Der uralte Baum lässt die Erde erzittern, als er erwacht...",
+      "mechanic": "Natur/Dornen — periodischer Flächenschaden durch Ranken"
+    },
+    "boss-frostlord": {
+      "name": "Der Frostlord",
+      "intro": "Die Temperatur stürzt ab, als der Frostlord aus dem Schneesturm erscheint...",
+      "mechanic": "Eis/Frost — verlangsamende Flächenstürme"
+    },
+    "boss-ignisfury": {
+      "name": "Ignisfury",
+      "intro": "Der Vulkan bebt, als Ignisfury aus der Lava aufsteigt...",
+      "mechanic": "Feuer/Fläche — verheerende Eruptionsangriffe"
+    },
+    "boss-rootwarden": {
+      "name": "Wurzelwächter",
+      "intro": "Der Wald selbst erwacht, als der Wurzelwächter sich entfaltet...",
+      "mechanic": "Heilung/Regeneration — Boss heilt sich regelmäßig"
+    },
+    "boss-shadow-baron": {
+      "name": "Schattenbaron",
+      "intro": "Schatten verschmelzen zu einer gewaltigen Gestalt aus purer Dunkelheit...",
+      "mechanic": "Dunkelheit/Schwächung — Flächen-Lebensentzug"
+    },
+    "boss-stonefist": {
+      "name": "König Steinfaust",
+      "intro": "Der Zwergenkönig knackt mit seinen Steinfäusten und brüllt...",
+      "mechanic": "Erde/Betäubung — schwere Einzelziel-Treffer"
+    },
+    "boss-archivist": {
+      "name": "Der Archivar",
+      "intro": "Bücher wirbeln in einem Strudel, als der Archivar Gestalt annimmt...",
+      "mechanic": "Arkan/Stille — mentaler Flächendruck"
+    },
+    "boss-skarveth": {
+      "name": "Skarveth der Unsterbliche",
+      "intro": "Knochen rasseln, als der Unsterbliche aus seinem goldenen Sarkophag aufsteigt...",
+      "mechanic": "Untod/Entzug — heilt sich durch zugefügten Schaden"
+    },
+    "boss-architect": {
+      "name": "Der Architekt",
+      "intro": "Sterne kollabieren, als Der Architekt aus dem Gefüge der Realität erscheint...",
+      "mechanic": "Kosmisch/Phase — verheerende ultimative Angriffe"
+    }
+  },
+  "bossAbilities": {
+    "thorn-lash": { "name": "Dornenpeitsche" },
+    "vine-storm": { "name": "Rankensturm", "effect": "Dornige Ranken peitschen alle Helden!" },
+    "root-slam": {
+      "name": "Wurzelschlag",
+      "effect": "Massive Wurzeln zermalmen ein einzelnes Ziel!"
+    },
+    "ice-lance": { "name": "Eislanze" },
+    "blizzard": { "name": "Blizzard", "effect": "Ein eisiger Schneesturm verschlingt die Gruppe!" },
+    "frost-nova": { "name": "Frostnova", "effect": "Zersplitterndes Eis durchbohrt die Rüstung!" },
+    "flame-breath": { "name": "Flammenodem" },
+    "eruption": { "name": "Eruption", "effect": "Magma bricht unter der gesamten Gruppe hervor!" },
+    "meteor": { "name": "Meteoreinschlag", "effect": "Ein lodernder Meteor stürzt herab!" },
+    "branch-whip": { "name": "Astpeitsche" },
+    "regrowth": { "name": "Nachwachsen", "effect": "Der Wurzelwächter regeneriert Gesundheit!" },
+    "forest-wrath": {
+      "name": "Zorn des Waldes",
+      "effect": "Der gesamte Wald greift die Eindringlinge an!"
+    },
+    "shadow-bolt": { "name": "Schattenblitz" },
+    "darkness": {
+      "name": "Verschlingende Dunkelheit",
+      "effect": "Schatten entziehen allen Helden das Leben!"
+    },
+    "soul-rend": { "name": "Seelenriss", "effect": "Der Baron zerreißt eure Seele!" },
+    "earth-punch": { "name": "Erdschlag" },
+    "sandstorm": { "name": "Sandsturm", "effect": "Ein blendender Sandsturm peitscht die Gruppe!" },
+    "seismic-slam": {
+      "name": "Seismischer Schlag",
+      "effect": "Der Boden zersplittert unter Steinfausts Macht!"
+    },
+    "arcane-beam": { "name": "Arkaner Strahl" },
+    "knowledge-overload": {
+      "name": "Wissensüberlastung",
+      "effect": "Reines Wissen überwältigt eure Sinne!"
+    },
+    "reality-warp": {
+      "name": "Realitätsverzerrung",
+      "effect": "Die Realität beugt sich dem Willen des Archivars!"
+    },
+    "death-touch": { "name": "Todesberührung" },
+    "plague-wave": {
+      "name": "Seuchenwelle",
+      "effect": "Eine Welle nekrotischer Energie überrollt die Gruppe!"
+    },
+    "drain-soul": {
+      "name": "Seele Entziehen",
+      "effect": "Skarveth entzieht Leben um sich zu heilen!"
+    },
+    "cosmic-ray": { "name": "Kosmischer Strahl" },
+    "supernova": { "name": "Supernova", "effect": "Ein Stern explodiert über alle Dimensionen!" },
+    "unmake": {
+      "name": "Auflösung",
+      "effect": "Der Architekt versucht euch aus der Existenz zu löschen!"
+    }
   },
   "tierLabels": {
     "novice": "Neuling",

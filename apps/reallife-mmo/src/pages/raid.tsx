@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router";
 import { useTable, useReducer, useSpacetimeDB } from "spacetimedb/react";
 import { tables, reducers } from "@/generated";
@@ -8,6 +9,15 @@ import { Badge } from "@/components/ui/8bit/badge";
 import HealthBar from "@/components/ui/8bit/health-bar";
 import { useMyPlayer } from "@/hooks/useStdbPlayer";
 import { RAID_BOSSES } from "@/lib/bossDefinitions";
+import {
+  getBossName,
+  getBossIntro,
+  getBossMechanic,
+  getAbilityName,
+  getLogSpellName,
+  getLogCombatantName,
+} from "@/lib/i18nBoss";
+import { getEquipmentName } from "@/lib/i18nEquipment";
 import { BIOME_META, type BiomeId } from "@/lib/biomeThemes";
 import { CLASS_SPRITES } from "@/lib/types";
 import { spellEmoji } from "@/lib/combatEngine";
@@ -15,12 +25,37 @@ import { asset, cn } from "@/lib/utils";
 
 // Raid spells available to players (same as before)
 const PLAYER_SPELLS_RAID = [
-  { id: "r-slash", name: "Slash", element: "Physical", damage: 10, manaCost: 0, isHeal: false },
-  { id: "r-fireball", name: "Fireball", element: "Fire", damage: 16, manaCost: 10, isHeal: false },
-  { id: "r-heal", name: "Heal", element: "Heal", damage: 14, manaCost: 12, isHeal: true },
+  {
+    id: "r-slash",
+    name: "Slash",
+    i18nKey: "raid.spells.slash",
+    element: "Physical",
+    damage: 10,
+    manaCost: 0,
+    isHeal: false,
+  },
+  {
+    id: "r-fireball",
+    name: "Fireball",
+    i18nKey: "raid.spells.fireball",
+    element: "Fire",
+    damage: 16,
+    manaCost: 10,
+    isHeal: false,
+  },
+  {
+    id: "r-heal",
+    name: "Heal",
+    i18nKey: "raid.spells.heal",
+    element: "Heal",
+    damage: 14,
+    manaCost: 12,
+    isHeal: true,
+  },
   {
     id: "r-arcane",
     name: "Arcane Bolt",
+    i18nKey: "raid.spells.arcaneBolt",
     element: "Arcane",
     damage: 20,
     manaCost: 16,
@@ -31,6 +66,7 @@ const PLAYER_SPELLS_RAID = [
 export function RaidPage() {
   const { biomeId } = useParams<{ biomeId: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { identity } = useSpacetimeDB();
   const { player: _player } = useMyPlayer();
   const logRef = useRef<HTMLDivElement>(null);
@@ -74,9 +110,9 @@ export function RaidPage() {
   if (!boss || !meta || !hasGuild) {
     return (
       <div className="text-center py-8">
-        <p className="retro text-[8px] text-muted-foreground">No guild or invalid biome.</p>
+        <p className="retro text-[8px] text-muted-foreground">{t("raid.noGuildOrInvalidBiome")}</p>
         <Button className="mt-4 text-[8px]" onClick={() => navigate("/guild")}>
-          Back to Guild
+          {t("raid.backToGuild")}
         </Button>
       </div>
     );
@@ -89,41 +125,46 @@ export function RaidPage() {
       <div className="space-y-4">
         <div className="text-center space-y-1">
           <span className="text-4xl block">{boss.sprite}</span>
-          <h2 className="retro text-sm text-foreground">{boss.name}</h2>
-          <p className="retro text-[7px] text-muted-foreground">{meta.name} Raid Boss</p>
+          <h2 className="retro text-sm text-foreground">{getBossName(t, boss)}</h2>
+          <p className="retro text-[7px] text-muted-foreground">
+            {t("raid.raidBoss", { name: meta.name })}
+          </p>
         </div>
 
         <Card>
           <CardContent className="py-3">
             <p className="retro text-[8px] text-muted-foreground italic text-center">
-              &quot;{boss.intro}&quot;
+              &quot;{getBossIntro(t, boss)}&quot;
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-1">
-            <CardTitle className="text-[9px]">Boss Info</CardTitle>
+            <CardTitle className="text-[9px]">{t("raid.bossInfo")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex justify-between">
-              <span className="retro text-[7px] text-muted-foreground">Mechanic</span>
-              <span className="retro text-[7px] text-foreground">{boss.mechanic}</span>
+              <span className="retro text-[7px] text-muted-foreground">{t("raid.mechanic")}</span>
+              <span className="retro text-[7px] text-foreground">{getBossMechanic(t, boss)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="retro text-[7px] text-muted-foreground">Scaled HP</span>
+              <span className="retro text-[7px] text-muted-foreground">{t("raid.scaledHp")}</span>
               <span className="retro text-[7px] text-foreground">
                 {boss.baseHp + boss.perMemberHp * memberRows.length}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="retro text-[7px] text-muted-foreground">Rewards</span>
+              <span className="retro text-[7px] text-muted-foreground">{t("common.rewards")}</span>
               <span className="retro text-[7px] text-amber-400">
-                {boss.xpReward} XP · {boss.goldReward}g · {boss.loot.name}
+                {boss.xpReward} XP · {boss.goldReward}g ·{" "}
+                {getEquipmentName(t, boss.loot.id, boss.loot.name)}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="retro text-[7px] text-muted-foreground">Guild Members</span>
+              <span className="retro text-[7px] text-muted-foreground">
+                {t("raid.guildMembers")}
+              </span>
               <span className="retro text-[7px] text-foreground">{memberRows.length}</span>
             </div>
           </CardContent>
@@ -131,15 +172,17 @@ export function RaidPage() {
 
         <Card>
           <CardHeader className="pb-1">
-            <CardTitle className="text-[9px]">Boss Abilities</CardTitle>
+            <CardTitle className="text-[9px]">{t("raid.bossAbilities")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-1">
             {boss.abilities.map((a) => (
               <div key={a.id} className="flex items-center gap-2">
                 <span className="text-sm">{spellEmoji(a.element)}</span>
-                <span className="retro text-[7px] text-foreground flex-1">{a.name}</span>
+                <span className="retro text-[7px] text-foreground flex-1">
+                  {getAbilityName(t, a)}
+                </span>
                 <Badge variant="outline" className="text-[5px]">
-                  {a.damage} dmg{a.isAoe ? " AoE" : ""}
+                  {t(a.isAoe ? "raid.dmgAoe" : "raid.dmg", { damage: a.damage })}
                 </Badge>
               </div>
             ))}
@@ -151,10 +194,12 @@ export function RaidPage() {
           disabled={!canStart}
           onClick={() => void startRaidReducer({ biomeId: bid })}
         >
-          {canStart ? "Begin Raid!" : `Need ${3 - memberRows.length} more members`}
+          {canStart
+            ? t("raid.beginRaid")
+            : t("raid.needMoreMembers", { count: 3 - memberRows.length })}
         </Button>
         <Button variant="outline" className="w-full text-[8px]" onClick={() => navigate("/guild")}>
-          Back to Guild
+          {t("raid.backToGuild")}
         </Button>
       </div>
     );
@@ -183,26 +228,30 @@ export function RaidPage() {
       <div className="space-y-4">
         <div className="text-center space-y-2 py-4">
           <span className="text-4xl block">🎉</span>
-          <h2 className="retro text-sm text-amber-400">Victory!</h2>
-          <p className="retro text-[8px] text-foreground">{boss.name} has been defeated!</p>
+          <h2 className="retro text-sm text-amber-400">{t("raid.victoryTitle")}</h2>
+          <p className="retro text-[8px] text-foreground">
+            {t("raid.bossDefeated", { name: getBossName(t, boss) })}
+          </p>
         </div>
 
         <Card>
           <CardHeader className="pb-1">
-            <CardTitle className="text-[9px]">Rewards</CardTitle>
+            <CardTitle className="text-[9px]">{t("common.rewards")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex justify-between">
-              <span className="retro text-[7px] text-muted-foreground">XP</span>
+              <span className="retro text-[7px] text-muted-foreground">{t("common.xp")}</span>
               <span className="retro text-[7px] text-green-400">+{boss.xpReward}</span>
             </div>
             <div className="flex justify-between">
-              <span className="retro text-[7px] text-muted-foreground">Gold</span>
+              <span className="retro text-[7px] text-muted-foreground">{t("common.gold")}</span>
               <span className="retro text-[7px] text-amber-400">+{boss.goldReward}g</span>
             </div>
             <div className="flex justify-between">
-              <span className="retro text-[7px] text-muted-foreground">Loot</span>
-              <span className="retro text-[7px] text-purple-400">{boss.loot.name}</span>
+              <span className="retro text-[7px] text-muted-foreground">{t("common.loot")}</span>
+              <span className="retro text-[7px] text-purple-400">
+                {getEquipmentName(t, boss.loot.id, boss.loot.name)}
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -229,7 +278,7 @@ export function RaidPage() {
             void navigate("/guild");
           }}
         >
-          Claim Rewards & Return
+          {t("raid.claimRewards")}
         </Button>
       </div>
     );
@@ -241,12 +290,12 @@ export function RaidPage() {
       <div className="space-y-4">
         <div className="text-center space-y-2 py-4">
           <span className="text-4xl block">💀</span>
-          <h2 className="retro text-sm text-red-400">Defeat</h2>
+          <h2 className="retro text-sm text-red-400">{t("raid.defeatTitle")}</h2>
           <p className="retro text-[8px] text-muted-foreground">
-            Your guild was wiped by {boss.name}...
+            {t("raid.guildWiped", { name: getBossName(t, boss) })}
           </p>
           <p className="retro text-[7px] text-muted-foreground">
-            Boss HP remaining: {raid.bossHp}/{raid.bossMaxHp}
+            {t("raid.bossHpRemaining", { current: raid.bossHp, max: raid.bossMaxHp })}
           </p>
         </div>
         <Button
@@ -256,7 +305,7 @@ export function RaidPage() {
             void navigate("/guild");
           }}
         >
-          Return to Guild
+          {t("raid.returnToGuild")}
         </Button>
       </div>
     );
@@ -268,17 +317,17 @@ export function RaidPage() {
       {/* Boss header */}
       <div className="text-center space-y-1">
         <span className="text-3xl block">{boss.sprite}</span>
-        <h2 className="retro text-[10px] text-foreground">{boss.name}</h2>
+        <h2 className="retro text-[10px] text-foreground">{getBossName(t, boss)}</h2>
         <HealthBar value={bossHpPct} variant="retro" className="h-2 mx-8" />
         <p className="retro text-[6px] text-muted-foreground">
-          {raid.bossHp}/{raid.bossMaxHp} HP
+          {t("raid.hpStatus", { current: raid.bossHp, max: raid.bossMaxHp })}
         </p>
       </div>
 
       {/* Party status */}
       <Card>
         <CardHeader className="pb-1">
-          <CardTitle className="text-[8px]">Party</CardTitle>
+          <CardTitle className="text-[8px]">{t("raid.party")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-2">
@@ -309,7 +358,7 @@ export function RaidPage() {
                       {c.hp}/{c.maxHp}
                     </span>
                     <span className="retro text-[5px] text-blue-400">
-                      {c.mana}/{c.maxMana} MP
+                      {t("raid.mpStatus", { current: c.mana, max: c.maxMana })}
                     </span>
                   </div>
                 </div>
@@ -322,7 +371,7 @@ export function RaidPage() {
       {/* Combat log */}
       <Card>
         <CardHeader className="pb-1">
-          <CardTitle className="text-[8px]">Combat Log</CardTitle>
+          <CardTitle className="text-[8px]">{t("raid.combatLog")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div
@@ -332,13 +381,13 @@ export function RaidPage() {
             {raidLogs.slice(-15).map((entry: any) => (
               <p key={String(entry.id)} className="retro text-[5px]">
                 <span className={entry.caster === boss.name ? "text-red-400" : "text-primary"}>
-                  {entry.caster}
+                  {getLogCombatantName(t, entry.caster)}
                 </span>
                 <span className="text-muted-foreground">
                   {" "}
-                  → {spellEmoji(entry.element)} {entry.spellName} →{" "}
+                  → {spellEmoji(entry.element)} {getLogSpellName(t, entry.spellName)} →{" "}
                 </span>
-                <span className="text-foreground">{entry.target}</span>
+                <span className="text-foreground">{getLogCombatantName(t, entry.target)}</span>
                 <span className={entry.isHeal ? "text-green-400" : "text-red-300"}>
                   {" "}
                   {entry.isHeal ? "+" : "-"}
@@ -347,7 +396,9 @@ export function RaidPage() {
               </p>
             ))}
             {raidLogs.length === 0 && (
-              <p className="retro text-[5px] text-muted-foreground text-center">Combat begins...</p>
+              <p className="retro text-[5px] text-muted-foreground text-center">
+                {t("raid.combatBegins")}
+              </p>
             )}
           </div>
         </CardContent>
@@ -358,8 +409,8 @@ export function RaidPage() {
         <CardHeader className="pb-1">
           <CardTitle className="text-[8px]">
             {isPlayerTurn
-              ? "Your Turn — Choose a Spell"
-              : `${currentCombatant?.playerName ?? "..."}'s Turn`}
+              ? t("combat.yourTurnPve")
+              : t("combat.playerTurn", { name: currentCombatant?.playerName ?? "..." })}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -376,9 +427,11 @@ export function RaidPage() {
                     disabled={!canCast}
                     onClick={() => handleCastSpell(spell)}
                   >
-                    {spellEmoji(spell.element)} {spell.name}
+                    {spellEmoji(spell.element)} {t(spell.i18nKey)}
                     {spell.manaCost > 0 && (
-                      <span className="text-blue-400 ml-auto">{spell.manaCost}mp</span>
+                      <span className="text-blue-400 ml-auto">
+                        {t("raid.spellMpCost", { cost: spell.manaCost })}
+                      </span>
                     )}
                   </Button>
                 );
@@ -387,7 +440,7 @@ export function RaidPage() {
           ) : (
             <div className="text-center py-2">
               <p className="retro text-[7px] text-muted-foreground">
-                Waiting for {currentCombatant?.playerName}...
+                {t("combat.waitingForPlayer", { name: currentCombatant?.playerName })}
               </p>
               <Button
                 size="sm"
@@ -402,7 +455,7 @@ export function RaidPage() {
                   handleCastSpell(best);
                 }}
               >
-                Auto (NPC Turn)
+                {t("combat.autoNpcTurn")}
               </Button>
             </div>
           )}
@@ -417,7 +470,7 @@ export function RaidPage() {
           void navigate("/guild");
         }}
       >
-        Retreat (Abandon Raid)
+        {t("raid.retreat")}
       </Button>
     </div>
   );

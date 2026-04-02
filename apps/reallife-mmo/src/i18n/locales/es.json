@@ -206,7 +206,7 @@
     "title": "Mapa del mundo",
     "travelTo": "¿Viajar a {{name}}?",
     "travelDescription": "Tu mundo cambia por completo. La interfaz, los colores, todo. Conservas tus stats, pero el jefe cambia.",
-    "regionsDiscovered": "{{count}}/9 regiones descubiertas",
+    "regionsDiscovered": "{{count}}/{{max}} regiones descubiertas",
     "locations": "Ubicaciones",
     "backToMap": "< Mapa",
     "locationNotFound": "Ubicación no encontrada.",
@@ -292,7 +292,16 @@
     "party": "Grupo",
     "combatLog": "Registro de combate",
     "combatBegins": "El combate comienza...",
-    "retreat": "Retirada (Abandonar raid)"
+    "retreat": "Retirada (Abandonar raid)",
+    "hpStatus": "{{current}}/{{max}} PV",
+    "mpStatus": "{{current}}/{{max}} PM",
+    "spellMpCost": "{{cost}}pm",
+    "spells": {
+      "slash": "Tajo",
+      "fireball": "Bola de fuego",
+      "heal": "Curación",
+      "arcaneBolt": "Rayo arcano"
+    }
   },
   "leaderboard": {
     "title": "Clasificación",
@@ -694,7 +703,125 @@
     "epic-class-weapon": { "name": "Hacha de Batalla del Valor" },
     "first-ten": { "name": "Anillo de Dedicación" },
     "grinder-50": { "name": "Capa del Perseverante" },
-    "legendary-100": { "name": "Hoja Legendaria del Siglo" }
+    "legendary-100": { "name": "Hoja Legendaria del Siglo" },
+    "raid-thornback-staff": { "name": "Bastón Viviente de Dornoespina" },
+    "raid-frostlord-crown": { "name": "Corona del Señor del Hielo" },
+    "raid-ignisfury-plate": { "name": "Placa Fundida de Ignisfuria" },
+    "raid-rootwarden-robe": { "name": "Túnica de Corteza del Guardián de Raíces" },
+    "raid-baron-dagger": { "name": "Daga Sombría del Barón" },
+    "raid-stonefist-gauntlets": { "name": "Guanteletes de Puño de Piedra" },
+    "raid-archivist-tome": { "name": "Tomo Infinito del Archivista" },
+    "raid-skarveth-armor": { "name": "Coraza Mortal de Skarveth" },
+    "raid-architect-halo": { "name": "Halo Cósmico del Arquitecto" }
+  },
+  "bosses": {
+    "boss-thornback": {
+      "name": "Dornoespina el Anciano",
+      "intro": "El árbol milenario sacude la tierra al despertar...",
+      "mechanic": "Naturaleza/espinas — daño en área periódico por enredaderas"
+    },
+    "boss-frostlord": {
+      "name": "El Señor del Hielo",
+      "intro": "La temperatura se desploma cuando el Señor del Hielo se materializa de la ventisca...",
+      "mechanic": "Hielo/congelación — ventiscas en área que ralentizan"
+    },
+    "boss-ignisfury": {
+      "name": "Ignisfuria",
+      "intro": "El volcán tiembla cuando Ignisfuria emerge de la lava...",
+      "mechanic": "Fuego/área — ataques de erupción devastadores"
+    },
+    "boss-rootwarden": {
+      "name": "Guardián de Raíces",
+      "intro": "El bosque mismo despierta cuando el Guardián de Raíces se despliega...",
+      "mechanic": "Curación/regeneración — el jefe se cura periódicamente"
+    },
+    "boss-shadow-baron": {
+      "name": "Barón de las Sombras",
+      "intro": "Las sombras se fusionan en una figura imponente de oscuridad pura...",
+      "mechanic": "Oscuridad/debilitamiento — drenaje de vida en área"
+    },
+    "boss-stonefist": {
+      "name": "Rey Puño de Piedra",
+      "intro": "El Rey Enano hace crujir sus nudillos de piedra y ruge...",
+      "mechanic": "Tierra/aturdimiento — golpes pesados a objetivo único"
+    },
+    "boss-archivist": {
+      "name": "El Archivista",
+      "intro": "Los libros giran en un vórtice mientras el Archivista toma forma...",
+      "mechanic": "Arcano/silencio — presión mental en área"
+    },
+    "boss-skarveth": {
+      "name": "Skarveth el Inmortal",
+      "intro": "Los huesos crujen mientras el Inmortal se alza de su sarcófago dorado...",
+      "mechanic": "No-muerto/drenaje — se cura con el daño infligido"
+    },
+    "boss-architect": {
+      "name": "El Arquitecto",
+      "intro": "Las estrellas colapsan mientras El Arquitecto se manifiesta del tejido de la realidad...",
+      "mechanic": "Cósmico/fase — ataques definitivos devastadores"
+    }
+  },
+  "bossAbilities": {
+    "thorn-lash": { "name": "Latigazo de Espinas" },
+    "vine-storm": {
+      "name": "Tormenta de Enredaderas",
+      "effect": "¡Enredaderas espinosas azotan a todos los héroes!"
+    },
+    "root-slam": {
+      "name": "Golpe de Raíz",
+      "effect": "¡Raíces masivas aplastan a un solo objetivo!"
+    },
+    "ice-lance": { "name": "Lanza de Hielo" },
+    "blizzard": { "name": "Ventisca", "effect": "¡Una ventisca helada envuelve al grupo!" },
+    "frost-nova": {
+      "name": "Nova de Escarcha",
+      "effect": "¡El hielo fragmentado perfora la armadura!"
+    },
+    "flame-breath": { "name": "Aliento de Fuego" },
+    "eruption": { "name": "Erupción", "effect": "¡El magma erupciona bajo todo el grupo!" },
+    "meteor": { "name": "Impacto de Meteoro", "effect": "¡Un meteoro ardiente se estrella!" },
+    "branch-whip": { "name": "Latigazo de Rama" },
+    "regrowth": { "name": "Recrecimiento", "effect": "¡El Guardián de Raíces regenera salud!" },
+    "forest-wrath": {
+      "name": "Ira del Bosque",
+      "effect": "¡El bosque entero ataca a los intrusos!"
+    },
+    "shadow-bolt": { "name": "Rayo de Sombras" },
+    "darkness": {
+      "name": "Oscuridad Envolvente",
+      "effect": "¡Las sombras drenan la vida de todos los héroes!"
+    },
+    "soul-rend": { "name": "Desgarro de Alma", "effect": "¡El Barón desgarra tu alma!" },
+    "earth-punch": { "name": "Puño de Tierra" },
+    "sandstorm": {
+      "name": "Tormenta de Arena",
+      "effect": "¡Una tormenta de arena cegadora azota al grupo!"
+    },
+    "seismic-slam": {
+      "name": "Golpe Sísmico",
+      "effect": "¡El suelo se quiebra bajo el poder de Puño de Piedra!"
+    },
+    "arcane-beam": { "name": "Rayo Arcano" },
+    "knowledge-overload": {
+      "name": "Sobrecarga de Conocimiento",
+      "effect": "¡El conocimiento puro abruma tus sentidos!"
+    },
+    "reality-warp": {
+      "name": "Distorsión de Realidad",
+      "effect": "¡La realidad se dobla ante la voluntad del Archivista!"
+    },
+    "death-touch": { "name": "Toque de Muerte" },
+    "plague-wave": {
+      "name": "Ola de Plaga",
+      "effect": "¡Una ola de energía necrótica inunda al grupo!"
+    },
+    "drain-soul": { "name": "Drenar Alma", "effect": "¡Skarveth drena vida para curarse!" },
+    "cosmic-ray": { "name": "Rayo Cósmico" },
+    "supernova": {
+      "name": "Supernova",
+      "effect": "¡Una estrella explota en todas las dimensiones!"
+    },
+    "unmake": { "name": "Deshacer", "effect": "¡El Arquitecto intenta borrar tu existencia!" }
   },
   "tierLabels": {
     "novice": "Novato",

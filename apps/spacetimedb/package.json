@@ -10,7 +10,7 @@
     "generate": "spacetime generate --lang typescript --out-dir ../reallife-mmo/src/generated --module-path ."
   },
   "dependencies": {
-    "spacetimedb": "^2.0.2"
+    "spacetimedb": "^2.1.0"
   },
   "devDependencies": {
     "typescript": "~5.6.2"

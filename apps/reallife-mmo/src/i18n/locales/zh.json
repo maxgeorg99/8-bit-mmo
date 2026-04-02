@@ -206,7 +206,7 @@
     "title": "世界地图",
     "travelTo": "前往{{name}}？",
     "travelDescription": "你的世界将完全改变。界面、颜色、一切。你保留属性——但首领会变化。",
-    "regionsDiscovered": "{{count}}/9 个区域已发现",
+    "regionsDiscovered": "{{count}}/{{max}} 个区域已发现",
     "locations": "地点",
     "backToMap": "< 地图",
     "locationNotFound": "地点未找到。",
@@ -292,7 +292,16 @@
     "party": "队伍",
     "combatLog": "战斗日志",
     "combatBegins": "战斗开始...",
-    "retreat": "撤退 (放弃副本)"
+    "retreat": "撤退 (放弃副本)",
+    "hpStatus": "{{current}}/{{max}} 生命",
+    "mpStatus": "{{current}}/{{max}} 法力",
+    "spellMpCost": "{{cost}}法力",
+    "spells": {
+      "slash": "斩击",
+      "fireball": "火球术",
+      "heal": "治疗术",
+      "arcaneBolt": "奥术飞弹"
+    }
   },
   "leaderboard": {
     "title": "排行榜",
@@ -613,7 +622,92 @@
     "epic-class-weapon": { "name": "英勇战斧" },
     "first-ten": { "name": "奉献之戒" },
     "grinder-50": { "name": "磨砺者之袍" },
-    "legendary-100": { "name": "世纪传说之刃" }
+    "legendary-100": { "name": "世纪传说之刃" },
+    "raid-thornback-staff": { "name": "荆背长老的活木法杖" },
+    "raid-frostlord-crown": { "name": "冰霜领主之冠" },
+    "raid-ignisfury-plate": { "name": "烈焰之怒的熔岩板甲" },
+    "raid-rootwarden-robe": { "name": "根卫者的树皮长袍" },
+    "raid-baron-dagger": { "name": "暗影男爵之匕" },
+    "raid-stonefist-gauntlets": { "name": "石拳王的护手" },
+    "raid-archivist-tome": { "name": "档案官的无尽之书" },
+    "raid-skarveth-armor": { "name": "斯卡维斯的死亡铠甲" },
+    "raid-architect-halo": { "name": "建筑师的宇宙光环" }
+  },
+  "bosses": {
+    "boss-thornback": {
+      "name": "荆背长老",
+      "intro": "远古之树苏醒，大地为之震颤...",
+      "mechanic": "自然/荆棘 — 周期性范围藤蔓伤害"
+    },
+    "boss-frostlord": {
+      "name": "冰霜领主",
+      "intro": "冰霜领主从暴风雪中显现，温度骤降...",
+      "mechanic": "冰/冻结 — 减速范围暴风雪"
+    },
+    "boss-ignisfury": {
+      "name": "烈焰之怒",
+      "intro": "烈焰之怒从岩浆中升起，火山为之震动...",
+      "mechanic": "火/范围 — 毁灭性喷发攻击"
+    },
+    "boss-rootwarden": {
+      "name": "根卫者",
+      "intro": "根卫者展开身躯，森林本身苏醒了...",
+      "mechanic": "治愈/再生 — Boss定期自我恢复"
+    },
+    "boss-shadow-baron": {
+      "name": "暗影男爵",
+      "intro": "阴影汇聚成一个纯粹黑暗的巨大身影...",
+      "mechanic": "黑暗/减益 — 范围生命汲取"
+    },
+    "boss-stonefist": {
+      "name": "石拳王",
+      "intro": "矮人之王捏碎石头拳头，发出怒吼...",
+      "mechanic": "大地/眩晕 — 沉重的单体攻击"
+    },
+    "boss-archivist": {
+      "name": "档案官",
+      "intro": "书籍在漩涡中旋转，档案官现出形体...",
+      "mechanic": "奥术/沉默 — 精神范围压制"
+    },
+    "boss-skarveth": {
+      "name": "不死者斯卡维斯",
+      "intro": "不死者从金色石棺中复苏，白骨作响...",
+      "mechanic": "亡灵/汲取 — 通过造成的伤害恢复生命"
+    },
+    "boss-architect": {
+      "name": "建筑师",
+      "intro": "建筑师从现实的织物中显现，星辰崩塌...",
+      "mechanic": "宇宙/相位 — 毁灭性终极攻击"
+    }
+  },
+  "bossAbilities": {
+    "thorn-lash": { "name": "荆棘鞭笞" },
+    "vine-storm": { "name": "藤蔓风暴", "effect": "带刺藤蔓抽打所有英雄！" },
+    "root-slam": { "name": "根系重击", "effect": "巨大根系碾压单个目标！" },
+    "ice-lance": { "name": "冰枪" },
+    "blizzard": { "name": "暴风雪", "effect": "冰冻暴风雪吞噬了队伍！" },
+    "frost-nova": { "name": "霜之新星", "effect": "碎裂的冰刺穿了铠甲！" },
+    "flame-breath": { "name": "烈焰吐息" },
+    "eruption": { "name": "喷发", "effect": "岩浆在队伍脚下喷涌而出！" },
+    "meteor": { "name": "陨石打击", "effect": "一颗燃烧的陨石坠落！" },
+    "branch-whip": { "name": "枝条鞭笞" },
+    "regrowth": { "name": "再生", "effect": "根卫者恢复了生命值！" },
+    "forest-wrath": { "name": "森林之怒", "effect": "整座森林向入侵者发起攻击！" },
+    "shadow-bolt": { "name": "暗影箭" },
+    "darkness": { "name": "吞噬黑暗", "effect": "阴影汲取所有英雄的生命力！" },
+    "soul-rend": { "name": "撕裂灵魂", "effect": "男爵撕裂你的灵魂！" },
+    "earth-punch": { "name": "大地之拳" },
+    "sandstorm": { "name": "沙暴", "effect": "致盲沙暴猛击队伍！" },
+    "seismic-slam": { "name": "地震猛击", "effect": "大地在石拳王的力量下碎裂！" },
+    "arcane-beam": { "name": "奥术射线" },
+    "knowledge-overload": { "name": "知识过载", "effect": "纯粹的知识淹没了你的感官！" },
+    "reality-warp": { "name": "现实扭曲", "effect": "现实屈从于档案官的意志！" },
+    "death-touch": { "name": "死亡之触" },
+    "plague-wave": { "name": "瘟疫之波", "effect": "一波死灵能量席卷队伍！" },
+    "drain-soul": { "name": "吸取灵魂", "effect": "斯卡维斯汲取生命来治愈自己！" },
+    "cosmic-ray": { "name": "宇宙射线" },
+    "supernova": { "name": "超新星", "effect": "一颗恒星在所有维度中爆炸！" },
+    "unmake": { "name": "抹除", "effect": "建筑师试图将你从存在中抹去！" }
   },
   "tierLabels": {
     "novice": "新手",

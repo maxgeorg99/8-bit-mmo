@@ -104,7 +104,7 @@ export function WorldMap() {
       {/* Unlocked count */}
       <div className="text-center pt-3">
         <span className="retro text-[7px] text-muted-foreground">
-          {t("worldMap.regionsDiscovered", { count: unlockedBiomes.length })}
+          {t("worldMap.regionsDiscovered", { count: unlockedBiomes.length, max: 9 })}
         </span>
       </div>
     </div>

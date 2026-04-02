@@ -1,4 +1,6 @@
-import { t, SenderError, Random } from "spacetimedb/server";
+import { t, SenderError } from "spacetimedb/server";
+
+type Random = () => number;
 import spacetimedb from "../schema";
 import { Identity } from "spacetimedb";
 

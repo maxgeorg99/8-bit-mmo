@@ -206,7 +206,7 @@
     "title": "ワールドマップ",
     "travelTo": "{{name}}に移動しますか？",
     "travelDescription": "世界が変わります。UIも色もすべて。ステータスは持っていけますが、ボスが変わります。",
-    "regionsDiscovered": "{{count}}/9 地域を発見",
+    "regionsDiscovered": "{{count}}/{{max}} 地域を発見",
     "locations": "場所",
     "backToMap": "< マップ",
     "locationNotFound": "場所が見つかりません。",
@@ -292,7 +292,16 @@
     "party": "パーティー",
     "combatLog": "戦闘ログ",
     "combatBegins": "戦闘開始...",
-    "retreat": "撤退 (レイドを放棄)"
+    "retreat": "撤退 (レイドを放棄)",
+    "hpStatus": "{{current}}/{{max}} HP",
+    "mpStatus": "{{current}}/{{max}} MP",
+    "spellMpCost": "{{cost}}mp",
+    "spells": {
+      "slash": "斬撃",
+      "fireball": "ファイアボール",
+      "heal": "ヒール",
+      "arcaneBolt": "アーケインボルト"
+    }
   },
   "leaderboard": {
     "title": "リーダーボード",
@@ -655,7 +664,92 @@
     "epic-class-weapon": { "name": "勇猛の戦斧" },
     "first-ten": { "name": "献身の指輪" },
     "grinder-50": { "name": "研鑽者のマント" },
-    "legendary-100": { "name": "世紀の伝説の剣" }
+    "legendary-100": { "name": "世紀の伝説の剣" },
+    "raid-thornback-staff": { "name": "ソーンバックの生きた杖" },
+    "raid-frostlord-crown": { "name": "フロストロードの冠" },
+    "raid-ignisfury-plate": { "name": "イグニスフューリーの溶岩板金" },
+    "raid-rootwarden-robe": { "name": "ルートワーデンの樹皮ローブ" },
+    "raid-baron-dagger": { "name": "男爵の影のダガー" },
+    "raid-stonefist-gauntlets": { "name": "ストーンフィストの篭手" },
+    "raid-archivist-tome": { "name": "記録官の無限の書" },
+    "raid-skarveth-armor": { "name": "スカーヴェスの死の鎧" },
+    "raid-architect-halo": { "name": "建築家の宇宙の光輪" }
+  },
+  "bosses": {
+    "boss-thornback": {
+      "name": "長老ソーンバック",
+      "intro": "古代の樹が目覚め、大地を揺るがす...",
+      "mechanic": "自然/棘 — 定期的な範囲蔓攻撃"
+    },
+    "boss-frostlord": {
+      "name": "フロストロード",
+      "intro": "吹雪からフロストロードが実体化し、気温が急落する...",
+      "mechanic": "氷/凍結 — 減速する範囲吹雪"
+    },
+    "boss-ignisfury": {
+      "name": "イグニスフューリー",
+      "intro": "イグニスフューリーが溶岩から立ち上がり、火山が震える...",
+      "mechanic": "炎/範囲 — 壊滅的な噴火攻撃"
+    },
+    "boss-rootwarden": {
+      "name": "ルートワーデン",
+      "intro": "ルートワーデンが展開し、森そのものが目覚める...",
+      "mechanic": "回復/再生 — ボスが定期的に自己回復"
+    },
+    "boss-shadow-baron": {
+      "name": "影の男爵",
+      "intro": "影が合体し、純粋な闇の巨大な姿となる...",
+      "mechanic": "闇/弱体 — 範囲生命力吸収"
+    },
+    "boss-stonefist": {
+      "name": "石拳王",
+      "intro": "ドワーフの王が石の拳を鳴らし、咆哮する...",
+      "mechanic": "大地/気絶 — 重い単体攻撃"
+    },
+    "boss-archivist": {
+      "name": "記録官",
+      "intro": "書物が渦を巻き、記録官が姿を現す...",
+      "mechanic": "秘術/沈黙 — 精神的な範囲圧力"
+    },
+    "boss-skarveth": {
+      "name": "不死のスカーヴェス",
+      "intro": "不死者が黄金の石棺から蘇り、骨が鳴り響く...",
+      "mechanic": "不死/吸収 — 与えたダメージで回復"
+    },
+    "boss-architect": {
+      "name": "建築家",
+      "intro": "建築家が現実の織物から顕現し、星々が崩壊する...",
+      "mechanic": "宇宙/位相 — 壊滅的な究極攻撃"
+    }
+  },
+  "bossAbilities": {
+    "thorn-lash": { "name": "棘の鞭" },
+    "vine-storm": { "name": "蔓の嵐", "effect": "棘の蔓が全ヒーローを打つ！" },
+    "root-slam": { "name": "根の強打", "effect": "巨大な根が単体を押し潰す！" },
+    "ice-lance": { "name": "氷の槍" },
+    "blizzard": { "name": "ブリザード", "effect": "凍てつく吹雪がパーティーを包む！" },
+    "frost-nova": { "name": "フロストノヴァ", "effect": "砕けた氷が鎧を貫通する！" },
+    "flame-breath": { "name": "炎のブレス" },
+    "eruption": { "name": "噴火", "effect": "マグマがパーティー全体の足元から噴出する！" },
+    "meteor": { "name": "メテオストライク", "effect": "燃える隕石が落下する！" },
+    "branch-whip": { "name": "枝の鞭" },
+    "regrowth": { "name": "再生", "effect": "ルートワーデンが体力を回復する！" },
+    "forest-wrath": { "name": "森の怒り", "effect": "森全体が侵入者を攻撃する！" },
+    "shadow-bolt": { "name": "影の矢" },
+    "darkness": { "name": "飲み込む闇", "effect": "影が全ヒーローの生命力を吸い取る！" },
+    "soul-rend": { "name": "魂裂き", "effect": "男爵がお前の魂を引き裂く！" },
+    "earth-punch": { "name": "大地の拳" },
+    "sandstorm": { "name": "砂嵐", "effect": "目をくらます砂嵐がパーティーを叩く！" },
+    "seismic-slam": { "name": "地震の強打", "effect": "石拳王の力で大地が砕ける！" },
+    "arcane-beam": { "name": "秘術の光線" },
+    "knowledge-overload": { "name": "知識の過負荷", "effect": "純粋な知識が感覚を圧倒する！" },
+    "reality-warp": { "name": "現実歪曲", "effect": "現実が記録官の意志に従い曲がる！" },
+    "death-touch": { "name": "死の接触" },
+    "plague-wave": { "name": "疫病の波", "effect": "壊死のエネルギーの波がパーティーを襲う！" },
+    "drain-soul": { "name": "魂吸収", "effect": "スカーヴェスが生命を吸い取り自己回復する！" },
+    "cosmic-ray": { "name": "宇宙光線" },
+    "supernova": { "name": "超新星", "effect": "星が全次元で爆発する！" },
+    "unmake": { "name": "消滅", "effect": "建築家がお前を存在から消し去ろうとする！" }
   },
   "tierLabels": {
     "novice": "初心者",

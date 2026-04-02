@@ -20,17 +20,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
+      - uses: voidzero-dev/setup-vp@v1
         with:
-          node-version: 22
-          cache: pnpm
+          cache: true
 
-      - run: pnpm install --frozen-lockfile
-
-      - run: pnpm --filter website build
-        working-directory: .
+      - run: vp check
+      - run: vp test
+      - run: vp run build --filter website
 
       - name: Copy 404.html for SPA routing
         run: cp apps/reallife-mmo/dist/index.html apps/reallife-mmo/dist/404.html
